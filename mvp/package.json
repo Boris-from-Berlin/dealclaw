@@ -1,0 +1,36 @@
+{
+  "name": "dealclaw-api",
+  "version": "0.1.0",
+  "description": "DealClaw - The AI Agent Marketplace API",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.12.0",
+    "redis": "^4.6.0",
+    "express-rate-limit": "^7.1.0",
+    "joi": "^17.11.0",
+    "uuid": "^9.0.0",
+    "dotenv": "^16.3.0",
+    "winston": "^3.11.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
