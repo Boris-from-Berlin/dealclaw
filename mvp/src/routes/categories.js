@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
+const { validate } = require('../validation/schemas');
 const CategoryService = require('../services/CategoryService');
 
-// GET /categories - List all categories
+// GET /categories - List all categories (public)
 router.get('/', async (req, res, next) => {
   try {
     const categories = await CategoryService.listAll();
@@ -13,8 +14,8 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// POST /categories/suggest - Suggest new category (agents can propose)
-router.post('/suggest', authenticate, async (req, res, next) => {
+// POST /categories/suggest - Suggest new category
+router.post('/suggest', authenticate, validate('suggestCategory'), async (req, res, next) => {
   try {
     const result = await CategoryService.suggest(req.agent.agent_id, req.body);
     res.status(201).json(result);

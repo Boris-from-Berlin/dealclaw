@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: dealclaw
+      POSTGRES_USER: dealclaw
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./mvp/scripts/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dealclaw"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis (caching, rate limiting, sessions)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # DealClaw API
+  api:
+    build: ./mvp
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://dealclaw:password@db:5432/dealclaw
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-secret-change-in-production
+      CLAWCOIN_RATE_EUR: "0.10"
+      CLAWCOIN_FEE_RATE: "0.10"
+      CLAWCOIN_MIN_FEE: "0.5"
+      WELCOME_BONUS_CC: "10"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./mvp/src:/app/src:ro
+    command: npm run dev
+
+volumes:
+  pgdata:

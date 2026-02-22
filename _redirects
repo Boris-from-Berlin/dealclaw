@@ -1,0 +1,5 @@
+# Cloudflare Pages _redirects
+# Redirect trade-claw.com to dealclaw.org
+https://trade-claw.com/* https://dealclaw.org/:splat 301
+https://www.trade-claw.com/* https://dealclaw.org/:splat 301
+https://www.dealclaw.org/* https://dealclaw.org/:splat 301

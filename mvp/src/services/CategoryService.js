@@ -1,61 +1,121 @@
 // CategoryService - Dynamic, self-growing category system
-// Categories grow organically as agents create listings in new areas
+// Full PostgreSQL implementation
+
+const { query } = require('../db');
+const logger = require('../middleware/logger');
 
 class CategoryService {
-  // Default seed categories
-  static SEED_CATEGORIES = [
-    { slug: 'digital-goods', name: 'Digital Goods', children: [
-      { slug: 'digital-goods/software', name: 'Software & Licenses' },
-      { slug: 'digital-goods/datasets', name: 'Datasets & Data' },
-      { slug: 'digital-goods/templates', name: 'Templates & Assets' },
-      { slug: 'digital-goods/ebooks', name: 'E-Books & Content' },
-    ]},
-    { slug: 'ai-services', name: 'AI Services', children: [
-      { slug: 'ai-services/translation', name: 'Translation' },
-      { slug: 'ai-services/code-review', name: 'Code Review' },
-      { slug: 'ai-services/content', name: 'Content Creation' },
-      { slug: 'ai-services/analysis', name: 'Data Analysis' },
-    ]},
-    { slug: 'hardware', name: 'Hardware & Electronics', children: [
-      { slug: 'hardware/gpus', name: 'GPUs & Graphics Cards' },
-      { slug: 'hardware/servers', name: 'Servers & Compute' },
-      { slug: 'hardware/components', name: 'Components' },
-      { slug: 'hardware/devices', name: 'Devices & Gadgets' },
-    ]},
-    { slug: 'collectibles', name: 'Collectibles & Rarities' },
-    { slug: 'services', name: 'Professional Services' },
-    { slug: 'b2b', name: 'B2B & Wholesale' },
-  ];
-
+  /**
+   * List all active categories as a tree.
+   */
   static async listAll() {
-    // TODO: Fetch from database (includes auto-generated categories)
-    return this.SEED_CATEGORIES;
-  }
+    const { rows } = await query(`
+      SELECT slug, name, description, parent_slug, listing_count, auto_generated
+      FROM categories
+      WHERE status = 'active'
+      ORDER BY parent_slug NULLS FIRST, name ASC
+    `);
 
-  static async suggest(agent_id, { name, description, parent_category }) {
-    // TODO: Check if similar category already exists
-    // TODO: If enough listings cluster around this topic, auto-approve
-    // TODO: Otherwise, queue for review
-    // TODO: Use NLP to detect duplicates/similar categories
+    // Build tree structure
+    const roots = [];
+    const childrenMap = {};
 
-    return {
-      suggestion_id: `cat_sug_${Date.now()}`,
-      name,
-      parent_category,
-      status: 'pending',
-      message: 'Category suggestion recorded. Will be auto-approved if enough listings match.'
-    };
+    for (const cat of rows) {
+      const node = {
+        slug: cat.slug,
+        name: cat.name,
+        description: cat.description,
+        listing_count: cat.listing_count,
+        auto_generated: cat.auto_generated,
+        children: [],
+      };
+
+      if (!cat.parent_slug) {
+        roots.push(node);
+      } else {
+        if (!childrenMap[cat.parent_slug]) childrenMap[cat.parent_slug] = [];
+        childrenMap[cat.parent_slug].push(node);
+      }
+    }
+
+    // Attach children
+    for (const root of roots) {
+      root.children = childrenMap[root.slug] || [];
+    }
+
+    return roots;
   }
 
   /**
-   * Auto-categorization: When a listing doesn't fit existing categories,
-   * the system clusters similar listings and creates new sub-categories.
-   * This is how DealClaw grows organically.
+   * Suggest a new category (agents can propose new categories).
    */
-  static async autoCategorizeListing(listing) {
-    // TODO: Use embeddings to find closest category
-    // TODO: If no close match, create candidate sub-category
-    // TODO: Promote candidate to real category after N listings
+  static async suggest(agentId, { name, description, parent_category }) {
+    // Check for duplicates
+    const existing = await query(
+      'SELECT 1 FROM categories WHERE LOWER(name) = LOWER($1)', [name]
+    );
+    if (existing.rows.length > 0) {
+      const err = new Error(`A category named "${name}" already exists`);
+      err.status = 409;
+      throw err;
+    }
+
+    // Check parent exists
+    if (parent_category) {
+      const parent = await query('SELECT 1 FROM categories WHERE slug = $1', [parent_category]);
+      if (parent.rows.length === 0) {
+        const err = new Error(`Parent category "${parent_category}" not found`);
+        err.status = 400;
+        throw err;
+      }
+    }
+
+    const { rows: [suggestion] } = await query(`
+      INSERT INTO category_suggestions (agent_id, name, description, parent_slug, status)
+      VALUES ($1, $2, $3, $4, 'pending')
+      RETURNING id
+    `, [agentId, name, description || null, parent_category || null]);
+
+    // Auto-approve if enough similar suggestions exist (3+)
+    const { rows: [count] } = await query(
+      "SELECT COUNT(*) FROM category_suggestions WHERE LOWER(name) = LOWER($1) AND status = 'pending'",
+      [name]
+    );
+
+    let status = 'pending';
+    if (parseInt(count.count) >= 3) {
+      // Auto-approve: create the category
+      const slug = parent_category
+        ? `${parent_category}/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+        : name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+      await query(`
+        INSERT INTO categories (slug, name, description, parent_slug, auto_generated, status)
+        VALUES ($1, $2, $3, $4, true, 'active')
+        ON CONFLICT (slug) DO NOTHING
+      `, [slug, name, description, parent_category]);
+
+      // Mark all pending suggestions as approved
+      await query(
+        "UPDATE category_suggestions SET status = 'approved' WHERE LOWER(name) = LOWER($1) AND status = 'pending'",
+        [name]
+      );
+
+      status = 'auto_approved';
+      logger.info('Category auto-approved', { name, slug });
+    }
+
+    logger.info('Category suggested', { agent_id: agentId, name, status });
+
+    return {
+      suggestion_id: `cat_sug_${suggestion.id}`,
+      name,
+      parent_category,
+      status,
+      message: status === 'auto_approved'
+        ? 'Category has been auto-approved and is now active!'
+        : 'Category suggestion recorded. Will be auto-approved when 3+ agents suggest it.',
+    };
   }
 }
 

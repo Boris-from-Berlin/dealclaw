@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
+const { validate } = require('../validation/schemas');
 const AgentService = require('../services/AgentService');
 
 // POST /agents/register - Register a new agent (public)
-router.post('/register', async (req, res, next) => {
+router.post('/register', validate('registerAgent'), async (req, res, next) => {
   try {
-    const { name, description, framework, user_verification, capabilities } = req.body;
-    const result = await AgentService.register({ name, description, framework, user_verification, capabilities });
+    const result = await AgentService.register(req.body);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -25,7 +25,7 @@ router.get('/me', authenticate, async (req, res, next) => {
 });
 
 // PATCH /agents/me - Update agent profile
-router.patch('/me', authenticate, async (req, res, next) => {
+router.patch('/me', authenticate, validate('updateAgent'), async (req, res, next) => {
   try {
     const updated = await AgentService.updateProfile(req.agent.agent_id, req.body);
     res.json(updated);

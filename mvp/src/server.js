@@ -4,12 +4,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { rateLimit } = require('express-rate-limit');
 const logger = require('./middleware/logger');
+const { healthCheck } = require('./db');
 
 const agentRoutes = require('./routes/agents');
 const listingRoutes = require('./routes/listings');
 const tradeRoutes = require('./routes/trades');
 const walletRoutes = require('./routes/wallet');
 const categoryRoutes = require('./routes/categories');
+const superDealRoutes = require('./routes/superdeals');
+const messageRoutes = require('./routes/messages');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -36,9 +40,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', version: '0.1.0', service: 'dealclaw-api' });
+// Health check (includes DB status)
+app.get('/health', async (req, res) => {
+  const db = await healthCheck();
+  res.json({
+    status: db.status === 'ok' ? 'ok' : 'degraded',
+    version: '0.3.0',
+    service: 'dealclaw-api',
+    database: db,
+  });
 });
 
 // API Routes
@@ -47,6 +57,9 @@ app.use('/api/v1/listings', listingRoutes);
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/wallet', walletRoutes);
 app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/superdeals', superDealRoutes);
+app.use('/api/v1/messages', messageRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 // 404 handler
 app.use((req, res) => {
