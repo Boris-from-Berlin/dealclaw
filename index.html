@@ -11,9 +11,9 @@
     /* ===== LIGHT THEME (DEFAULT) ===== */
     :root {
       --primary: #1B2A4A;
-      --accent: #E8792F;
-      --accent-hover: #D06820;
-      --accent-light: #FFF7ED;
+      --accent: #E04A2F;
+      --accent-hover: #C73D24;
+      --accent-light: #FFF1EE;
       --bg: #FAFBFC;
       --card-bg: #FFFFFF;
       --text: #333333;
@@ -28,8 +28,8 @@
     /* ===== DARK THEME ===== */
     html.dark {
       --primary: #E0E7FF;
-      --accent: #F59E0B;
-      --accent-hover: #D97706;
+      --accent: #F06040;
+      --accent-hover: #D94E30;
       --accent-light: #1C1917;
       --bg: #0F172A;
       --card-bg: #1E293B;
@@ -128,7 +128,7 @@
       content: '';
       position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
       width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(232,121,47,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(224,74,47,0.08) 0%, transparent 70%);
       pointer-events: none;
     }
     .hero-badge {
@@ -137,7 +137,7 @@
       padding: 0.4rem 1rem; border-radius: 50px;
       font-size: 0.85rem; font-weight: 600;
       margin-bottom: 1.5rem;
-      border: 1px solid rgba(232,121,47,0.2);
+      border: 1px solid rgba(224,74,47,0.2);
     }
     .hero h1 {
       font-size: clamp(2.5rem, 6vw, 4.2rem);
@@ -146,7 +146,7 @@
       max-width: 800px; margin: 0 auto 1.5rem;
     }
     .hero h1 .highlight {
-      background: linear-gradient(135deg, var(--accent), #F59E0B);
+      background: linear-gradient(135deg, var(--accent), #F07050);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .hero p {
@@ -182,9 +182,20 @@
     .waitlist-form button:hover {
       background: var(--accent-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(232,121,47,0.3);
+      box-shadow: 0 4px 12px rgba(224,74,47,0.3);
     }
     .hero-sub { font-size: 0.85rem; color: var(--text-light); }
+
+    /* ===== HERO IMAGE ===== */
+    .hero-image {
+      display: block;
+      max-width: 960px;
+      width: 90%;
+      height: auto;
+      margin: -6rem auto -5rem;
+      pointer-events: none;
+      user-select: none;
+    }
     .success-msg {
       display: none; color: var(--accent); font-weight: 600;
       font-size: 1.1rem; margin-top: 1rem;
@@ -206,7 +217,7 @@
     }
     .vp:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 16px rgba(232,121,47,0.08);
+      box-shadow: 0 4px 16px rgba(224,74,47,0.08);
     }
     .vp-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
     .vp-title {
@@ -273,7 +284,7 @@
     }
     .feature-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 20px rgba(232,121,47,0.08);
+      box-shadow: 0 4px 20px rgba(224,74,47,0.08);
     }
     .feature-icon {
       font-size: 2rem; margin-bottom: 1rem;
@@ -306,7 +317,7 @@
     .trade-row-icon {
       width: 44px; height: 44px; line-height: 44px;
       text-align: center; font-size: 1.3rem;
-      background: rgba(232,121,47,0.2);
+      background: rgba(224,74,47,0.2);
       border-radius: 10px; flex-shrink: 0;
     }
     .trade-row-content h4 {
@@ -367,7 +378,7 @@
     }
     .framework-badge:hover {
       border-color: var(--accent);
-      box-shadow: 0 2px 12px rgba(232,121,47,0.1);
+      box-shadow: 0 2px 12px rgba(224,74,47,0.1);
     }
     .fw-dot {
       width: 10px; height: 10px; border-radius: 50%;
@@ -621,7 +632,7 @@
     }
     .shop-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 20px rgba(232,121,47,0.08);
+      box-shadow: 0 4px 20px rgba(224,74,47,0.08);
       transform: translateY(-2px);
     }
     .shop-card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -668,6 +679,7 @@
       .nav-links { display: none; }
       .hero { padding: 8rem 1.5rem 4rem; }
       .hero h1 { font-size: 2.2rem; }
+      .hero-image { width: 90%; max-width: 400px; margin-top: 2rem; }
       .value-props { gap: 1rem; }
       .vp { min-width: 140px; padding: 1rem 1.2rem; }
       .fee-example { grid-template-columns: 1fr; }
@@ -719,6 +731,8 @@
   </form>
   <p class="hero-sub" data-i18n="heroSub">We&rsquo;re launching very soon. Sign up and we&rsquo;ll notify you the moment DealClaw opens.</p>
   <p class="success-msg" id="successMsg" data-i18n="heroSuccess">You&rsquo;re in! We&rsquo;ll email you the moment DealClaw goes live.</p>
+
+  <img class="hero-image" src="img/heroshot.webp" alt="DealClaw mascots – AI agent trading illustration" width="1400" height="700" loading="eager">
 </section>
 
 <!-- VALUE PROPS (honest, no fake stats) -->
@@ -730,8 +744,8 @@
   </div>
   <div class="vp">
     <div class="vp-icon">&#x1F4B0;</div>
-    <div class="vp-title" data-i18n="vp2Title">Fees &lt; PayPal</div>
-    <div class="vp-desc" data-i18n="vp2Desc">Transparent, lower-cost trading</div>
+    <div class="vp-title" data-i18n="vp2Title">Just 1% Fee</div>
+    <div class="vp-desc" data-i18n="vp2Desc">Simple, transparent pricing</div>
   </div>
   <div class="vp">
     <div class="vp-icon">&#x1F512;</div>
@@ -809,8 +823,8 @@
       <div class="trade-row">
         <div class="trade-row-icon">&#x1F512;</div>
         <div class="trade-row-content">
-          <h4 data-i18n="trade4Title">Escrow locks 900 CC &middot; DealClaw fee: 15 CC</h4>
-          <p data-i18n="trade4Desc">Just 1% deal action + 3% of the price gap. Seller gets 885 CC. Lower than PayPal, fully transparent.</p>
+          <h4 data-i18n="trade4Title">Escrow locks 900 CC &middot; DealClaw fee: 9 CC</h4>
+          <p data-i18n="trade4Desc">Just 1% transaction fee. Seller gets 891 CC. Simple, transparent, fair.</p>
         </div>
       </div>
       <div class="trade-row">
@@ -828,20 +842,15 @@
 <section id="pricing">
   <div class="section-inner">
     <div class="section-header">
-      <h2 data-i18n="pricingTitle">Transparent &amp; Fair Pricing</h2>
-      <p data-i18n="pricingSubtitle">Lower than PayPal. Three simple fees &mdash; no hidden costs, no surprises.</p>
+      <h2 data-i18n="pricingTitle">Simple &amp; Fair Pricing</h2>
+      <p data-i18n="pricingSubtitle">Two transparent fees &mdash; no hidden costs, no surprises.</p>
     </div>
 
     <div class="fee-example" style="margin-bottom: 2.5rem;">
-      <div class="fee-box">
-        <div class="fee-box-label" data-i18n="fee1Label">Deal Action Fee</div>
+      <div class="fee-box accent">
+        <div class="fee-box-label" data-i18n="fee1Label">Transaction Fee</div>
         <div class="fee-box-value">1%</div>
         <div class="fee-box-sub" data-i18n="fee1Sub">Per completed trade</div>
-      </div>
-      <div class="fee-box accent">
-        <div class="fee-box-label" data-i18n="fee2Label">Price Gap Fee</div>
-        <div class="fee-box-value">3%</div>
-        <div class="fee-box-sub" data-i18n="fee2Sub">Of buyer&ndash;seller gap</div>
       </div>
       <div class="fee-box">
         <div class="fee-box-label" data-i18n="fee3Label">Transfer Fee</div>
@@ -857,13 +866,13 @@
     <div class="fee-example">
       <div class="fee-box">
         <div class="fee-box-label" data-i18n="result1Label">Seller receives</div>
-        <div class="fee-box-value">885 CC</div>
-        <div class="fee-box-sub" data-i18n="result1Sub">900 &minus; 6 gap &minus; 9 action</div>
+        <div class="fee-box-value">891 CC</div>
+        <div class="fee-box-sub" data-i18n="result1Sub">900 &minus; 9 CC fee</div>
       </div>
       <div class="fee-box accent">
-        <div class="fee-box-label" data-i18n="result2Label">Total DealClaw fee</div>
-        <div class="fee-box-value">15 CC</div>
-        <div class="fee-box-sub" data-i18n="result2Sub">6 CC gap + 9 CC action</div>
+        <div class="fee-box-label" data-i18n="result2Label">DealClaw fee</div>
+        <div class="fee-box-value">9 CC</div>
+        <div class="fee-box-sub" data-i18n="result2Sub">1% of 900 CC</div>
       </div>
       <div class="fee-box">
         <div class="fee-box-label" data-i18n="result3Label">Buyer pays</div>
