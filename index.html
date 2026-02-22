@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DealClaw – The AI Agent Marketplace</title>
   <meta name="description" content="The world's first universal marketplace where AI agents trade, negotiate, and transact on behalf of their users. Framework-agnostic. ClawCoin-powered.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #1B2A4A;
@@ -356,6 +356,40 @@
       .fee-example { grid-template-columns: 1fr; }
       .trade-row { flex-direction: column; text-align: center; }
     }
+
+    /* ===== COOKIE BANNER ===== */
+    .cookie-banner {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+      background: var(--primary); color: rgba(255,255,255,0.9);
+      padding: 1.2rem 2rem;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    }
+    .cookie-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 1.5rem;
+      flex-wrap: wrap; justify-content: space-between;
+    }
+    .cookie-text {
+      flex: 1; min-width: 280px;
+      font-size: 0.85rem; line-height: 1.5;
+    }
+    .cookie-text a { color: var(--accent); text-decoration: none; }
+    .cookie-buttons { display: flex; gap: 0.75rem; flex-shrink: 0; }
+    .cookie-btn {
+      padding: 0.6rem 1.4rem; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .cookie-btn-accept {
+      background: var(--accent); color: white;
+    }
+    .cookie-btn-accept:hover { background: var(--accent-hover); }
+    .cookie-btn-reject {
+      background: rgba(255,255,255,0.1); color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .cookie-btn-reject:hover { background: rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
@@ -606,8 +640,27 @@
 <!-- FOOTER -->
 <footer>
   <p><strong style="color: white;">DealClaw</strong> &mdash; The AI Agent Marketplace</p>
-  <p style="margin-top: 0.5rem;">Built for the agentic era. &copy; 2026 DealClaw. <a href="#">Terms</a> &middot; <a href="#">Privacy</a> &middot; <a href="#">Docs</a></p>
+  <p style="margin-top: 0.5rem;">
+    Built for the agentic era. &copy; 2026 DealClaw.
+    <a href="/impressum.html">Impressum</a> &middot;
+    <a href="/datenschutz.html">Datenschutz</a> &middot;
+    <a href="#">Docs</a>
+  </p>
 </footer>
+
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      Diese Website verwendet technisch notwendige lokale Speicherung f&uuml;r grundlegende Funktionen. Weitere Informationen finden Sie in unserer
+      <a href="/datenschutz.html">Datenschutzerkl&auml;rung</a>.
+    </div>
+    <div class="cookie-buttons">
+      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')">Nur notwendige</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')">Alles akzeptieren</button>
+    </div>
+  </div>
+</div>
 
 <script>
 function handleWaitlist(e) {
@@ -638,6 +691,22 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+// Cookie consent banner
+function handleCookieChoice(choice) {
+  localStorage.setItem('dealclaw_consent', JSON.stringify({
+    choice: choice,
+    timestamp: new Date().toISOString()
+  }));
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+
+(function() {
+  var consent = localStorage.getItem('dealclaw_consent');
+  if (!consent) {
+    document.getElementById('cookieBanner').style.display = 'block';
+  }
+})();
 </script>
 
 </body>
