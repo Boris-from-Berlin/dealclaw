@@ -1322,22 +1322,48 @@
 function handleGetReady(e) {
   e.preventDefault();
   var form = e.target;
+  var btn = form.querySelector('button');
   var email = form.querySelector('input').value;
-  var ready = JSON.parse(localStorage.getItem('dealclaw_ready') || '[]');
-  ready.push({ email: email, timestamp: new Date().toISOString() });
-  localStorage.setItem('dealclaw_ready', JSON.stringify(ready));
-  localStorage.setItem('dealclaw_signed_up', 'true');
+  var lang = getPreferredLanguage();
 
-  form.style.display = 'none';
-  var msg = document.getElementById('successMsg');
-  if (msg) { msg.style.display = 'block'; }
-  else {
-    var t = translations[getPreferredLanguage()] || translations.en;
-    var p = document.createElement('p');
-    p.textContent = t.heroSuccess;
-    p.style.cssText = 'color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-top: 1rem;';
-    form.parentElement.insertBefore(p, form.nextSibling);
-  }
+  // Disable button while submitting
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, source: 'landing', lang: lang })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      localStorage.setItem('dealclaw_signed_up', 'true');
+      form.style.display = 'none';
+      var msg = document.getElementById('successMsg');
+      if (msg) { msg.style.display = 'block'; }
+      else {
+        var t = translations[lang] || translations.en;
+        var p = document.createElement('p');
+        p.textContent = t.heroSuccess;
+        p.style.cssText = 'color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-top: 1rem;';
+        form.parentElement.insertBefore(p, form.nextSibling);
+      }
+    } else {
+      btn.disabled = false;
+      btn.textContent = (translations[lang] || translations.en).heroButton;
+    }
+  })
+  .catch(function() {
+    // Fallback: save locally if API is down
+    var ready = JSON.parse(localStorage.getItem('dealclaw_ready') || '[]');
+    ready.push({ email: email, timestamp: new Date().toISOString() });
+    localStorage.setItem('dealclaw_ready', JSON.stringify(ready));
+    localStorage.setItem('dealclaw_signed_up', 'true');
+    form.style.display = 'none';
+    var msg = document.getElementById('successMsg');
+    if (msg) { msg.style.display = 'block'; }
+  });
 }
 
 // ===== SMOOTH SCROLL =====
@@ -1436,15 +1462,36 @@ function closePopupOutside(e) {
 function handlePopupSubmit(e) {
   e.preventDefault();
   var form = e.target;
+  var btn = form.querySelector('button');
   var email = form.querySelector('input').value;
-  var ready = JSON.parse(localStorage.getItem('dealclaw_ready') || '[]');
-  ready.push({ email: email, timestamp: new Date().toISOString() });
-  localStorage.setItem('dealclaw_ready', JSON.stringify(ready));
-  localStorage.setItem('dealclaw_signed_up', 'true');
+  var lang = getPreferredLanguage();
 
-  form.style.display = 'none';
-  document.getElementById('popupSuccessMsg').style.display = 'block';
-  setTimeout(closePopup, 2000);
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, source: 'popup', lang: lang })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      localStorage.setItem('dealclaw_signed_up', 'true');
+      form.style.display = 'none';
+      document.getElementById('popupSuccessMsg').style.display = 'block';
+      setTimeout(closePopup, 2000);
+    } else {
+      btn.disabled = false;
+      btn.textContent = (translations[lang] || translations.en).popupButton;
+    }
+  })
+  .catch(function() {
+    localStorage.setItem('dealclaw_signed_up', 'true');
+    form.style.display = 'none';
+    document.getElementById('popupSuccessMsg').style.display = 'block';
+    setTimeout(closePopup, 2000);
+  });
 }
 
 // Trigger: 20s timeout OR 60% scroll OR exit intent
