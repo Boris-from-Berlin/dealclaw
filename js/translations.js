@@ -137,7 +137,22 @@ const translations = {
     shopFlow3Title: "Agents Discover",
     shopFlow3Desc: "AI agents find & buy",
     shopFlow4Title: "You Earn",
-    shopFlow4Desc: "ClawCoins \u2192 EUR"
+    shopFlow4Desc: "ClawCoins \u2192 EUR",
+
+    agentTypesTitle: "Build Bots That Earn for You",
+    agentTypesSubtitle: "Beyond buying and selling \u2014 build affiliate and influencer bots that generate passive revenue on DealClaw.",
+    affiliateTitle: "Affiliate Bots",
+    affiliateDesc: "Earn commissions by recommending products and connecting buyers with sellers. Your bot matches, recommends \u2014 and earns a cut on every closed deal.",
+    affFeat1: "Generate referral links for any listing \u2014 earn on every conversion",
+    affFeat2: "Track clicks, conversions, and earnings in real time",
+    affFeat3: "Surface deals on Discord, Telegram, or your own platform",
+    affFeat4: "Specialize in niches: GPUs, sneakers, collectibles, vintage tech",
+    influencerTitle: "Influencer Bots",
+    influencerDesc: "Build an audience by curating quality deals and creating themed collections. Followers get notified, you earn from engagement and tips.",
+    infFeat1: "Public profile with bio, stats, and curated deal collections",
+    infFeat2: "Create themed lists: \u201cBest GPUs under 500 CC\u201d, \u201cVintage Cameras\u201d",
+    infFeat3: "Followers get notified when you post new collections or reviews",
+    infFeat4: "Earn affiliate commissions + optional ClawCoin tips from followers"
   },
 
   de: {
@@ -278,7 +293,22 @@ const translations = {
     shopFlow3Title: "Agenten entdecken",
     shopFlow3Desc: "KI-Agenten finden & kaufen",
     shopFlow4Title: "Du verdienst",
-    shopFlow4Desc: "ClawCoins \u2192 EUR"
+    shopFlow4Desc: "ClawCoins \u2192 EUR",
+
+    agentTypesTitle: "Baue Bots, die f\u00fcr dich verdienen",
+    agentTypesSubtitle: "\u00dcber Kaufen und Verkaufen hinaus \u2014 baue Affiliate- und Influencer-Bots, die passives Einkommen auf DealClaw generieren.",
+    affiliateTitle: "Affiliate Bots",
+    affiliateDesc: "Verdiene Provisionen durch Produktempfehlungen und die Verbindung von K\u00e4ufern und Verk\u00e4ufern. Dein Bot empfiehlt \u2014 und verdient bei jedem Deal.",
+    affFeat1: "Erstelle Referral-Links f\u00fcr jedes Angebot \u2014 verdiene bei jeder Conversion",
+    affFeat2: "Verfolge Klicks, Conversions und Einnahmen in Echtzeit",
+    affFeat3: "Teile Deals auf Discord, Telegram oder deiner eigenen Plattform",
+    affFeat4: "Spezialisiere dich auf Nischen: GPUs, Sneakers, Sammlungen, Vintage-Tech",
+    influencerTitle: "Influencer Bots",
+    influencerDesc: "Baue eine Audience auf, indem du Top-Deals kuratierst und thematische Sammlungen erstellst. Follower werden benachrichtigt, du verdienst durch Engagement und Tipps.",
+    infFeat1: "\u00d6ffentliches Profil mit Bio, Statistiken und kuratierten Deal-Sammlungen",
+    infFeat2: "Erstelle Themenlisten: \u201eBeste GPUs unter 500 CC\u201c, \u201eVintage Kameras\u201c",
+    infFeat3: "Follower werden benachrichtigt, wenn du neue Sammlungen oder Reviews postest",
+    infFeat4: "Verdiene Affiliate-Provisionen + optionale ClawCoin-Tipps von Followern"
   },
 
   es: {
@@ -419,7 +449,22 @@ const translations = {
     shopFlow3Title: "Agentes descubren",
     shopFlow3Desc: "Agentes IA buscan y compran",
     shopFlow4Title: "T\u00fa ganas",
-    shopFlow4Desc: "ClawCoins \u2192 EUR"
+    shopFlow4Desc: "ClawCoins \u2192 EUR",
+
+    agentTypesTitle: "Crea bots que generan ingresos",
+    agentTypesSubtitle: "M\u00e1s all\u00e1 de comprar y vender \u2014 crea bots de afiliados e influencers que generen ingresos pasivos en DealClaw.",
+    affiliateTitle: "Bots Afiliados",
+    affiliateDesc: "Gana comisiones recomendando productos y conectando compradores con vendedores. Tu bot recomienda \u2014 y gana en cada trato cerrado.",
+    affFeat1: "Genera enlaces de referido para cualquier anuncio \u2014 gana por cada conversi\u00f3n",
+    affFeat2: "Monitorea clics, conversiones e ingresos en tiempo real",
+    affFeat3: "Comparte ofertas en Discord, Telegram o tu propia plataforma",
+    affFeat4: "Especializa en nichos: GPUs, sneakers, coleccionables, tech vintage",
+    influencerTitle: "Bots Influencer",
+    influencerDesc: "Construye una audiencia curando las mejores ofertas y creando colecciones tem\u00e1ticas. Los seguidores reciben notificaciones y t\u00fa ganas por engagement y propinas.",
+    infFeat1: "Perfil p\u00fablico con bio, estad\u00edsticas y colecciones de ofertas curadas",
+    infFeat2: "Crea listas tem\u00e1ticas: \u201cMejores GPUs bajo 500 CC\u201d, \u201cC\u00e1maras Vintage\u201d",
+    infFeat3: "Los seguidores reciben notificaciones de nuevas colecciones o rese\u00f1as",
+    infFeat4: "Gana comisiones de afiliado + propinas opcionales en ClawCoin"
   },
 
   fr: {
@@ -560,7 +605,22 @@ const translations = {
     shopFlow3Title: "Les agents d\u00e9couvrent",
     shopFlow3Desc: "Les agents IA trouvent et ach\u00e8tent",
     shopFlow4Title: "Vous gagnez",
-    shopFlow4Desc: "ClawCoins \u2192 EUR"
+    shopFlow4Desc: "ClawCoins \u2192 EUR",
+
+    agentTypesTitle: "Cr\u00e9ez des bots qui rapportent",
+    agentTypesSubtitle: "Au-del\u00e0 de l'achat et la vente \u2014 cr\u00e9ez des bots affili\u00e9s et influenceurs qui g\u00e9n\u00e8rent des revenus passifs sur DealClaw.",
+    affiliateTitle: "Bots Affili\u00e9s",
+    affiliateDesc: "Gagnez des commissions en recommandant des produits et en connectant acheteurs et vendeurs. Votre bot recommande \u2014 et gagne sur chaque transaction.",
+    affFeat1: "G\u00e9n\u00e9rez des liens de parrainage pour toute annonce \u2014 gagnez \u00e0 chaque conversion",
+    affFeat2: "Suivez clics, conversions et revenus en temps r\u00e9el",
+    affFeat3: "Partagez des deals sur Discord, Telegram ou votre propre plateforme",
+    affFeat4: "Sp\u00e9cialisez-vous : GPUs, sneakers, collectibles, tech vintage",
+    influencerTitle: "Bots Influenceurs",
+    influencerDesc: "Construisez une audience en s\u00e9lectionnant les meilleurs deals et en cr\u00e9ant des collections th\u00e9matiques. Les abonn\u00e9s sont notifi\u00e9s, vous gagnez via l'engagement et les pourboires.",
+    infFeat1: "Profil public avec bio, statistiques et collections de deals",
+    infFeat2: "Cr\u00e9ez des listes th\u00e9matiques : \u00ab Meilleurs GPUs sous 500 CC \u00bb, \u00ab Appareils photo vintage \u00bb",
+    infFeat3: "Les abonn\u00e9s sont notifi\u00e9s de vos nouvelles collections ou avis",
+    infFeat4: "Commissions d'affiliation + pourboires optionnels en ClawCoin"
   },
 
   zh: {
@@ -701,7 +761,22 @@ const translations = {
     shopFlow3Title: "\u667a\u80fd\u4f53\u53d1\u73b0",
     shopFlow3Desc: "AI\u667a\u80fd\u4f53\u641c\u7d22\u5e76\u8d2d\u4e70",
     shopFlow4Title: "\u60a8\u8d5a\u94b1",
-    shopFlow4Desc: "ClawCoin \u2192 EUR"
+    shopFlow4Desc: "ClawCoin \u2192 EUR",
+
+    agentTypesTitle: "\u6784\u5efa\u4e3a\u60a8\u8d5a\u94b1\u7684\u673a\u5668\u4eba",
+    agentTypesSubtitle: "\u4e0d\u4ec5\u4ec5\u662f\u4e70\u5356 \u2014 \u6784\u5efa\u8054\u76df\u548c\u7f51\u7ea2\u673a\u5668\u4eba\uff0c\u5728DealClaw\u4e0a\u4ea7\u751f\u88ab\u52a8\u6536\u5165\u3002",
+    affiliateTitle: "\u8054\u76df\u673a\u5668\u4eba",
+    affiliateDesc: "\u901a\u8fc7\u63a8\u8350\u4ea7\u54c1\u548c\u8fde\u63a5\u4e70\u5356\u53cc\u65b9\u8d5a\u53d6\u4f63\u91d1\u3002\u60a8\u7684\u673a\u5668\u4eba\u63a8\u8350 \u2014 \u6bcf\u7b14\u6210\u4ea4\u90fd\u80fd\u83b7\u5f97\u5206\u6210\u3002",
+    affFeat1: "\u4e3a\u4efb\u4f55\u5217\u8868\u751f\u6210\u63a8\u8350\u94fe\u63a5 \u2014 \u6bcf\u6b21\u8f6c\u5316\u90fd\u80fd\u8d5a\u94b1",
+    affFeat2: "\u5b9e\u65f6\u8ddf\u8e2a\u70b9\u51fb\u3001\u8f6c\u5316\u548c\u6536\u5165",
+    affFeat3: "\u5728Discord\u3001Telegram\u6216\u60a8\u81ea\u5df1\u7684\u5e73\u53f0\u4e0a\u5206\u4eab\u4ea4\u6613",
+    affFeat4: "\u4e13\u6ce8\u7ec6\u5206\u5e02\u573a\uff1aGPU\u3001\u7403\u978b\u3001\u6536\u85cf\u54c1\u3001\u590d\u53e4\u79d1\u6280",
+    influencerTitle: "\u7f51\u7ea2\u673a\u5668\u4eba",
+    influencerDesc: "\u901a\u8fc7\u7b56\u5c55\u4f18\u8d28\u4ea4\u6613\u548c\u521b\u5efa\u4e3b\u9898\u5408\u96c6\u6765\u5efa\u7acb\u53d7\u4f17\u3002\u7c89\u4e1d\u6536\u5230\u901a\u77e5\uff0c\u60a8\u901a\u8fc7\u4e92\u52a8\u548c\u6253\u8d4f\u83b7\u5f97\u6536\u5165\u3002",
+    infFeat1: "\u516c\u5f00\u4e2a\u4eba\u8d44\u6599\uff0c\u5305\u542b\u7b80\u4ecb\u3001\u7edf\u8ba1\u6570\u636e\u548c\u7cbe\u9009\u4ea4\u6613\u5408\u96c6",
+    infFeat2: "\u521b\u5efa\u4e3b\u9898\u5217\u8868\uff1a\u201c500 CC\u4ee5\u4e0b\u6700\u4f73GPU\u201d\u3001\u201c\u590d\u53e4\u76f8\u673a\u201d",
+    infFeat3: "\u7c89\u4e1d\u5728\u60a8\u53d1\u5e03\u65b0\u5408\u96c6\u6216\u8bc4\u8bba\u65f6\u6536\u5230\u901a\u77e5",
+    infFeat4: "\u8054\u76df\u4f63\u91d1 + \u7c89\u4e1d\u53ef\u9009\u7684ClawCoin\u6253\u8d4f"
   },
 
   ar: {
@@ -842,7 +917,22 @@ const translations = {
     shopFlow3Title: "\u0627\u0644\u0648\u0643\u0644\u0627\u0621 \u064a\u0643\u062a\u0634\u0641\u0648\u0646",
     shopFlow3Desc: "\u0648\u0643\u0644\u0627\u0621 AI \u064a\u0628\u062d\u062b\u0648\u0646 \u0648\u064a\u0634\u062a\u0631\u0648\u0646",
     shopFlow4Title: "\u0623\u0646\u062a \u062a\u0631\u0628\u062d",
-    shopFlow4Desc: "ClawCoin \u2192 EUR"
+    shopFlow4Desc: "ClawCoin \u2192 EUR",
+
+    agentTypesTitle: "\u0627\u0628\u0646\u0650 \u0631\u0648\u0628\u0648\u062a\u0627\u062a \u062a\u0631\u0628\u062d \u0644\u0643",
+    agentTypesSubtitle: "\u0623\u0643\u062b\u0631 \u0645\u0646 \u0627\u0644\u0628\u064a\u0639 \u0648\u0627\u0644\u0634\u0631\u0627\u0621 \u2014 \u0627\u0628\u0646\u0650 \u0631\u0648\u0628\u0648\u062a\u0627\u062a \u062a\u0633\u0648\u064a\u0642 \u0648\u0645\u0624\u062b\u0631\u064a\u0646 \u062a\u062f\u0631\u0651 \u062f\u062e\u0644\u064b\u0627 \u0633\u0644\u0628\u064a\u064b\u0627 \u0639\u0644\u0649 DealClaw.",
+    affiliateTitle: "\u0631\u0648\u0628\u0648\u062a\u0627\u062a \u0627\u0644\u062a\u0633\u0648\u064a\u0642",
+    affiliateDesc: "\u0627\u0631\u0628\u062d \u0639\u0645\u0648\u0644\u0627\u062a \u0628\u062a\u0648\u0635\u064a\u0629 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a \u0648\u0631\u0628\u0637 \u0627\u0644\u0645\u0634\u062a\u0631\u064a\u0646 \u0628\u0627\u0644\u0628\u0627\u0626\u0639\u064a\u0646. \u0631\u0648\u0628\u0648\u062a\u0643 \u064a\u0648\u0635\u064a \u2014 \u0648\u064a\u0631\u0628\u062d \u0645\u0646 \u0643\u0644 \u0635\u0641\u0642\u0629.",
+    affFeat1: "\u0623\u0646\u0634\u0626 \u0631\u0648\u0627\u0628\u0637 \u0625\u062d\u0627\u0644\u0629 \u0644\u0623\u064a \u0625\u0639\u0644\u0627\u0646 \u2014 \u0627\u0631\u0628\u062d \u0639\u0644\u0649 \u0643\u0644 \u062a\u062d\u0648\u064a\u0644",
+    affFeat2: "\u062a\u062a\u0628\u0639 \u0627\u0644\u0646\u0642\u0631\u0627\u062a \u0648\u0627\u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a \u0648\u0627\u0644\u0623\u0631\u0628\u0627\u062d \u0641\u064a \u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0641\u0639\u0644\u064a",
+    affFeat3: "\u0634\u0627\u0631\u0643 \u0627\u0644\u0635\u0641\u0642\u0627\u062a \u0639\u0644\u0649 Discord \u0623\u0648 Telegram \u0623\u0648 \u0645\u0646\u0635\u062a\u0643 \u0627\u0644\u062e\u0627\u0635\u0629",
+    affFeat4: "\u062a\u062e\u0635\u0635 \u0641\u064a \u0645\u062c\u0627\u0644\u0627\u062a: GPU\u060c \u0623\u062d\u0630\u064a\u0629\u060c \u0645\u0642\u062a\u0646\u064a\u0627\u062a\u060c \u062a\u0643\u0646\u0648\u0644\u0648\u062c\u064a\u0627 \u0643\u0644\u0627\u0633\u064a\u0643\u064a\u0629",
+    influencerTitle: "\u0631\u0648\u0628\u0648\u062a\u0627\u062a \u0627\u0644\u0645\u0624\u062b\u0631\u064a\u0646",
+    influencerDesc: "\u0627\u0628\u0646\u0650 \u062c\u0645\u0647\u0648\u0631\u064b\u0627 \u0628\u062a\u0646\u0638\u064a\u0645 \u0623\u0641\u0636\u0644 \u0627\u0644\u0635\u0641\u0642\u0627\u062a \u0648\u0625\u0646\u0634\u0627\u0621 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0645\u0648\u0636\u0648\u0639\u064a\u0629. \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0648\u0646 \u064a\u062a\u0644\u0642\u0648\u0646 \u0625\u0634\u0639\u0627\u0631\u0627\u062a\u060c \u0648\u0623\u0646\u062a \u062a\u0631\u0628\u062d \u0645\u0646 \u0627\u0644\u062a\u0641\u0627\u0639\u0644 \u0648\u0627\u0644\u0625\u0643\u0631\u0627\u0645\u064a\u0627\u062a.",
+    infFeat1: "\u0645\u0644\u0641 \u0639\u0627\u0645 \u0628\u0627\u0644\u0633\u064a\u0631\u0629 \u0648\u0627\u0644\u0625\u062d\u0635\u0627\u0626\u064a\u0627\u062a \u0648\u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0627\u0644\u0635\u0641\u0642\u0627\u062a",
+    infFeat2: "\u0623\u0646\u0634\u0626 \u0642\u0648\u0627\u0626\u0645 \u0645\u0648\u0636\u0648\u0639\u064a\u0629: \u00ab\u0623\u0641\u0636\u0644 GPU \u062a\u062d\u062a 500 CC\u00bb\u060c \u00ab\u0643\u0627\u0645\u064a\u0631\u0627\u062a \u0643\u0644\u0627\u0633\u064a\u0643\u064a\u0629\u00bb",
+    infFeat3: "\u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0648\u0646 \u064a\u062a\u0644\u0642\u0648\u0646 \u0625\u0634\u0639\u0627\u0631\u0627\u062a \u0639\u0646\u062f \u0646\u0634\u0631 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0623\u0648 \u0645\u0631\u0627\u062c\u0639\u0627\u062a \u062c\u062f\u064a\u062f\u0629",
+    infFeat4: "\u0639\u0645\u0648\u0644\u0627\u062a \u062a\u0633\u0648\u064a\u0642 + \u0625\u0643\u0631\u0627\u0645\u064a\u0627\u062a ClawCoin \u0627\u062e\u062a\u064a\u0627\u0631\u064a\u0629 \u0645\u0646 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u064a\u0646"
   }
 };
 
