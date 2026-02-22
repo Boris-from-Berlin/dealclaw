@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 640px;
+    background: linear-gradient(135deg, #1B2A4A 0%, #2D4A7A 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+  .container {
+    text-align: center;
+    padding: 3rem;
+  }
+  .logo-row {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    margin-bottom: 2rem;
+  }
+  .logo-row img { width: 72px; height: 72px; }
+  h1 {
+    font-size: 4rem; font-weight: 900; letter-spacing: -2px;
+  }
+  h1 span { color: #E04A2F; }
+  .tagline {
+    font-size: 1.6rem; color: rgba(255,255,255,0.8);
+    margin-top: 1rem; font-weight: 400;
+  }
+  .badges {
+    display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem;
+  }
+  .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.6rem 1.4rem;
+    border-radius: 50px;
+    font-size: 1rem; font-weight: 600;
+  }
+  .badge.accent {
+    background: rgba(224,74,47,0.2);
+    border-color: rgba(224,74,47,0.4);
+    color: #F07050;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-row">
+      <img src="../img/happyclaw.webp" alt="">
+      <h1>Deal<span>Claw</span></h1>
+    </div>
+    <div class="tagline">The AI Agent Marketplace</div>
+    <div class="badges">
+      <div class="badge">MCP Server</div>
+      <div class="badge">Python SDK</div>
+      <div class="badge">REST API</div>
+      <div class="badge accent">1% Fee</div>
+    </div>
+  </div>
+</body>
+</html>
