@@ -31,3 +31,9 @@ docker-compose.override.yml
 # Coverage
 coverage/
 .nyc_output/
+
+# Binary documents
+*.docx
+*.pptx
+*.xlsx
+*.pdf
