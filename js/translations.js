@@ -106,6 +106,9 @@ const translations = {
     popupPlaceholder: "you@company.com",
     popupButton: "Notify Me",
     popupSuccess: "You\u2019re on the list!",
+    thankyouTitle: "Thank you!",
+    thankyouText1: "We\u2019ll get in touch as soon as DealClaw goes live.",
+    thankyouText2: "It could happen any moment \u2014 keep an eye on your inbox!",
 
     dealbotTitle: "Meet DealBot \u2014 Your AI Trading Agent",
     dealbotSubtitle: "No coding required. Just tell DealBot what you want \u2014 it finds, negotiates, and buys for you.",
@@ -262,6 +265,9 @@ const translations = {
     popupPlaceholder: "du@firma.de",
     popupButton: "Benachrichtigen",
     popupSuccess: "Du bist auf der Liste!",
+    thankyouTitle: "Danke!",
+    thankyouText1: "Wir melden uns schnellstm\u00f6glich bei dir, sobald DealClaw live geht.",
+    thankyouText2: "Es kann jeden Moment losgehen \u2014 halt dein Postfach im Auge!",
 
     dealbotTitle: "DealBot \u2014 Dein KI-Handelsagent",
     dealbotSubtitle: "Kein Code n\u00f6tig. Sag DealBot einfach was du willst \u2014 er findet, verhandelt und kauft f\u00fcr dich.",
@@ -418,6 +424,9 @@ const translations = {
     popupPlaceholder: "tu@empresa.com",
     popupButton: "Avisarme",
     popupSuccess: "\u00a1Est\u00e1s en la lista!",
+    thankyouTitle: "\u00a1Gracias!",
+    thankyouText1: "Te avisaremos en cuanto DealClaw est\u00e9 listo.",
+    thankyouText2: "Puede pasar en cualquier momento \u2014 \u00a1vigila tu bandeja de entrada!",
 
     dealbotTitle: "Conoce a DealBot \u2014 Tu agente IA de trading",
     dealbotSubtitle: "Sin c\u00f3digo necesario. Solo dile a DealBot lo que quieres \u2014 busca, negocia y compra por ti.",
@@ -574,6 +583,9 @@ const translations = {
     popupPlaceholder: "vous@entreprise.com",
     popupButton: "Me pr\u00e9venir",
     popupSuccess: "Vous \u00eates inscrit !",
+    thankyouTitle: "Merci !",
+    thankyouText1: "Nous vous contacterons d\u00e8s que DealClaw sera en ligne.",
+    thankyouText2: "\u00c7a peut arriver \u00e0 tout moment \u2014 gardez un \u0153il sur votre bo\u00eete mail !",
 
     dealbotTitle: "D\u00e9couvrez DealBot \u2014 Votre agent IA de trading",
     dealbotSubtitle: "Aucun code n\u00e9cessaire. Dites simplement \u00e0 DealBot ce que vous voulez \u2014 il trouve, n\u00e9gocie et ach\u00e8te pour vous.",
@@ -730,6 +742,9 @@ const translations = {
     popupPlaceholder: "you@company.com",
     popupButton: "\u901a\u77e5\u6211",
     popupSuccess: "\u60a8\u5df2\u52a0\u5165\u5217\u8868\uff01",
+    thankyouTitle: "\u8c22\u8c22\uff01",
+    thankyouText1: "DealClaw\u4e0a\u7ebf\u65f6\u6211\u4eec\u4f1a\u7acb\u5373\u8054\u7cfb\u60a8\u3002",
+    thankyouText2: "\u968f\u65f6\u53ef\u80fd\u542f\u52a8 \u2014 \u8bf7\u5173\u6ce8\u60a8\u7684\u90ae\u7bb1\uff01",
 
     dealbotTitle: "DealBot \u2014 \u60a8\u7684AI\u4ea4\u6613\u667a\u80fd\u4f53",
     dealbotSubtitle: "\u65e0\u9700\u7f16\u7a0b\u3002\u544a\u8bc9DealBot\u60a8\u60f3\u8981\u4ec0\u4e48 \u2014 \u5b83\u4f1a\u4e3a\u60a8\u641c\u7d22\u3001\u8c08\u5224\u548c\u8d2d\u4e70\u3002",
@@ -932,7 +947,11 @@ const translations = {
     infFeat1: "\u0645\u0644\u0641 \u0639\u0627\u0645 \u0628\u0627\u0644\u0633\u064a\u0631\u0629 \u0648\u0627\u0644\u0625\u062d\u0635\u0627\u0626\u064a\u0627\u062a \u0648\u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0627\u0644\u0635\u0641\u0642\u0627\u062a",
     infFeat2: "\u0623\u0646\u0634\u0626 \u0642\u0648\u0627\u0626\u0645 \u0645\u0648\u0636\u0648\u0639\u064a\u0629: \u00ab\u0623\u0641\u0636\u0644 GPU \u062a\u062d\u062a 500 CC\u00bb\u060c \u00ab\u0643\u0627\u0645\u064a\u0631\u0627\u062a \u0643\u0644\u0627\u0633\u064a\u0643\u064a\u0629\u00bb",
     infFeat3: "\u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0648\u0646 \u064a\u062a\u0644\u0642\u0648\u0646 \u0625\u0634\u0639\u0627\u0631\u0627\u062a \u0639\u0646\u062f \u0646\u0634\u0631 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0623\u0648 \u0645\u0631\u0627\u062c\u0639\u0627\u062a \u062c\u062f\u064a\u062f\u0629",
-    infFeat4: "\u0639\u0645\u0648\u0644\u0627\u062a \u062a\u0633\u0648\u064a\u0642 + \u0625\u0643\u0631\u0627\u0645\u064a\u0627\u062a ClawCoin \u0627\u062e\u062a\u064a\u0627\u0631\u064a\u0629 \u0645\u0646 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u064a\u0646"
+    infFeat4: "\u0639\u0645\u0648\u0644\u0627\u062a \u062a\u0633\u0648\u064a\u0642 + \u0625\u0643\u0631\u0627\u0645\u064a\u0627\u062a ClawCoin \u0627\u062e\u062a\u064a\u0627\u0631\u064a\u0629 \u0645\u0646 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u064a\u0646",
+
+    thankyouTitle: "\u0634\u0643\u0631\u064b\u0627!",
+    thankyouText1: "\u0633\u0646\u062a\u0648\u0627\u0635\u0644 \u0645\u0639\u0643 \u0641\u0648\u0631 \u0625\u0637\u0644\u0627\u0642 DealClaw.",
+    thankyouText2: "\u0642\u062f \u064a\u062d\u062f\u062b \u0641\u064a \u0623\u064a \u0644\u062d\u0638\u0629 \u2014 \u0631\u0627\u0642\u0628 \u0628\u0631\u064a\u062f\u0643 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a!"
   }
 };
 

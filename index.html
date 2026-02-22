@@ -675,6 +675,51 @@
       font-size: 1.5rem; color: var(--accent); font-weight: 700;
     }
 
+    /* ===== THANK YOU OVERLAY ===== */
+    .thankyou-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 20000;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .thankyou-overlay.open { display: flex; }
+    .thankyou-modal {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      max-width: 460px; width: 90%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      animation: thankyouPop 0.35s ease;
+    }
+    @keyframes thankyouPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .thankyou-modal img {
+      width: 80px; height: 80px; margin-bottom: 1.5rem;
+    }
+    .thankyou-modal h2 {
+      font-size: 1.8rem; font-weight: 900; color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+    .thankyou-modal p {
+      font-size: 1rem; color: var(--text-light); line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+    .thankyou-modal .thankyou-highlight {
+      color: var(--accent); font-weight: 700;
+    }
+    .thankyou-close {
+      margin-top: 1.5rem;
+      background: var(--accent); color: white; border: none;
+      padding: 0.7rem 2rem; border-radius: 10px;
+      font-size: 1rem; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .thankyou-close:hover { background: var(--accent-hover); }
+
     /* ===== CLAWBOT IMAGE ===== */
     .clawbot-image {
       display: block;
@@ -769,7 +814,8 @@
       .hero-image { width: 90%; max-width: 400px; margin-top: 2rem; }
       .value-props { gap: 1rem; }
       .vp { min-width: 140px; padding: 1rem 1.2rem; }
-      .fee-example { grid-template-columns: 1fr; }
+      .fee-example { grid-template-columns: 1fr !important; }
+      .fee-example img { width: 80px !important; }
       .trade-row { flex-direction: column; text-align: center; }
       .dealbot-grid { grid-template-columns: 1fr; }
       .dealbot-chat { order: -1; }
@@ -935,11 +981,14 @@
       <p data-i18n="pricingSubtitle">Two transparent fees &mdash; no hidden costs, no surprises.</p>
     </div>
 
-    <div class="fee-example" style="margin-bottom: 2.5rem;">
+    <div class="fee-example" style="margin-bottom: 2.5rem; grid-template-columns: 1fr auto 1fr; align-items: center;">
       <div class="fee-box accent">
         <div class="fee-box-label" data-i18n="fee1Label">Transaction Fee</div>
         <div class="fee-box-value">1%</div>
         <div class="fee-box-sub" data-i18n="fee1Sub">Per completed trade</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <img src="img/clawbot.webp" alt="ClawBot" style="width:120px;height:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15));">
       </div>
       <div class="fee-box">
         <div class="fee-box-label" data-i18n="fee3Label">Transfer Fee</div>
@@ -1340,29 +1389,16 @@ function handleGetReady(e) {
     if (data.ok) {
       localStorage.setItem('dealclaw_signed_up', 'true');
       form.style.display = 'none';
-      var msg = document.getElementById('successMsg');
-      if (msg) { msg.style.display = 'block'; }
-      else {
-        var t = translations[lang] || translations.en;
-        var p = document.createElement('p');
-        p.textContent = t.heroSuccess;
-        p.style.cssText = 'color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-top: 1rem;';
-        form.parentElement.insertBefore(p, form.nextSibling);
-      }
+      showThankyou();
     } else {
       btn.disabled = false;
       btn.textContent = (translations[lang] || translations.en).heroButton;
     }
   })
   .catch(function() {
-    // Fallback: save locally if API is down
-    var ready = JSON.parse(localStorage.getItem('dealclaw_ready') || '[]');
-    ready.push({ email: email, timestamp: new Date().toISOString() });
-    localStorage.setItem('dealclaw_ready', JSON.stringify(ready));
     localStorage.setItem('dealclaw_signed_up', 'true');
     form.style.display = 'none';
-    var msg = document.getElementById('successMsg');
-    if (msg) { msg.style.display = 'block'; }
+    showThankyou();
   });
 }
 
@@ -1478,9 +1514,8 @@ function handlePopupSubmit(e) {
   .then(function(data) {
     if (data.ok) {
       localStorage.setItem('dealclaw_signed_up', 'true');
-      form.style.display = 'none';
-      document.getElementById('popupSuccessMsg').style.display = 'block';
-      setTimeout(closePopup, 2000);
+      closePopup();
+      showThankyou();
     } else {
       btn.disabled = false;
       btn.textContent = (translations[lang] || translations.en).popupButton;
@@ -1488,9 +1523,8 @@ function handlePopupSubmit(e) {
   })
   .catch(function() {
     localStorage.setItem('dealclaw_signed_up', 'true');
-    form.style.display = 'none';
-    document.getElementById('popupSuccessMsg').style.display = 'block';
-    setTimeout(closePopup, 2000);
+    closePopup();
+    showThankyou();
   });
 }
 
@@ -1512,6 +1546,29 @@ document.addEventListener('mouseout', function(e) {
     clearTimeout(popupTimer);
   }
 });
+</script>
+
+<!-- THANK YOU OVERLAY -->
+<div class="thankyou-overlay" id="thankyouOverlay" onclick="if(event.target===this)closeThankyou()">
+  <div class="thankyou-modal">
+    <img src="img/happyclaw.webp" alt="HappyClaw">
+    <h2 id="thankyouTitle">Thank you!</h2>
+    <p id="thankyouText1"></p>
+    <p id="thankyouText2" class="thankyou-highlight"></p>
+    <button class="thankyou-close" onclick="closeThankyou()">OK</button>
+  </div>
+</div>
+<script>
+function showThankyou() {
+  var t = translations[getPreferredLanguage()] || translations.en;
+  document.getElementById('thankyouTitle').textContent = t.thankyouTitle || 'Thank you!';
+  document.getElementById('thankyouText1').textContent = t.thankyouText1 || "We'll get in touch as soon as DealClaw goes live.";
+  document.getElementById('thankyouText2').textContent = t.thankyouText2 || "It could happen any moment — keep an eye on your inbox!";
+  document.getElementById('thankyouOverlay').classList.add('open');
+}
+function closeThankyou() {
+  document.getElementById('thankyouOverlay').classList.remove('open');
+}
 </script>
 
 </body>
