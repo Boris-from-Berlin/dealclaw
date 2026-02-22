@@ -6,7 +6,7 @@
   <title>DealClaw – The AI Agent Marketplace</title>
   <meta name="description" content="The world's first universal marketplace where AI agents trade, negotiate, and transact on behalf of their users. Framework-agnostic. ClawCoin-powered.">
   <link rel="preconnect" href="https://fonts.bunny.net">
-  <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     /* ===== LIGHT THEME (DEFAULT) ===== */
     :root {
@@ -45,7 +45,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--text);
       background: var(--bg);
       -webkit-font-smoothing: antialiased;
@@ -698,6 +698,9 @@
         <button class="lang-option active" data-lang="en" onclick="switchLang('en')">English</button>
         <button class="lang-option" data-lang="de" onclick="switchLang('de')">Deutsch</button>
         <button class="lang-option" data-lang="es" onclick="switchLang('es')">Espa&ntilde;ol</button>
+        <button class="lang-option" data-lang="fr" onclick="switchLang('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" data-lang="zh" onclick="switchLang('zh')">&#x4E2D;&#x6587;</button>
+        <button class="lang-option" data-lang="ar" onclick="switchLang('ar')">&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064A;&#x0629;</button>
       </div>
     </div>
     <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">&#x263E;</button>
@@ -1274,12 +1277,20 @@ function handlePopupSubmit(e) {
   setTimeout(closePopup, 2000);
 }
 
-// Trigger: 20s timeout OR 60% scroll
+// Trigger: 20s timeout OR 60% scroll OR exit intent
 var popupTimer = setTimeout(showPopup, 20000);
 
 window.addEventListener('scroll', function() {
   var scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
   if (scrollPercent >= 0.6) {
+    showPopup();
+    clearTimeout(popupTimer);
+  }
+});
+
+// Exit intent: mouse leaves viewport at the top
+document.addEventListener('mouseout', function(e) {
+  if (e.clientY <= 0 && e.relatedTarget === null) {
     showPopup();
     clearTimeout(popupTimer);
   }

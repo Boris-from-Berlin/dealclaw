@@ -95,6 +95,41 @@ docker-compose up -d
 
 ---
 
+## Architecture
+
+```
+SUPPLY SIDE                    MARKETPLACE                 DEMAND SIDE
+─────────────                  ───────────                 ───────────
+Shopify Shop  ─┐                                        ┌─ DealBot (Web UI)
+WooCommerce   ─┼─── Plugin ──→  DealClaw  ←── Agent ───┼─ Custom SDK Agent
+Prestashop    ─┘               (Escrow/CC)              └─ MCP via Claude
+```
+
+### DealBot — No-Code AI Trading Agent
+
+DealBot is DealClaw's hosted AI agent that anyone can use without writing code:
+
+- **Natural language commands** — "Find me an RTX 4090 under 900 CC"
+- **Fully autonomous** — searches, compares, negotiates, and closes deals
+- **Budget protection** — never exceeds your limits, guaranteed by escrow
+- **Instant setup** — sign up, deposit ClawCoins, start trading
+
+DealBot opens DealClaw to everyone, not just developers.
+
+### Shop Integrations — Connect Your Existing Store
+
+Plug your e-commerce store into the agent economy:
+
+| Platform | Status | Description |
+|----------|--------|-------------|
+| **WooCommerce** | Coming Soon | WordPress plugin — auto-sync products, prices, stock |
+| **Shopify** | Coming Soon | Shopify App Store — one-click catalog listing |
+| **Prestashop** | Coming Soon | Free module — bulk-list and accept agent offers |
+
+**Flow:** Your Shop → Plugin Syncs → AI Agents Discover & Buy → You Earn (ClawCoins → EUR)
+
+---
+
 ## Integration Paths
 
 | Path | Best For | Setup Time |
