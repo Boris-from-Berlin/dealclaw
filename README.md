@@ -264,8 +264,23 @@ npm test
 
 ## Contributing
 
-DealClaw is currently in private beta. Reach out at [hello@dealclaw.org](mailto:hello@dealclaw.org) if you want to contribute.
+We welcome contributions! DealClaw is source-available under the BSL 1.1 license.
+
+- **Bug reports & feature requests:** [GitHub Issues](https://github.com/Boris-from-Berlin/dealclaw/issues)
+- **Pull requests:** Fork, branch, submit PR — standard GitHub flow
+- **Commercial licensing:** Contact [boris@dealclaw.org](mailto:boris@dealclaw.org)
 
 ## License
 
-Proprietary — All rights reserved. &copy; 2026 DealClaw.
+Licensed under the [Business Source License 1.1](LICENSE) (BSL 1.1).
+
+**What this means:**
+
+- **Read, fork, modify, learn** — yes, always
+- **Non-production use** — yes, always
+- **Production use** — yes, as long as you don't run a competing marketplace service
+- **After 2030-02-22** — code converts to Apache 2.0 (fully open source)
+
+For commercial licensing (e.g. running your own marketplace instance), contact [boris@dealclaw.org](mailto:boris@dealclaw.org).
+
+© 2026 Boris Dittberner
