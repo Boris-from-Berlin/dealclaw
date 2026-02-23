@@ -111,7 +111,7 @@
   function addSystemMsg(text) {
     var div = document.createElement('div');
     div.className = 'chat-msg system';
-    div.textContent = text;
+    div.innerHTML = text;
     messagesEl.appendChild(div);
     scrollToBottom();
   }
@@ -195,14 +195,14 @@
 
   // --- Step 0: Welcome ---
   function stepWelcome() {
-    addBotMsg('&#x1F44B; ' + t('demoWelcome'), 500)
+    addBotMsg('\u{1F44B} ' + t('demoWelcome'), 500)
     .then(function() {
       return addBotMsg(t('demoWelcomeDesc'), 600);
     })
     .then(function() {
       showChoices([
-        { label: '&#x1F6D2; ' + t('demoBuy'), value: 'buy' },
-        { label: '&#x1F4E6; ' + t('demoSell'), value: 'sell' }
+        { label: '\u{1F6D2} ' + t('demoBuy'), value: 'buy' },
+        { label: '\u{1F4E6} ' + t('demoSell'), value: 'sell' }
       ], function(mode) {
         state.mode = mode;
         addUserMsg(mode === 'buy' ? t('demoBuy') : t('demoSell'));
@@ -248,7 +248,7 @@
   // --- Step 2: Search ---
   function stepSearch() {
     clearActions();
-    addBotMsg('&#x1F50D; ' + t('demoSearching'), 500)
+    addBotMsg('\u{1F50D} ' + t('demoSearching'), 500)
     .then(function() {
       return new Promise(function(resolve) { setTimeout(resolve, 1200); });
     })
@@ -262,7 +262,7 @@
         html += '<div class="demo-listing' + (best ? ' recommended' : '') + '" data-idx="' + i + '">';
         html += '<div class="demo-listing-info">';
         html += '<div class="demo-listing-name">' + item.name + (best ? '<span class="badge-rec">' + t('demoBestMatch') + '</span>' : '') + '</div>';
-        html += '<div class="demo-listing-seller">' + (state.mode === 'buy' ? item.seller : item.buyer) + ' &#x2B50; ' + item.rating + '</div>';
+        html += '<div class="demo-listing-seller">' + (state.mode === 'buy' ? item.seller : item.buyer) + ' \u2B50 ' + item.rating + '</div>';
         html += '</div>';
         html += '<div class="demo-listing-price">' + item.price + ' USD</div>';
         html += '</div>';
@@ -284,14 +284,14 @@
     state.selectedListing = best;
 
     var counterpart = state.mode === 'buy' ? best.seller : best.buyer;
-    addBotMsg('&#x2705; ' + t('demoMatchFound').replace('{name}', best.name).replace('{counterpart}', counterpart).replace('{price}', best.price), 600)
+    addBotMsg('\u2705 ' + t('demoMatchFound').replace('{name}', best.name).replace('{counterpart}', counterpart).replace('{price}', best.price), 600)
     .then(function() {
       return addBotMsg(t('demoMatchAsk'), 600);
     })
     .then(function() {
       showChoices([
-        { label: '&#x1F91D; ' + t('demoNegotiate'), value: 'negotiate' },
-        { label: '&#x26A1; ' + t('demoAcceptNow'), value: 'accept' }
+        { label: '\u{1F91D} ' + t('demoNegotiate'), value: 'negotiate' },
+        { label: '\u26A1 ' + t('demoAcceptNow'), value: 'accept' }
       ], function(choice) {
         addUserMsg(choice === 'negotiate' ? t('demoNegotiate') : t('demoAcceptNow'));
         if (choice === 'accept') {
@@ -326,7 +326,7 @@
       return;
     }
 
-    addBotMsg('&#x1F4AC; ' + t('demoNegotiating'), 600)
+    addBotMsg('\u{1F4AC} ' + t('demoNegotiating'), 600)
     .then(function() {
       return addNegotiationRound(1, startPrice, targetPrice);
     });
@@ -362,7 +362,7 @@
               state.finalPrice = agreed;
               state.fee = Math.round(agreed * 0.01);
               state.sellerReceives = agreed - state.fee;
-              addSystemMsg('&#x1F91D; ' + t('demoAgreed').replace('{price}', agreed));
+              addSystemMsg('\u{1F91D} ' + t('demoAgreed').replace('{price}', agreed));
 
               showContinue(t('demoContinue'), function() { runStep(5); });
               resolve();
@@ -376,7 +376,7 @@
   // --- Step 5: Escrow ---
   function stepEscrow() {
     clearActions();
-    addBotMsg('&#x1F512; ' + t('demoEscrowLocking'), 600)
+    addBotMsg('\u{1F512} ' + t('demoEscrowLocking'), 600)
     .then(function() {
       var walletHtml = '<div class="demo-wallet">';
       walletHtml += '<div class="demo-wallet-row"><span class="demo-wallet-label">' + t('demoTradeAmount') + '</span><span class="demo-wallet-value">' + state.finalPrice + ' USD</span></div>';
@@ -390,7 +390,7 @@
       return addBotMsg(walletHtml, 800);
     })
     .then(function() {
-      return addBotMsg('&#x2705; ' + t('demoEscrowLocked'), 600);
+      return addBotMsg('\u2705 ' + t('demoEscrowLocked'), 600);
     })
     .then(function() {
       showContinue(t('demoContinue'), function() { runStep(6); });
@@ -400,7 +400,7 @@
   // --- Step 6: Delivery ---
   function stepDelivery() {
     clearActions();
-    addBotMsg('&#x1F4E6; ' + t('demoDeliveryStart'), 600)
+    addBotMsg('\u{1F4E6} ' + t('demoDeliveryStart'), 600)
     .then(function() {
       var progHtml = '<div class="delivery-progress"><div class="delivery-progress-bar" id="deliveryBar"></div></div>';
       progHtml += '<div style="font-size:0.8rem;color:var(--text-light);margin-top:0.3rem;">' + t('demoDeliveryTracking') + '</div>';
@@ -421,7 +421,7 @@
     })
     .then(function() {
       showChoices([
-        { label: '&#x2705; ' + t('demoConfirmDelivery'), value: 'confirm' }
+        { label: '\u2705 ' + t('demoConfirmDelivery'), value: 'confirm' }
       ], function() {
         addUserMsg(t('demoConfirmDelivery'));
         addSystemMsg(t('demoDeliveryConfirmed'));
@@ -433,7 +433,7 @@
   // --- Step 7: Summary ---
   function stepSummary() {
     clearActions();
-    addBotMsg('&#x1F389; ' + t('demoComplete'), 600)
+    addBotMsg('\u{1F389} ' + t('demoComplete'), 600)
     .then(function() {
       var summaryHtml = '<div class="demo-summary">';
       summaryHtml += '<div class="demo-summary-header">';
@@ -443,7 +443,7 @@
       summaryHtml += '<div class="demo-summary-stats">';
       summaryHtml += '<div class="demo-stat"><div class="demo-stat-value">' + state.finalPrice + ' USD</div><div class="demo-stat-label">' + t('demoFinalPrice') + '</div></div>';
       summaryHtml += '<div class="demo-stat"><div class="demo-stat-value">' + state.fee + ' USD</div><div class="demo-stat-label">' + t('demoPlatformFee') + '</div></div>';
-      summaryHtml += '<div class="demo-stat"><div class="demo-stat-value">&#x2B50; +1</div><div class="demo-stat-label">' + t('demoReputation') + '</div></div>';
+      summaryHtml += '<div class="demo-stat"><div class="demo-stat-value">\u2B50 +1</div><div class="demo-stat-label">' + t('demoReputation') + '</div></div>';
       summaryHtml += '<div class="demo-stat"><div class="demo-stat-value">&lt;2 min</div><div class="demo-stat-label">' + t('demoTotalTime') + '</div></div>';
       summaryHtml += '</div>';
       summaryHtml += '</div>';
@@ -476,7 +476,7 @@
       restartBtn.className = 'btn btn-ghost btn-sm';
       restartBtn.style.width = '100%';
       restartBtn.style.marginTop = '0.5rem';
-      restartBtn.innerHTML = '&#x1F504; ' + t('demoRestart');
+      restartBtn.innerHTML = '\u{1F504} ' + t('demoRestart');
       restartBtn.onclick = function() {
         state.step = 0;
         state.mode = null;
