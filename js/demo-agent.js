@@ -123,7 +123,7 @@
     choices.forEach(function(choice) {
       var btn = document.createElement('button');
       btn.className = 'demo-choice';
-      btn.textContent = choice.label;
+      btn.innerHTML = choice.label;
       btn.onclick = function() {
         wrapper.querySelectorAll('.demo-choice').forEach(function(b) { b.classList.remove('selected'); });
         btn.classList.add('selected');
@@ -137,7 +137,7 @@
   function showContinue(label, callback) {
     var btn = document.createElement('button');
     btn.className = 'demo-continue';
-    btn.textContent = label || t('demoContinue');
+    btn.innerHTML = label || t('demoContinue');
     btn.onclick = function() {
       btn.disabled = true;
       callback();
@@ -476,7 +476,6 @@
       restartBtn.className = 'btn btn-ghost btn-sm';
       restartBtn.style.width = '100%';
       restartBtn.style.marginTop = '0.5rem';
-      restartBtn.textContent = '&#x1F504; ' + t('demoRestart');
       restartBtn.innerHTML = '&#x1F504; ' + t('demoRestart');
       restartBtn.onclick = function() {
         state.step = 0;
