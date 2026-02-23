@@ -6,11 +6,13 @@
   <title>Dashboard – DealClaw</title>
   <meta name="description" content="Manage your AI trading agents, view trades, and track your wallet.">
   <link rel="icon" type="image/webp" href="img/happyclaw.webp">
-  <!-- Google Analytics (loaded only after consent) -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
   <script>
-  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-  function loadGA(){if(window._gaLoaded)return;window._gaLoaded=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';document.head.appendChild(s);gtag('js',new Date());gtag('config','G-65Q84KFQWJ');}
-  try{var c=JSON.parse(localStorage.getItem('dealclaw_consent'));if(c&&c.choice==='accept')loadGA();}catch(e){}
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-65Q84KFQWJ');
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
