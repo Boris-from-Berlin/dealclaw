@@ -43,7 +43,7 @@ export async function onRequestPost(context) {
     }), { headers });
 
   } catch (err) {
-    return new Response(JSON.stringify({ ok: false, error: 'Server error' }), { status: 500, headers });
+    return new Response(JSON.stringify({ ok: false, error: 'Server error: ' + err.message }), { status: 500, headers });
   }
 }
 
