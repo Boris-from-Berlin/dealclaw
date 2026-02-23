@@ -1,0 +1,343 @@
+/* ===== DEMO PAGE STYLES ===== */
+
+.demo-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 1.5rem 3rem;
+  min-height: 100vh;
+}
+
+/* ===== PROGRESS BAR ===== */
+.demo-progress {
+  display: flex; gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+.demo-progress-step {
+  flex: 1; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: background 0.4s;
+}
+.demo-progress-step.active {
+  background: var(--accent);
+}
+.demo-progress-step.done {
+  background: var(--success, #10B981);
+}
+
+/* ===== CHAT AREA ===== */
+.demo-chat {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+
+.demo-chat-header {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.demo-chat-header .avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.demo-chat-header .avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.demo-chat-header .info { flex: 1; }
+.demo-chat-header .info .name {
+  font-weight: 700; font-size: 1rem;
+}
+.demo-chat-header .info .status-text {
+  font-size: 0.75rem; opacity: 0.8;
+}
+.demo-chat-header .step-label {
+  font-size: 0.75rem; opacity: 0.7;
+  background: rgba(255,255,255,0.15);
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+}
+
+.demo-messages {
+  padding: 1.5rem;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  scroll-behavior: smooth;
+}
+
+/* ===== ACTION AREA ===== */
+.demo-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.demo-choices {
+  display: flex; gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.demo-choice {
+  flex: 1; min-width: 120px;
+  padding: 0.75rem 1.2rem;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.9rem; font-weight: 600;
+  font-family: inherit;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.demo-choice:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.demo-choice.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+/* Slider */
+.demo-slider-group {
+  width: 100%;
+}
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.4rem;
+}
+.demo-slider-value {
+  font-weight: 700; color: var(--accent);
+}
+.demo-slider {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+.demo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.demo-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Continue button */
+.demo-continue {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--accent);
+  color: white;
+  border: none; border-radius: 12px;
+  font-size: 0.95rem; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.demo-continue:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(224,74,47,0.3);
+}
+.demo-continue:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ===== ANIMATION: Typing indicator ===== */
+.typing-indicator {
+  display: flex; gap: 4px;
+  padding: 0.7rem 1rem;
+  align-self: flex-start;
+}
+.typing-indicator span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-light);
+  animation: typingBounce 1.2s infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ===== LISTING CARDS ===== */
+.demo-listings {
+  display: flex; flex-direction: column;
+  gap: 0.5rem; margin-top: 0.5rem;
+}
+.demo-listing {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex; justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.demo-listing:hover {
+  border-color: var(--accent);
+}
+.demo-listing.recommended {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.demo-listing-info {
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+.demo-listing-name {
+  font-size: 0.85rem; font-weight: 600; color: var(--primary);
+}
+.demo-listing-seller {
+  font-size: 0.75rem; color: var(--text-light);
+}
+.demo-listing-price {
+  font-size: 1rem; font-weight: 800; color: var(--accent);
+  white-space: nowrap;
+}
+.demo-listing .badge-rec {
+  font-size: 0.65rem; font-weight: 700;
+  background: var(--accent); color: white;
+  padding: 0.15rem 0.5rem; border-radius: 20px;
+  margin-left: 0.5rem;
+}
+
+/* ===== WALLET ANIMATION ===== */
+.demo-wallet {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-top: 0.5rem;
+}
+.demo-wallet-row {
+  display: flex; justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+}
+.demo-wallet-row + .demo-wallet-row {
+  border-top: 1px solid var(--border);
+}
+.demo-wallet-label { color: var(--text-light); }
+.demo-wallet-value { font-weight: 700; color: var(--primary); }
+.demo-wallet-value.accent { color: var(--accent); }
+.demo-wallet-value.success { color: var(--success, #10B981); }
+
+/* ===== NEGOTIATION LOG ===== */
+.negotiation-line {
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+  color: var(--text);
+  animation: msgFadeIn 0.3s ease;
+}
+.negotiation-line .agent-name {
+  font-weight: 700;
+}
+.negotiation-line .agent-buyer { color: var(--accent); }
+.negotiation-line .agent-seller { color: #6366F1; }
+
+/* ===== SUMMARY CARD ===== */
+.demo-summary {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.demo-summary-header {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: white;
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+}
+.demo-summary-header h3 {
+  font-size: 1.1rem; font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+.demo-summary-header p {
+  font-size: 0.8rem; opacity: 0.8;
+}
+.demo-summary-stats {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+}
+.demo-stat {
+  background: var(--card-bg);
+  padding: 1rem;
+  text-align: center;
+}
+.demo-stat-value {
+  font-size: 1.3rem; font-weight: 800; color: var(--accent);
+}
+.demo-stat-label {
+  font-size: 0.75rem; color: var(--text-light);
+  margin-top: 0.2rem;
+}
+.demo-summary-cta {
+  padding: 1.5rem;
+  display: flex; gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.demo-summary-cta .btn { flex: 1; min-width: 140px; }
+
+/* ===== DELIVERY ANIMATION ===== */
+.delivery-progress {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+.delivery-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 1.5s ease;
+  width: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .demo-container { padding: 76px 1rem 2rem; }
+  .demo-messages { min-height: 250px; max-height: 400px; }
+  .demo-choices { flex-direction: column; }
+  .demo-choice { min-width: auto; }
+  .demo-summary-stats { grid-template-columns: 1fr 1fr; }
+}

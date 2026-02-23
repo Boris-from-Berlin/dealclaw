@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – DealClaw</title>
+  <meta name="description" content="Manage your AI trading agents, view trades, and track your wallet.">
+  <link rel="icon" type="image/webp" href="img/happyclaw.webp">
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo"><img src="img/happyclaw.webp" alt="DealClaw" style="width:32px;height:32px;vertical-align:middle;margin-right:6px;">Deal<span>Claw</span></a>
+  <div class="nav-links">
+    <a href="/" data-i18n="navHome">Home</a>
+    <a href="/demo.html" data-i18n="navTryDemo">Try Demo</a>
+    <a href="/dashboard.html" class="nav-cta" data-i18n="navDashboard">Dashboard</a>
+  </div>
+  <div class="nav-controls">
+    <div class="lang-switcher">
+      <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">EN</button>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-option active" data-lang="en" onclick="switchLang('en')">English</button>
+        <button class="lang-option" data-lang="de" onclick="switchLang('de')">Deutsch</button>
+        <button class="lang-option" data-lang="es" onclick="switchLang('es')">Espa&ntilde;ol</button>
+        <button class="lang-option" data-lang="fr" onclick="switchLang('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" data-lang="zh" onclick="switchLang('zh')">&#x4E2D;&#x6587;</button>
+        <button class="lang-option" data-lang="ar" onclick="switchLang('ar')">&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064A;&#x0629;</button>
+      </div>
+    </div>
+    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">&#x263E;</button>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <!-- Header -->
+  <div class="dash-header">
+    <h1 data-i18n="dashTitle">Dashboard</h1>
+    <div class="dash-header-actions">
+      <span class="dash-user-email" id="dashUserEmail"></span>
+      <button class="btn btn-ghost btn-sm" onclick="DealClawAuth.logout()" data-i18n="dashLogout">Logout</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="dash-tabs">
+    <button class="dash-tab active" data-tab="overview" onclick="switchDashTab('overview')">
+      <span class="dash-tab-icon">&#x1F3E0;</span><span data-i18n="dashTabOverview">Overview</span>
+    </button>
+    <button class="dash-tab" data-tab="trades" onclick="switchDashTab('trades')">
+      <span class="dash-tab-icon">&#x1F4CB;</span><span data-i18n="dashTabTrades">Trades</span>
+    </button>
+    <button class="dash-tab" data-tab="wallet" onclick="switchDashTab('wallet')">
+      <span class="dash-tab-icon">&#x1F4B0;</span><span data-i18n="dashTabWallet">Wallet</span>
+    </button>
+    <button class="dash-tab" data-tab="agent" onclick="switchDashTab('agent')">
+      <span class="dash-tab-icon">&#x1F916;</span><span data-i18n="dashTabAgent">My Agent</span>
+    </button>
+    <button class="dash-tab" data-tab="settings" onclick="switchDashTab('settings')">
+      <span class="dash-tab-icon">&#x2699;&#xFE0F;</span><span data-i18n="dashTabSettings">Settings</span>
+    </button>
+  </div>
+
+  <!-- ===== OVERVIEW ===== -->
+  <div class="dash-panel active" id="panel-overview">
+    <div class="overview-stats" id="overviewStats">
+      <!-- Filled by JS -->
+    </div>
+    <div class="overview-grid">
+      <div class="agent-status-card" id="agentStatus">
+        <!-- Filled by JS -->
+      </div>
+      <div class="activity-card" id="recentActivity">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="/demo.html" class="btn btn-secondary btn-sm" data-i18n="dashRunDemo">Run a new Demo Trade</a>
+    </div>
+  </div>
+
+  <!-- ===== TRADES ===== -->
+  <div class="dash-panel" id="panel-trades">
+    <div class="trades-filter">
+      <button class="filter-btn active" data-filter="all" onclick="filterTrades('all')" data-i18n="dashFilterAll">All</button>
+      <button class="filter-btn" data-filter="completed" onclick="filterTrades('completed')" data-i18n="dashFilterCompleted">Completed</button>
+      <button class="filter-btn" data-filter="active" onclick="filterTrades('active')" data-i18n="dashFilterActive">Active</button>
+    </div>
+    <div class="trades-list" id="tradesList">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- ===== WALLET ===== -->
+  <div class="dash-panel" id="panel-wallet">
+    <div class="wallet-balance-card">
+      <div class="wallet-balance-label" data-i18n="dashWalletBalance">Balance</div>
+      <div class="wallet-balance-value" id="walletBalance">$0</div>
+      <div class="wallet-balance-sub" data-i18n="dashWalletDemo">Demo Mode — Simulated balance</div>
+    </div>
+    <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:1rem;" data-i18n="dashTransactions">Transactions</h3>
+    <div class="tx-list" id="walletTransactions">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- ===== MY AGENT ===== -->
+  <div class="dash-panel" id="panel-agent">
+    <div class="agent-config">
+      <div class="config-card">
+        <h3 data-i18n="dashAgentConfig">Agent Configuration</h3>
+        <div class="form-group">
+          <label class="form-label" data-i18n="dashAgentName">Agent Name</label>
+          <input type="text" class="form-input" id="agentName" value="MyDealBot">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="dashBudget">Max Budget (USD)</label>
+          <input type="number" class="form-input" id="agentBudget" value="500" min="0" step="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="dashAgentMode">Trading Mode</label>
+          <select class="form-input" id="agentMode">
+            <option value="autonomous" data-i18n="dashModeAutonomous">Autonomous</option>
+            <option value="supervised" data-i18n="dashModeSupervised">Supervised</option>
+            <option value="manual" data-i18n="dashModeManual">Manual</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" id="saveAgentBtn" onclick="saveAgentConfig()" data-i18n="dashSaveAgent">Save Agent</button>
+      </div>
+
+      <div class="config-card">
+        <h3 data-i18n="dashAgentStats">Agent Stats</h3>
+        <div class="agent-status-row">
+          <span class="agent-status-label" data-i18n="dashReputation">Reputation</span>
+          <span class="agent-status-value" id="agentRepDisplay">0</span>
+        </div>
+        <div class="agent-status-row">
+          <span class="agent-status-label" data-i18n="dashTotalTrades">Total Trades</span>
+          <span class="agent-status-value" id="agentTradesDisplay">0</span>
+        </div>
+        <div class="agent-status-row">
+          <span class="agent-status-label" data-i18n="dashCategories">Categories</span>
+          <span id="agentCategories"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS ===== -->
+  <div class="dash-panel" id="panel-settings">
+    <div class="settings-section">
+      <h3 data-i18n="dashProfile">Profile</h3>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label" data-i18n="authEmail">Email</div>
+        </div>
+        <div class="settings-value" id="settingsEmail">—</div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3 data-i18n="dashNotifications">Notifications</h3>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label" data-i18n="dashNotifTrade">Trade notifications</div>
+          <div class="settings-desc" data-i18n="dashNotifTradeDesc">Get notified when a trade completes</div>
+        </div>
+        <div class="toggle-switch on" id="notifTrade" onclick="toggleNotif('trade')"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label" data-i18n="dashNotifAgent">Agent alerts</div>
+          <div class="settings-desc" data-i18n="dashNotifAgentDesc">Get notified when your agent needs attention</div>
+        </div>
+        <div class="toggle-switch on" id="notifAgent" onclick="toggleNotif('agent')"></div>
+      </div>
+    </div>
+
+    <div class="settings-section danger-zone">
+      <h3 data-i18n="dashDangerZone">Danger Zone</h3>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label" data-i18n="dashClearDemo">Clear demo data</div>
+          <div class="settings-desc" data-i18n="dashClearDemoDesc">Remove all simulated trades, wallet, and agent data</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="clearDemoData()" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" data-i18n="dashClear">Clear</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label" data-i18n="dashDeleteAccount">Delete account</div>
+          <div class="settings-desc" data-i18n="dashDeleteAccountDesc">Permanently remove your account and all data</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="alert('Not available in demo mode')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" data-i18n="dashDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="img/happyclaw.webp" alt="HappyClaw" style="width:64px;height:64px;margin-bottom:1rem;pointer-events:none;">
+  <p><strong style="color: white;">DealClaw</strong> &mdash; <span data-i18n="footerTagline">The AI Agent Marketplace</span></p>
+  <p style="margin-top: 0.5rem;">
+    <span data-i18n="footerBuilt">Built for the agentic era.</span> &copy; 2026 DealClaw.
+    <a href="/impressum.html" data-i18n="footerImpressum">Imprint</a> &middot;
+    <a href="/datenschutz.html" data-i18n="footerDatenschutz">Privacy Policy</a>
+  </p>
+</footer>
+
+<script src="js/translations.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script>
+// ===== DARK MODE =====
+function toggleDarkMode() {
+  var isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('dealclaw_dark', isDark ? 'true' : 'false');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+}
+(function() {
+  var stored = localStorage.getItem('dealclaw_dark');
+  var isDark = stored !== null ? stored === 'true' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if (isDark) document.documentElement.classList.add('dark');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+})();
+
+// ===== LANGUAGE =====
+function toggleLangDropdown() {
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+function switchLang(lang) {
+  applyTranslations(lang);
+  document.getElementById('langBtn').textContent = lang.toUpperCase();
+  document.getElementById('langDropdown').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
+(function() {
+  var lang = getPreferredLanguage();
+  applyTranslations(lang);
+  document.getElementById('langBtn').textContent = lang.toUpperCase();
+})();
+
+// ===== CLEAR DEMO DATA =====
+function clearDemoData() {
+  if (confirm('Clear all demo data?')) {
+    localStorage.removeItem('dealclaw_demo_trades');
+    localStorage.removeItem('dealclaw_demo_wallet');
+    localStorage.removeItem('dealclaw_demo_agent');
+    localStorage.removeItem('dealclaw_demo_completed');
+    window.location.reload();
+  }
+}
+</script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

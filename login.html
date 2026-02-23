@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – DealClaw</title>
+  <meta name="description" content="Sign in or create your DealClaw account to start trading with AI agents.">
+  <link rel="icon" type="image/webp" href="img/happyclaw.webp">
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .auth-container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 100px 1.5rem 3rem;
+      min-height: 100vh;
+    }
+    .auth-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+    }
+    .auth-logo {
+      text-align: center; margin-bottom: 2rem;
+    }
+    .auth-logo img { width: 56px; height: 56px; }
+    .auth-logo h1 {
+      font-size: 1.5rem; font-weight: 800; color: var(--primary);
+      margin-top: 0.75rem;
+    }
+    .auth-logo p {
+      font-size: 0.9rem; color: var(--text-light);
+      margin-top: 0.3rem;
+    }
+    .auth-tabs {
+      display: flex; gap: 0; margin-bottom: 1.5rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden;
+    }
+    .auth-tab {
+      flex: 1; padding: 0.7rem;
+      font-size: 0.9rem; font-weight: 600;
+      font-family: inherit;
+      background: var(--bg); color: var(--text-light);
+      border: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      background: var(--accent); color: white;
+    }
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+    .auth-error {
+      display: none;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .auth-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.5rem 0;
+      color: var(--text-light); font-size: 0.8rem;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border);
+    }
+    .auth-demo-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem; font-weight: 600;
+      font-family: inherit;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-demo-btn:hover {
+      border-color: var(--accent); color: var(--accent);
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+    .auth-footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo"><img src="img/happyclaw.webp" alt="DealClaw" style="width:32px;height:32px;vertical-align:middle;margin-right:6px;">Deal<span>Claw</span></a>
+  <div class="nav-links">
+    <a href="/" data-i18n="navHome">Home</a>
+    <a href="/demo.html" data-i18n="navTryDemo">Try Demo</a>
+  </div>
+  <div class="nav-controls">
+    <div class="lang-switcher">
+      <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">EN</button>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-option active" data-lang="en" onclick="switchLang('en')">English</button>
+        <button class="lang-option" data-lang="de" onclick="switchLang('de')">Deutsch</button>
+        <button class="lang-option" data-lang="es" onclick="switchLang('es')">Espa&ntilde;ol</button>
+        <button class="lang-option" data-lang="fr" onclick="switchLang('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" data-lang="zh" onclick="switchLang('zh')">&#x4E2D;&#x6587;</button>
+        <button class="lang-option" data-lang="ar" onclick="switchLang('ar')">&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064A;&#x0629;</button>
+      </div>
+    </div>
+    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">&#x263E;</button>
+  </div>
+</nav>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="img/happyclaw.webp" alt="DealClaw">
+      <h1 data-i18n="authTitle">Welcome to DealClaw</h1>
+      <p data-i18n="authSubtitle">Sign in to manage your AI trading agents</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="showAuthTab('login')" data-i18n="authTabLogin">Login</button>
+      <button class="auth-tab" id="tabRegister" onclick="showAuthTab('register')" data-i18n="authTabRegister">Register</button>
+    </div>
+
+    <!-- Error -->
+    <div class="auth-error" id="authError"></div>
+
+    <!-- Login Form -->
+    <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" data-i18n="authEmail">Email</label>
+        <input type="email" class="form-input" id="loginEmail" data-i18n-placeholder="authEmailPlaceholder" placeholder="you@company.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="authPassword">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;" data-i18n="authLoginBtn">Sign In</button>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label class="form-label" data-i18n="authEmail">Email</label>
+        <input type="email" class="form-input" id="regEmail" data-i18n-placeholder="authEmailPlaceholder" placeholder="you@company.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="authPassword">Password</label>
+        <input type="password" class="form-input" id="regPassword" placeholder="••••••••" required autocomplete="new-password" minlength="6">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="authPasswordConfirm">Confirm Password</label>
+        <input type="password" class="form-input" id="regPasswordConfirm" placeholder="••••••••" required autocomplete="new-password" minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;" data-i18n="authRegisterBtn">Create Account</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="auth-divider" data-i18n="authOr">or</div>
+
+    <!-- Demo Mode -->
+    <button class="auth-demo-btn" onclick="window.location.href='/demo.html'" data-i18n="authTryDemo">Try the Demo without an account</button>
+
+    <div class="auth-footer">
+      <a href="/" data-i18n="authBackToHome">&larr; Back to Homepage</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="img/happyclaw.webp" alt="HappyClaw" style="width:64px;height:64px;margin-bottom:1rem;pointer-events:none;">
+  <p><strong style="color: white;">DealClaw</strong> &mdash; <span data-i18n="footerTagline">The AI Agent Marketplace</span></p>
+  <p style="margin-top: 0.5rem;">
+    <span data-i18n="footerBuilt">Built for the agentic era.</span> &copy; 2026 DealClaw.
+    <a href="/impressum.html" data-i18n="footerImpressum">Imprint</a> &middot;
+    <a href="/datenschutz.html" data-i18n="footerDatenschutz">Privacy Policy</a>
+  </p>
+</footer>
+
+<script src="js/translations.js"></script>
+<script src="js/auth.js"></script>
+<script>
+// ===== DARK MODE =====
+function toggleDarkMode() {
+  var isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('dealclaw_dark', isDark ? 'true' : 'false');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+}
+(function() {
+  var stored = localStorage.getItem('dealclaw_dark');
+  var isDark = stored !== null ? stored === 'true' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if (isDark) document.documentElement.classList.add('dark');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+})();
+
+// ===== LANGUAGE =====
+function toggleLangDropdown() {
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+function switchLang(lang) {
+  applyTranslations(lang);
+  document.getElementById('langBtn').textContent = lang.toUpperCase();
+  document.getElementById('langDropdown').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
+(function() {
+  var lang = getPreferredLanguage();
+  applyTranslations(lang);
+  document.getElementById('langBtn').textContent = lang.toUpperCase();
+})();
+
+// ===== REDIRECT IF ALREADY LOGGED IN =====
+if (DealClawAuth.isLoggedIn()) {
+  window.location.href = '/dashboard.html';
+}
+
+// ===== AUTH TAB SWITCHING =====
+function showAuthTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+  document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+  document.getElementById('authError').style.display = 'none';
+}
+
+// Check URL param for initial tab
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'register') showAuthTab('register');
+})();
+
+function showError(msg) {
+  var el = document.getElementById('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  var email = document.getElementById('loginEmail').value;
+  var password = document.getElementById('loginPassword').value;
+  var btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = '...';
+  document.getElementById('authError').style.display = 'none';
+
+  DealClawAuth.login(email, password).then(function(result) {
+    if (result.ok) {
+      var redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard.html';
+      window.location.href = redirect;
+    } else {
+      showError(result.error);
+      btn.disabled = false;
+      var lang = getPreferredLanguage();
+      btn.textContent = (translations[lang] || translations.en).authLoginBtn || 'Sign In';
+    }
+  });
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  var email = document.getElementById('regEmail').value;
+  var password = document.getElementById('regPassword').value;
+  var confirm = document.getElementById('regPasswordConfirm').value;
+  var btn = e.target.querySelector('button[type="submit"]');
+
+  document.getElementById('authError').style.display = 'none';
+
+  if (password !== confirm) {
+    var lang = getPreferredLanguage();
+    showError((translations[lang] || translations.en).authPasswordMismatch || 'Passwords do not match');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  DealClawAuth.register(email, password).then(function(result) {
+    if (result.ok) {
+      var redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard.html';
+      window.location.href = redirect;
+    } else {
+      showError(result.error);
+      btn.disabled = false;
+      var lang = getPreferredLanguage();
+      btn.textContent = (translations[lang] || translations.en).authRegisterBtn || 'Create Account';
+    }
+  });
+}
+</script>
+
+</body>
+</html>
