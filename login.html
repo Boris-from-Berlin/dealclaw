@@ -6,6 +6,19 @@
   <title>Login – DealClaw</title>
   <meta name="description" content="Sign in or create your DealClaw account to start trading with AI agents.">
   <link rel="icon" type="image/webp" href="img/happyclaw.webp">
+  <link rel="canonical" href="https://dealclaw.org/login.html">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dealclaw.org/login.html">
+  <meta property="og:title" content="Login – DealClaw">
+  <meta property="og:description" content="Sign in or create your DealClaw account to start trading with AI agents.">
+  <meta property="og:image" content="https://dealclaw.org/img/happyclaw.webp">
+  <meta property="og:site_name" content="DealClaw">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Login – DealClaw">
+  <meta name="twitter:description" content="Sign in or create your DealClaw account to start trading with AI agents.">
+  <meta name="twitter:image" content="https://dealclaw.org/img/happyclaw.webp">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
   <script>
@@ -183,6 +196,7 @@
     <button class="auth-demo-btn" onclick="window.location.href='/demo.html'" data-i18n="authTryDemo">Try the Demo without an account</button>
 
     <div class="auth-footer">
+      <p style="margin-bottom:0.5rem;"><a href="#" onclick="alert('Password reset coming soon. Contact hello@dealclaw.org');return false;" data-i18n="authForgotPassword">Forgot password?</a></p>
       <a href="/" data-i18n="authBackToHome">&larr; Back to Homepage</a>
     </div>
   </div>
@@ -313,6 +327,29 @@ function handleRegister(e) {
     }
   });
 }
+</script>
+
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      <span data-i18n="cookieText">This website uses technically necessary local storage for basic functions. More information in our</span>
+      <a href="/datenschutz.html" data-i18n="cookieLink">Privacy Policy</a>.
+    </div>
+    <div class="cookie-buttons">
+      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')" data-i18n="cookieReject">Necessary only</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')" data-i18n="cookieAccept">Accept all</button>
+    </div>
+  </div>
+</div>
+<script>
+function handleCookieChoice(choice) {
+  localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+(function() {
+  if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';
+})();
 </script>
 
 </body>

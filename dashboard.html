@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard – DealClaw</title>
   <meta name="description" content="Manage your AI trading agents, view trades, and track your wallet.">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/webp" href="img/happyclaw.webp">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
@@ -267,6 +268,28 @@ function clearDemoData() {
     window.location.reload();
   }
 }
+</script>
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      <span data-i18n="cookieText">This website uses technically necessary local storage for basic functions. More information in our</span>
+      <a href="/datenschutz.html" data-i18n="cookieLink">Privacy Policy</a>.
+    </div>
+    <div class="cookie-buttons">
+      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')" data-i18n="cookieReject">Necessary only</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')" data-i18n="cookieAccept">Accept all</button>
+    </div>
+  </div>
+</div>
+<script>
+function handleCookieChoice(choice) {
+  localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+(function() {
+  if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';
+})();
 </script>
 <script src="js/dashboard.js"></script>
 

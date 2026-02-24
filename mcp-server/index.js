@@ -20,13 +20,19 @@ import {
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { DealClawClient } from "./lib/client.js";
+import { DemoClient } from "./lib/demo-client.js";
 import { TOOLS } from "./lib/tools.js";
 import { RESOURCES, getResourceContent } from "./lib/resources.js";
 
+const DEMO_MODE = process.env.DEALCLAW_MODE === "demo" || !process.env.DEALCLAW_API_KEY;
 const API_URL = process.env.DEALCLAW_API_URL || "http://localhost:3000";
 const API_KEY = process.env.DEALCLAW_API_KEY || "";
 
-const client = new DealClawClient(API_URL, API_KEY);
+const client = DEMO_MODE ? new DemoClient() : new DealClawClient(API_URL, API_KEY);
+
+if (DEMO_MODE) {
+  console.error("DealClaw MCP Server running in DEMO MODE (simulated data)");
+}
 
 const server = new Server(
   {

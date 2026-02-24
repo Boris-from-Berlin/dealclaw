@@ -76,6 +76,16 @@
       padding: 2rem; text-align: center; font-size: 0.85rem;
     }
     footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; }
+    .cookie-banner { display:none; position:fixed; bottom:0; left:0; right:0; z-index:9999; background:var(--primary); color:rgba(255,255,255,0.9); padding:1.2rem 2rem; box-shadow:0 -4px 20px rgba(0,0,0,0.15); }
+    .cookie-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; justify-content:space-between; }
+    .cookie-text { flex:1; min-width:280px; font-size:0.85rem; line-height:1.5; }
+    .cookie-text a { color:var(--accent); text-decoration:none; }
+    .cookie-buttons { display:flex; gap:0.75rem; flex-shrink:0; }
+    .cookie-btn { padding:0.6rem 1.4rem; border-radius:8px; font-size:0.85rem; font-weight:600; font-family:inherit; cursor:pointer; border:none; transition:all 0.2s; }
+    .cookie-btn-accept { background:var(--accent); color:white; }
+    .cookie-btn-accept:hover { opacity:0.9; }
+    .cookie-btn-reject { background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); }
+    .cookie-btn-reject:hover { background:rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
@@ -200,6 +210,28 @@
     <a href="/datenschutz.html">Datenschutz</a>
   </p>
 </footer>
+
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      Diese Website nutzt technisch notwendigen lokalen Speicher. Mehr in unserer <a href="/datenschutz.html">Datenschutzerkl&auml;rung</a>.
+    </div>
+    <div class="cookie-buttons">
+      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')">Nur notwendige</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')">Alle akzeptieren</button>
+    </div>
+  </div>
+</div>
+<script>
+function handleCookieChoice(choice) {
+  localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+(function() {
+  if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';
+})();
+</script>
 
 </body>
 </html>
