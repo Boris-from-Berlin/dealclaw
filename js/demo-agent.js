@@ -260,6 +260,11 @@
         { label: t('demoSuggestSell'), text: t('demoSuggestSell') },
         { label: t('demoSuggestMonitor'), text: t('demoSuggestMonitor') }
       ]);
+    })
+    .catch(function(err) {
+      console.error('DealClaw Demo Error:', err);
+      messagesEl.innerHTML = '<div class="chat-msg ai" style="color:var(--accent);">Demo failed to load. Please refresh with Ctrl+Shift+R.</div>';
+      enableInput(t('demoInputPlaceholder'));
     });
   }
 
