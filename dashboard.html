@@ -221,7 +221,7 @@
           <div class="settings-label" data-i18n="dashDeleteAccount">Delete account</div>
           <div class="settings-desc" data-i18n="dashDeleteAccountDesc">Permanently remove your account and all data</div>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="alert('Not available in demo mode')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" data-i18n="dashDelete">Delete</button>
+        <button class="btn btn-ghost btn-sm" onclick="this.textContent='Not available in demo';this.disabled=true;" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" data-i18n="dashDelete">Delete</button>
       </div>
     </div>
   </div>

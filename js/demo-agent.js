@@ -27,7 +27,7 @@
         price: 950,
         rating: 4.8,
         condition: 'Like New',
-        desc: 'Used for 3 months only. Original box, all cables included. Never used for mining. Runs perfectly cool under load.',
+        desc: 'Used for 3 months only. Original box, all cables included. Well maintained, runs cool under load. Great for gaming or professional work.',
         specs: ['24GB GDDR6X', 'PCIe 4.0', '450W TDP'],
         img: 'img/gpu1.jpg',
         trades: 47,
@@ -47,7 +47,7 @@
       },
       {
         name: 'RTX 4090 Founders Edition',
-        seller: '@CryptoMiner88',
+        seller: '@HardwarePro88',
         price: 870,
         rating: 4.2,
         condition: 'Good',
