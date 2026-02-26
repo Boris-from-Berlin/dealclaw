@@ -29,13 +29,16 @@
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20260225">
-  <link rel="stylesheet" href="css/demo.css?v=20260225b">
+  <link rel="stylesheet" href="css/shared.css?v=20260225c">
+  <link rel="stylesheet" href="css/demo.css?v=20260225c">
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
+  <button class="hamburger" id="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
   <a href="/" class="nav-logo"><img src="img/happyclaw.webp" alt="DealClaw" style="width:32px;height:32px;vertical-align:middle;margin-right:6px;">Deal<span>Claw</span></a>
   <div class="nav-links">
     <a href="/" data-i18n="navHome">Home</a>
@@ -99,7 +102,7 @@
   </p>
 </footer>
 
-<script src="js/translations.js?v=20260225b"></script>
+<script src="js/translations.js?v=20260225c"></script>
 <script>
 // ===== DARK MODE =====
 function toggleDarkMode() {
@@ -166,7 +169,7 @@ function handleCookieChoice(choice) {
   if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';
 })();
 </script>
-<script src="js/demo-agent.js?v=20260225b"></script>
+<script src="js/demo-agent.js?v=20260225c"></script>
 
 </body>
 </html>

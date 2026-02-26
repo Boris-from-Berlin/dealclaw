@@ -6,7 +6,7 @@
 
   // ===== STATE =====
   var state = {
-    phase: 'welcome',  // welcome, search, results, match, negotiate, escrow, delivery, summary
+    phase: 'welcome',
     mode: null,
     query: '',
     budget: 0,
@@ -14,6 +14,7 @@
     finalPrice: 0,
     fee: 0,
     sellerReceives: 0,
+    paymentMethod: null,
     inputEnabled: false
   };
 
@@ -229,6 +230,12 @@
       case 'results':
         processResultsInput(text);
         break;
+      case 'detail':
+        processDetailInput(text);
+        break;
+      case 'payment':
+        processPaymentInput(text);
+        break;
       case 'confirm-delivery':
         processDeliveryInput(text);
         break;
@@ -236,7 +243,6 @@
         processRestartInput(text);
         break;
       default:
-        // Auto-advance for any other input
         break;
     }
   }
@@ -322,15 +328,14 @@
 
     addAiMsg(html, 600)
     .then(function() {
-      var best = items[bestIdx];
-      var counterpart = isBuy ? best.seller : best.buyer;
-      return addAiMsg(t('demoAiRecommend').replace('{name}', best.name).replace('{counterpart}', counterpart).replace('{price}', best.price), 500);
+      return addAiMsg(t('demoAiAskInterest'), 500);
     })
     .then(function() {
-      enableInput(t('demoInputOffer'));
+      enableInput(t('demoInputBrowse'));
       showSuggestions([
-        { label: t('demoSuggestOffer'), text: t('demoSuggestOffer') },
-        { label: t('demoSuggestAccept'), text: t('demoSuggestAccept') }
+        { label: t('demoSuggestDetail'), text: t('demoSuggestDetail') },
+        { label: t('demoSuggestCompare'), text: t('demoSuggestCompare') },
+        { label: t('demoSuggestOffer'), text: t('demoSuggestOffer') }
       ]);
     });
   }
@@ -340,22 +345,233 @@
     var isBuy = state.mode === 'buy';
     var items = isBuy ? listings.buy : listings.sell;
     var bestIdx = isBuy ? 2 : 0;
-    state.selectedListing = items[bestIdx];
 
-    var wantsAccept = lower.indexOf('accept') >= 0 || lower.indexOf('akzept') >= 0 ||
-                      lower.indexOf('direkt') >= 0 || lower.indexOf('now') >= 0 ||
-                      lower.indexOf('take') >= 0 || lower.indexOf('jetzt') >= 0;
-
-    if (wantsAccept) {
-      state.finalPrice = state.selectedListing.price;
-      doAcceptDirect();
-    } else {
-      doNegotiate();
+    // User wants to compare
+    var wantsCompare = lower.indexOf('compare') >= 0 || lower.indexOf('vergleich') >= 0 ||
+                       lower.indexOf('difference') >= 0 || lower.indexOf('unterschied') >= 0;
+    if (wantsCompare) {
+      doCompare(items, isBuy);
+      return;
     }
+
+    // User wants to see details or pick a specific one
+    state.selectedListing = items[bestIdx];
+    doShowDetail();
   }
 
-  // ===== NEGOTIATE =====
-  function doNegotiate() {
+  // ===== COMPARE =====
+  function doCompare(items, isBuy) {
+    var toolEl = addToolCall('get_listing', t('demoToolComparing'), true);
+
+    new Promise(function(resolve) {
+      setTimeout(function() {
+        updateToolCall(toolEl, '\u2713 ' + t('demoToolDone'));
+        resolve();
+      }, 1000);
+    })
+    .then(function() {
+      var html = '<table style="width:100%;font-size:0.78rem;border-collapse:collapse;margin:0.5rem 0;">';
+      html += '<tr style="border-bottom:1px solid var(--border);font-weight:700;"><td style="padding:0.4rem 0.5rem;">' + t('demoCompName') + '</td>';
+      items.forEach(function(item) {
+        html += '<td style="padding:0.4rem 0.3rem;">' + item.name.split(' ').slice(-2).join(' ') + '</td>';
+      });
+      html += '</tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:0.4rem 0.5rem;">' + t('demoCompPrice') + '</td>';
+      items.forEach(function(item) {
+        html += '<td style="padding:0.4rem 0.3rem;font-weight:700;color:var(--accent);">' + item.price + ' USD</td>';
+      });
+      html += '</tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:0.4rem 0.5rem;">' + t('demoCompCondition') + '</td>';
+      items.forEach(function(item) {
+        html += '<td style="padding:0.4rem 0.3rem;">' + (item.condition || '-') + '</td>';
+      });
+      html += '</tr><tr><td style="padding:0.4rem 0.5rem;">' + t('demoCompSeller') + '</td>';
+      items.forEach(function(item) {
+        var cp = isBuy ? item.seller : item.buyer;
+        html += '<td style="padding:0.4rem 0.3rem;">' + cp + ' \u2B50' + item.rating + '</td>';
+      });
+      html += '</tr></table>';
+      return addAiMsg(html, 500);
+    })
+    .then(function() {
+      var bestIdx = isBuy ? 2 : 0;
+      var best = items[bestIdx];
+      return addAiMsg(t('demoAiCompareResult').replace('{name}', best.name).replace('{price}', best.price), 500);
+    })
+    .then(function() {
+      var isBuy = state.mode === 'buy';
+      var bestIdx = isBuy ? 2 : 0;
+      state.selectedListing = items[bestIdx];
+      enableInput(t('demoInputDetail'));
+      showSuggestions([
+        { label: t('demoSuggestDetail'), text: t('demoSuggestDetail') },
+        { label: t('demoSuggestOffer'), text: t('demoSuggestOffer') }
+      ]);
+    });
+  }
+
+  // ===== PRODUCT DETAIL =====
+  function doShowDetail() {
+    state.phase = 'detail';
+    var item = state.selectedListing;
+    var isBuy = state.mode === 'buy';
+    var counterpart = isBuy ? item.seller : item.buyer;
+
+    var toolEl = addToolCall('get_listing', item.name + '...', true);
+
+    new Promise(function(resolve) {
+      setTimeout(function() {
+        updateToolCall(toolEl, '\u2713 ' + t('demoToolLoaded'));
+        resolve();
+      }, 800);
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiDetailIntro').replace('{name}', item.name).replace('{counterpart}', counterpart) + buildProductDetail(item, isBuy), 600);
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiDetailAsk'), 500);
+    })
+    .then(function() {
+      enableInput(t('demoInputDecide'));
+      showSuggestions([
+        { label: t('demoSuggestOffer'), text: t('demoSuggestOffer') },
+        { label: t('demoSuggestAccept'), text: t('demoSuggestAccept') },
+        { label: t('demoSuggestAskSeller'), text: t('demoSuggestAskSeller') }
+      ]);
+    });
+  }
+
+  function buildProductDetail(item, isBuy) {
+    var counterpart = isBuy ? item.seller : item.buyer;
+    var html = '<div class="demo-product-detail">';
+    html += '<div class="demo-product-hero">';
+    html += '<img src="' + item.img + '" alt="' + item.name + '">';
+    if (item.condition) html += '<span class="badge-condition badge-condition--' + item.condition.toLowerCase().replace(/\s+/g, '') + '">' + item.condition + '</span>';
+    html += '</div>';
+    html += '<div class="demo-product-info">';
+    html += '<div class="demo-product-title">' + item.name + '</div>';
+    html += '<div class="demo-product-price">' + item.price + ' USD</div>';
+    html += '<div class="demo-product-desc">' + item.desc + '</div>';
+    html += '<div class="demo-listing-specs">';
+    item.specs.forEach(function(spec) {
+      html += '<span class="demo-spec-tag">' + spec + '</span>';
+    });
+    html += '</div>';
+    html += '<div class="demo-product-seller">';
+    html += '<div class="demo-product-seller-row">';
+    html += '<span class="demo-product-seller-name">' + counterpart + '</span>';
+    html += '<span class="demo-listing-rating">\u2B50 ' + item.rating + '</span>';
+    html += '</div>';
+    html += '<div class="demo-product-seller-stats">';
+    html += '<span>' + item.trades + ' trades</span>';
+    html += '<span>Joined ' + item.joined + '</span>';
+    html += '</div></div></div></div>';
+    return html;
+  }
+
+  function processDetailInput(text) {
+    var lower = text.toLowerCase();
+
+    // User asks the seller a question
+    var asksQuestion = lower.indexOf('ask') >= 0 || lower.indexOf('frag') >= 0 ||
+                       lower.indexOf('question') >= 0 || lower.indexOf('contact') >= 0 ||
+                       lower.indexOf('kontakt') >= 0;
+    if (asksQuestion) {
+      doAskSeller();
+      return;
+    }
+
+    // User accepts listed price
+    var wantsAccept = lower.indexOf('accept') >= 0 || lower.indexOf('akzept') >= 0 ||
+                      lower.indexOf('listed') >= 0 || lower.indexOf('listen') >= 0 ||
+                      lower.indexOf('take') >= 0 || lower.indexOf('nehm') >= 0;
+    if (wantsAccept) {
+      state.finalPrice = state.selectedListing.price;
+      doPaymentChoice();
+      return;
+    }
+
+    // Default: negotiate
+    doNegotiateFromDetail();
+  }
+
+  function doAskSeller() {
+    var item = state.selectedListing;
+    var isBuy = state.mode === 'buy';
+    var counterpart = isBuy ? item.seller : item.buyer;
+
+    var toolEl = addToolCall('send_message', counterpart + '...', true);
+
+    new Promise(function(resolve) {
+      setTimeout(function() {
+        updateToolCall(toolEl, '\u2713 ' + t('demoToolMessageSent'));
+        resolve();
+      }, 1000);
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiSellerQuestion').replace('{counterpart}', counterpart), 600);
+    })
+    .then(function() {
+      return new Promise(function(resolve) { setTimeout(resolve, 1500); });
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiSellerReply').replace('{counterpart}', counterpart), 700);
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiAfterReply'), 500);
+    })
+    .then(function() {
+      enableInput(t('demoInputDecide'));
+      showSuggestions([
+        { label: t('demoSuggestOffer'), text: t('demoSuggestOffer') },
+        { label: t('demoSuggestAccept'), text: t('demoSuggestAccept') }
+      ]);
+    });
+  }
+
+  // ===== PAYMENT CHOICE =====
+  function doPaymentChoice() {
+    state.phase = 'payment';
+    state.fee = Math.round(state.finalPrice * 0.01);
+    state.sellerReceives = state.finalPrice - state.fee;
+
+    addAiMsg(t('demoAiPaymentAsk').replace('{price}', state.finalPrice), 500)
+    .then(function() {
+      enableInput(t('demoInputPayment'));
+      showSuggestions([
+        { label: 'ClawCoins', text: 'ClawCoins' },
+        { label: 'PayPal', text: 'PayPal' },
+        { label: t('demoSuggestCard'), text: t('demoSuggestCard') }
+      ]);
+    });
+  }
+
+  function processPaymentInput(text) {
+    var lower = text.toLowerCase();
+    if (lower.indexOf('paypal') >= 0) {
+      state.paymentMethod = 'PayPal';
+    } else if (lower.indexOf('card') >= 0 || lower.indexOf('karte') >= 0 || lower.indexOf('kredit') >= 0 || lower.indexOf('credit') >= 0) {
+      state.paymentMethod = 'Credit Card';
+    } else {
+      state.paymentMethod = 'ClawCoins';
+    }
+
+    var toolEl = addToolCall('process_payment', state.paymentMethod + ' \u2192 ' + state.finalPrice + ' USD', true);
+
+    new Promise(function(resolve) {
+      setTimeout(function() {
+        updateToolCall(toolEl, '\u2713 ' + t('demoToolPaymentOk'));
+        resolve();
+      }, 1200);
+    })
+    .then(function() {
+      return addAiMsg(t('demoAiPaymentConfirm').replace('{method}', state.paymentMethod).replace('{price}', state.finalPrice), 500);
+    })
+    .then(function() {
+      doEscrow();
+    });
+  }
+
+  // Negotiate then go to payment
+  function doNegotiateFromDetail() {
     state.phase = 'negotiate';
     var listing = state.selectedListing;
     var isBuy = state.mode === 'buy';
@@ -402,37 +618,11 @@
     })
     .then(function() {
       state.finalPrice = finalPrice;
-      state.fee = Math.round(finalPrice * 0.01);
-      state.sellerReceives = finalPrice - state.fee;
       addSystemMsg('\u2705 ' + t('demoAiDealAgreed').replace('{price}', finalPrice));
       return addAiMsg(t('demoAiDealDone').replace('{price}', finalPrice), 500);
     })
     .then(function() {
-      doEscrow();
-    });
-  }
-
-  function doAcceptDirect() {
-    state.phase = 'accept';
-    state.fee = Math.round(state.finalPrice * 0.01);
-    state.sellerReceives = state.finalPrice - state.fee;
-
-    addAiMsg(t('demoAiAcceptDirect'), 400)
-    .then(function() {
-      var toolEl = addToolCall('accept_trade', state.finalPrice + ' USD', true);
-      return new Promise(function(resolve) {
-        setTimeout(function() {
-          updateToolCall(toolEl, '\u2713 ' + t('demoToolDealClosed'));
-          resolve();
-        }, 1000);
-      });
-    })
-    .then(function() {
-      addSystemMsg('\u2705 ' + t('demoAiDealAgreed').replace('{price}', state.finalPrice));
-      return addAiMsg(t('demoAiDealDone').replace('{price}', state.finalPrice), 500);
-    })
-    .then(function() {
-      doEscrow();
+      doPaymentChoice();
     });
   }
 
@@ -578,6 +768,7 @@
     state.finalPrice = 0;
     state.fee = 0;
     state.sellerReceives = 0;
+    state.paymentMethod = null;
     messagesEl.innerHTML = '';
     startDemo();
   }
