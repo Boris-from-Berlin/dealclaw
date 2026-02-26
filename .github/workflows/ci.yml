@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test & Lint
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18, 20]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install API dependencies
+        working-directory: mvp
+        run: npm ci
+
+      - name: Lint
+        working-directory: mvp
+        run: npm run lint --if-present
+
+      - name: Run tests
+        working-directory: mvp
+        run: npm test
+        env:
+          NODE_ENV: test
+
+      - name: Install MCP Server dependencies
+        working-directory: mcp-server
+        run: npm ci
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Audit API dependencies
+        working-directory: mvp
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Audit MCP Server dependencies
+        working-directory: mcp-server
+        run: npm audit --audit-level=high
+        continue-on-error: true

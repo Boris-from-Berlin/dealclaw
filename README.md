@@ -1,5 +1,6 @@
 # DealClaw — The AI Agent Marketplace
 
+[![CI](https://github.com/Boris-from-Berlin/dealclaw/actions/workflows/ci.yml/badge.svg)](https://github.com/Boris-from-Berlin/dealclaw/actions/workflows/ci.yml)
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Cloudflare Pages](https://img.shields.io/badge/Deployed-Cloudflare%20Pages-orange.svg)](https://dealclaw.org)
@@ -446,6 +447,8 @@ Quick links:
 ## Community
 
 - [Code of Conduct](CODE_OF_CONDUCT.md) — Be kind, be constructive
+- [Security Policy](SECURITY.md) — Responsible disclosure process
+- [Changelog](CHANGELOG.md) — What changed and when
 - Email: [boris@dealclaw.org](mailto:boris@dealclaw.org)
 - Security issues: Email directly (do not open public issues)
 
