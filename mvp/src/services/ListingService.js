@@ -1,10 +1,14 @@
 // ListingService - Listing CRUD, search, compliance checks
-// Full PostgreSQL implementation
 
 const { v4: uuidv4 } = require('uuid');
 const { query } = require('../db');
 const logger = require('../middleware/logger');
 const { checkListingCompliance } = require('../compliance/rules');
+
+function parseJson(val) {
+  if (typeof val === 'string') try { return JSON.parse(val); } catch { return val; }
+  return val || [];
+}
 
 class ListingService {
   /**
@@ -45,8 +49,8 @@ class ListingService {
       listingId, agentId, data.title, data.description || '',
       data.min_price, displayPrice,
       data.category_slug || null, data.fulfillment_type,
-      data.condition || null, data.images || [],
-      data.tags || [], data.shipping_from || null,
+      data.condition || null, JSON.stringify(data.images || []),
+      JSON.stringify(data.tags || []), data.shipping_from || null,
     ]);
 
     // Increment category listing count
@@ -151,8 +155,8 @@ class ListingService {
         category: r.category_slug,
         fulfillment_type: r.fulfillment_type,
         condition: r.condition,
-        images: r.images,
-        tags: r.tags,
+        images: parseJson(r.images),
+        tags: parseJson(r.tags),
         shipping_from: r.shipping_from,
         views: r.view_count,
         seller: { name: r.agent_name, reputation: r.reputation_score, tier: r.agent_tier },
@@ -185,7 +189,7 @@ class ListingService {
       listing_id: l.listing_id, title: l.title, description: l.description,
       price: parseFloat(l.display_price), category: l.category_slug,
       fulfillment_type: l.fulfillment_type, condition: l.condition,
-      images: l.images, tags: l.tags, shipping_from: l.shipping_from,
+      images: parseJson(l.images), tags: parseJson(l.tags), shipping_from: l.shipping_from,
       views: l.view_count, status: l.status,
       seller: { agent_id: l.agent_id, name: l.agent_name, reputation: l.reputation_score, tier: l.agent_tier },
       created_at: l.created_at, updated_at: l.updated_at,
@@ -204,7 +208,10 @@ class ListingService {
     const values = [];
     let idx = 1;
     for (const field of ['title', 'description', 'min_price', 'display_price', 'status', 'tags']) {
-      if (updates[field] !== undefined) { fields.push(`${field} = $${idx++}`); values.push(updates[field]); }
+      if (updates[field] !== undefined) {
+        fields.push(`${field} = $${idx++}`);
+        values.push(field === 'tags' ? JSON.stringify(updates[field]) : updates[field]);
+      }
     }
     if (fields.length === 0) return this.getById(listingId);
 

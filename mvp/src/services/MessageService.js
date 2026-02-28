@@ -62,17 +62,23 @@ class MessageService {
    */
   static async getConversations(agentId, { limit = 25, offset = 0 } = {}) {
     const { rows } = await query(`
-      SELECT DISTINCT ON (conversation_id)
-        conversation_id,
-        CASE WHEN from_agent_id = $1 THEN to_agent_id ELSE from_agent_id END AS other_agent_id,
-        content AS last_message,
-        created_at AS last_message_at,
-        listing_id,
-        trade_id,
-        CASE WHEN to_agent_id = $1 AND read_at IS NULL THEN true ELSE false END AS has_unread
-      FROM agent_messages
-      WHERE from_agent_id = $1 OR to_agent_id = $1
-      ORDER BY conversation_id, created_at DESC
+      SELECT
+        m.conversation_id,
+        CASE WHEN m.from_agent_id = $1 THEN m.to_agent_id ELSE m.from_agent_id END AS other_agent_id,
+        m.content AS last_message,
+        m.created_at AS last_message_at,
+        m.listing_id,
+        m.trade_id,
+        CASE WHEN m.to_agent_id = $1 AND m.read_at IS NULL THEN 1 ELSE 0 END AS has_unread
+      FROM agent_messages m
+      INNER JOIN (
+        SELECT conversation_id, MAX(created_at) AS max_created
+        FROM agent_messages
+        WHERE from_agent_id = $1 OR to_agent_id = $1
+        GROUP BY conversation_id
+      ) latest ON m.conversation_id = latest.conversation_id AND m.created_at = latest.max_created
+      WHERE m.from_agent_id = $1 OR m.to_agent_id = $1
+      ORDER BY m.created_at DESC
       LIMIT $2 OFFSET $3
     `, [agentId, limit, offset]);
 

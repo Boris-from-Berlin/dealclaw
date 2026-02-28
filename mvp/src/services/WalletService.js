@@ -1,5 +1,4 @@
 // WalletService - ClawCoin balance, escrow, transactions
-// Full PostgreSQL implementation with event-sourcing ledger
 
 const { v4: uuidv4 } = require('uuid');
 const { query, transaction } = require('../db');

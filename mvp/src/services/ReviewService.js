@@ -6,7 +6,7 @@ const logger = require('../middleware/logger');
 class ReviewService {
   /**
    * Get public reviews for an agent (visible on website).
-   * Only shows reviews where visible_on_website = true.
+   * Only shows reviews where visible_on_website = 1.
    */
   static async getPublicReviews(agentId, { limit = 25, offset = 0 } = {}) {
     const { rows } = await query(`
@@ -15,7 +15,7 @@ class ReviewService {
              r.seller_response, r.seller_responded_at, r.created_at
       FROM reviews r
       JOIN agents a ON r.reviewer_agent_id = a.agent_id
-      WHERE r.reviewed_agent_id = $1 AND r.visible_on_website = true
+      WHERE r.reviewed_agent_id = $1 AND r.visible_on_website = 1
       ORDER BY r.created_at DESC
       LIMIT $2 OFFSET $3
     `, [agentId, limit, offset]);
@@ -30,7 +30,7 @@ class ReviewService {
              COUNT(CASE WHEN rating = 2 THEN 1 END) as two_star,
              COUNT(CASE WHEN rating = 1 THEN 1 END) as one_star
       FROM reviews
-      WHERE reviewed_agent_id = $1 AND visible_on_website = true
+      WHERE reviewed_agent_id = $1 AND visible_on_website = 1
     `, [agentId]);
 
     return {
@@ -155,10 +155,10 @@ class ReviewService {
         INSERT INTO review_votes (review_id, voter_agent_id, vote)
         VALUES ($1, $2, $3)
         ON CONFLICT (review_id, voter_agent_id)
-        DO UPDATE SET vote = $3
+        DO UPDATE SET vote = excluded.vote
       `, [review.id, voterAgentId, vote]);
     } catch (err) {
-      if (err.code === '23505') {
+      if (err.message && err.message.includes('UNIQUE constraint')) {
         // Already voted — update instead (handled by ON CONFLICT above)
       } else throw err;
     }

@@ -1,6 +1,5 @@
 // TradeService - Negotiation, escrow, delivery, fee calculation
 // This is the CORE business logic of DealClaw
-// Full PostgreSQL implementation with transaction support
 
 const { v4: uuidv4 } = require('uuid');
 const { query, transaction } = require('../db');
@@ -189,7 +188,7 @@ class TradeService {
     const { rows: [seller] } = await query('SELECT tier FROM agents WHERE agent_id = $1', [trade.seller_agent_id]);
     const fee = this.calculateFee(parseFloat(trade.buyer_max_price), parseFloat(trade.seller_min_price), seller?.tier);
 
-    const escrowExpires = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 14 days
+    const escrowExpires = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(); // 14 days
 
     return transaction(async (client) => {
       // Lock buyer's ClawCoins in escrow
@@ -241,7 +240,7 @@ class TradeService {
         escrow: {
           amount: agreedPrice,
           locked_at: new Date().toISOString(),
-          expires_at: escrowExpires.toISOString(),
+          expires_at: escrowExpires,
         },
         fee: {
           amount: fee,
@@ -389,7 +388,10 @@ class TradeService {
     await query(`
       INSERT INTO shipping_info (trade_id, tracking_number, carrier, estimated_delivery)
       VALUES ($1, $2, $3, $4)
-      ON CONFLICT (trade_id) DO UPDATE SET tracking_number = $2, carrier = $3, estimated_delivery = $4
+      ON CONFLICT (trade_id) DO UPDATE SET
+        tracking_number = excluded.tracking_number,
+        carrier = excluded.carrier,
+        estimated_delivery = excluded.estimated_delivery
     `, [tradeId, tracking_number, carrier, estimated_delivery || null]);
 
     await query("UPDATE trades SET status = 'shipping', updated_at = NOW() WHERE trade_id = $1", [tradeId]);

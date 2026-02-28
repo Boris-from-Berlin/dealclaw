@@ -1,5 +1,4 @@
 // CategoryService - Dynamic, self-growing category system
-// Full PostgreSQL implementation
 
 const { query } = require('../db');
 const logger = require('../middleware/logger');
@@ -13,7 +12,7 @@ class CategoryService {
       SELECT slug, name, description, parent_slug, listing_count, auto_generated
       FROM categories
       WHERE status = 'active'
-      ORDER BY parent_slug NULLS FIRST, name ASC
+      ORDER BY CASE WHEN parent_slug IS NULL THEN 0 ELSE 1 END, name ASC
     `);
 
     // Build tree structure
@@ -91,7 +90,7 @@ class CategoryService {
 
       await query(`
         INSERT INTO categories (slug, name, description, parent_slug, auto_generated, status)
-        VALUES ($1, $2, $3, $4, true, 'active')
+        VALUES ($1, $2, $3, $4, 1, 'active')
         ON CONFLICT (slug) DO NOTHING
       `, [slug, name, description, parent_category]);
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// Database seeder for DealClaw
+// Database seeder for DealClaw (SQLite)
 // Seeds initial categories and a test user/agent for development
 // Usage: node src/db/seed.js
 
 require('dotenv').config();
-const { pool, transaction } = require('./index');
+const { query, transaction } = require('./index');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const SEED_CATEGORIES = [
   { slug: 'digital-goods', name: 'Digital Goods', parent: null },
@@ -29,7 +30,7 @@ const SEED_CATEGORIES = [
 ];
 
 async function seed() {
-  console.log('Seeding DealClaw database...');
+  console.log('Seeding DealClaw database (SQLite)...');
 
   try {
     await transaction(async (client) => {
@@ -44,41 +45,71 @@ async function seed() {
           ON CONFLICT (slug) DO NOTHING
         `, [cat.slug, cat.name, cat.parent]);
       }
-      console.log(`✓ ${SEED_CATEGORIES.length} categories seeded`);
+      console.log(`  ${SEED_CATEGORIES.length} categories seeded`);
 
       // Create test user
       const passwordHash = await bcrypt.hash('testpassword123', 10);
       const { rows: [testUser] } = await client.query(`
         INSERT INTO users (email, password_hash, display_name, country, kyc_verified)
-        VALUES ('test@dealclaw.org', $1, 'Test User', 'DE', true)
+        VALUES ('test@dealclaw.org', $1, 'Test User', 'DE', 1)
         ON CONFLICT (email) DO UPDATE SET display_name = 'Test User'
         RETURNING id
       `, [passwordHash]);
-      console.log(`✓ Test user created (id: ${testUser.id})`);
+      console.log(`  Test user created (id: ${testUser.id})`);
 
-      // Create test wallet
+      // Create test wallet with 1000 CC
       await client.query(`
         INSERT INTO wallets (user_id, available_balance, locked_balance)
         VALUES ($1, 1000, 0)
-        ON CONFLICT DO NOTHING
+        ON CONFLICT (user_id) DO NOTHING
       `, [testUser.id]);
-      console.log('✓ Test wallet created (1000 CC)');
+      console.log('  Test wallet created (1000 CC)');
 
-      // Create test agent
+      // Create test agent with a known API key
+      const agentId = 'agt_testbot001';
+      const jwtSecret = process.env.JWT_SECRET || 'dealclaw-dev-secret';
+      const token = jwt.sign({ agent_id: agentId, name: 'TestBot', framework: 'openclaw' }, jwtSecret, { expiresIn: '365d' });
+      const apiKey = `dealclaw_${token}`;
+      const apiKeyHash = await bcrypt.hash(apiKey, 10);
+
       await client.query(`
         INSERT INTO agents (agent_id, name, description, framework, capabilities, api_key_hash, user_id, reputation_score, tier)
-        VALUES ('agt_testbot001', 'TestBot', 'A test agent for development', 'openclaw', '{buy,sell,negotiate}', $1, $2, 50, 'trusted')
+        VALUES ($1, 'TestBot', 'A test agent for development', 'openclaw', $2, $3, $4, 50, 'trusted')
         ON CONFLICT (agent_id) DO NOTHING
-      `, [await bcrypt.hash('test_api_key', 10), testUser.id]);
-      console.log('✓ Test agent created (agt_testbot001)');
+      `, [agentId, JSON.stringify(['buy', 'sell', 'negotiate']), apiKeyHash, testUser.id]);
+      console.log(`  Test agent created (${agentId})`);
+      console.log(`  Test API key: ${apiKey.slice(0, 30)}...`);
+
+      // Seed some test listings
+      const listings = [
+        { id: 'lst_demo_gpu01', title: 'NVIDIA RTX 4090 24GB', desc: 'High-end GPU, barely used. Original packaging.', price: 870, cat: 'hardware/gpus', condition: 'like_new', tags: ['gpu', 'nvidia', 'rtx4090'] },
+        { id: 'lst_demo_mac01', title: 'MacBook Pro M3 Max 16"', desc: 'Top-spec with 36GB RAM, 1TB SSD. Pristine.', price: 1800, cat: 'hardware/devices', condition: 'like_new', tags: ['laptop', 'apple', 'macbook'] },
+        { id: 'lst_demo_api01', title: 'GPT-4 API Credits (1M tokens)', desc: 'Unused OpenAI API credits, transferable.', price: 250, cat: 'digital-goods/software', condition: 'new', tags: ['api', 'openai', 'gpt4'], fulfillment: 'digital' },
+        { id: 'lst_demo_srv01', title: 'Code Review Service (10h)', desc: 'Senior dev code review. Python, TypeScript, Rust.', price: 150, cat: 'ai-services/code-review', condition: 'new', tags: ['code-review', 'consulting'], fulfillment: 'service' },
+        { id: 'lst_demo_dat01', title: 'EU E-Commerce Dataset 2025', desc: '500K product listings with prices and descriptions.', price: 95, cat: 'digital-goods/datasets', condition: 'new', tags: ['dataset', 'ecommerce', 'europe'], fulfillment: 'digital' },
+      ];
+
+      for (const l of listings) {
+        await client.query(`
+          INSERT INTO listings (listing_id, agent_id, title, description, min_price, display_price,
+                                category_slug, fulfillment_type, condition, tags, status)
+          VALUES ($1, $2, $3, $4, $5, $5, $6, $7, $8, $9, 'active')
+          ON CONFLICT (listing_id) DO NOTHING
+        `, [l.id, agentId, l.title, l.desc, l.price, l.cat, l.fulfillment || 'physical', l.condition, JSON.stringify(l.tags)]);
+      }
+      console.log(`  ${listings.length} test listings seeded`);
+
+      // Update category listing counts
+      for (const l of listings) {
+        await client.query('UPDATE categories SET listing_count = listing_count + 1 WHERE slug = $1', [l.cat]);
+      }
     });
 
     console.log('\nSeeding complete!');
   } catch (err) {
     console.error('Seeding failed:', err.message);
+    console.error(err.stack);
     process.exit(1);
-  } finally {
-    await pool.end();
   }
 }
 

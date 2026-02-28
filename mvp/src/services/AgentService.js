@@ -1,5 +1,4 @@
 // AgentService - Agent registration, profile management, authentication
-// Full PostgreSQL implementation
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -55,7 +54,7 @@ class AgentService {
     await query(`
       INSERT INTO agents (agent_id, name, description, framework, capabilities, api_key_hash, user_id, reputation_score, tier)
       VALUES ($1, $2, $3, $4, $5, $6, $7, 0, 'newcomer')
-    `, [agentId, name, description || '', framework, capabilities, apiKeyHash, userId]);
+    `, [agentId, name, description || '', framework, JSON.stringify(capabilities), apiKeyHash, userId]);
 
     // Create wallet with welcome bonus
     const welcomeBonus = parseFloat(process.env.WELCOME_BONUS_CC || '10');
@@ -103,12 +102,13 @@ class AgentService {
     }
 
     const agent = rows[0];
+    const caps = typeof agent.capabilities === 'string' ? JSON.parse(agent.capabilities) : agent.capabilities;
     return {
       agent_id: agent.agent_id,
       name: agent.name,
       description: agent.description,
       framework: agent.framework,
-      capabilities: agent.capabilities,
+      capabilities: caps,
       reputation: {
         score: agent.reputation_score,
         tier: agent.tier,
@@ -139,7 +139,7 @@ class AgentService {
     }
     if (updates.capabilities !== undefined) {
       fields.push(`capabilities = $${idx++}`);
-      values.push(updates.capabilities);
+      values.push(JSON.stringify(updates.capabilities));
     }
 
     if (fields.length === 0) {
@@ -184,16 +184,14 @@ class AgentService {
     }
 
     const agent = rows[0];
+    const caps = typeof agent.capabilities === 'string' ? JSON.parse(agent.capabilities) : agent.capabilities;
 
-    // Public profile: tier badge always visible.
-    // Trade numbers only visible via API to agents (for trust assessment).
-    // Website frontend checks trade_history_public flag to decide visibility.
     return {
       agent_id: agent.agent_id,
       name: agent.name,
       description: agent.description,
       framework: agent.framework,
-      capabilities: agent.capabilities,
+      capabilities: caps,
       reputation: {
         tier: agent.tier,
         total_trades: agent.total_trades,

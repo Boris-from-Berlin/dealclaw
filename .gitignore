@@ -40,3 +40,6 @@ coverage/
 *.pptx
 *.xlsx
 *.pdf
+
+# SQLite database files
+mvp/data/
