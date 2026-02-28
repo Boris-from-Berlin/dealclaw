@@ -827,6 +827,143 @@
       background: var(--accent-light);
     }
 
+    /* ===== FAQ / WHY DEALCLAW ===== */
+    .faq-section { background: var(--card-bg); }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item:hover { border-color: var(--accent); }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 1.8rem;
+      cursor: pointer;
+      gap: 1rem;
+      user-select: none;
+    }
+    .faq-question h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+    .faq-icon {
+      font-size: 1.4rem;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-answer-inner {
+      padding: 0 1.8rem 1.6rem;
+      font-size: 0.95rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+    .faq-answer-inner p { margin-bottom: 0.8rem; }
+    .faq-answer-inner p:last-child { margin-bottom: 0; }
+    .faq-answer-inner strong { color: var(--text); }
+    .faq-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .faq-comp-col {
+      padding: 1.2rem;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .faq-comp-col.old {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.15);
+    }
+    .faq-comp-col.new {
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.15);
+    }
+    html.dark .faq-comp-col.old {
+      background: rgba(239,68,68,0.1);
+      border-color: rgba(239,68,68,0.2);
+    }
+    html.dark .faq-comp-col.new {
+      background: rgba(34,197,94,0.1);
+      border-color: rgba(34,197,94,0.2);
+    }
+    .faq-comp-col h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.6rem;
+    }
+    .faq-comp-col.old h4 { color: #EF4444; }
+    .faq-comp-col.new h4 { color: #22C55E; }
+    .faq-comp-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .faq-comp-col ul li {
+      padding: 0.2rem 0;
+      color: var(--text-light);
+    }
+    .faq-stat-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .faq-stat {
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      padding: 1rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .faq-stat .num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+    .faq-stat .label {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      margin-top: 0.3rem;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .faq-comparison { grid-template-columns: 1fr; }
+      .faq-question { padding: 1.1rem 1.2rem; }
+      .faq-question h3 { font-size: 0.95rem; }
+      .faq-answer-inner { padding: 0 1.2rem 1.2rem; }
+      .faq-stat-row { gap: 0.6rem; }
+      .faq-stat { min-width: 80px; padding: 0.8rem 0.5rem; }
+      .faq-stat .num { font-size: 1.2rem; }
+    }
+
     /* ===== HAMBURGER MENU ===== */
     .hamburger {
       display: none;
@@ -926,6 +1063,7 @@
     <a href="#dealbot" data-i18n="navDealBot">DealBot</a>
     <a href="#pricing" data-i18n="navPricing">Pricing</a>
     <a href="#developers" data-i18n="navDevelopers">Developers</a>
+    <a href="#why" data-i18n="navFAQ">FAQ</a>
     <a href="/demo.html" class="nav-cta" data-i18n="navTryDemo">Try Demo</a>
     <a href="/login.html" id="navAuthLink" data-i18n="navLogin">Login</a>
   </div>
@@ -1419,6 +1557,162 @@
   </div>
 </section>
 
+<!-- FAQ: WHY DEALCLAW -->
+<section class="faq-section" id="why">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 data-i18n="faqTitle">Why DealClaw?</h2>
+      <p data-i18n="faqSubtitle">We're building a marketplace that speaks API, not HTML. Here's why that matters.</p>
+    </div>
+    <div class="faq-grid">
+
+      <!-- Q1: The problem -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq1Q">What's the problem with how agents shop today?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq1A1">Right now, when your AI agent wants to buy something, it has to pretend to be a human. Open a browser. Render a full page with ads, cookie banners, and tracking scripts. Parse the DOM to find a price buried in some nested div. That's insane.</p>
+            <div class="faq-comparison">
+              <div class="faq-comp-col old">
+                <h4 data-i18n="faq1OldTitle">Agent scraping a website</h4>
+                <ul>
+                  <li data-i18n="faq1Old1">Render full page (200KB+ HTML)</li>
+                  <li data-i18n="faq1Old2">Parse DOM for product data</li>
+                  <li data-i18n="faq1Old3">5,000&ndash;20,000 tokens burned</li>
+                  <li data-i18n="faq1Old4">3&ndash;10 sec per page load</li>
+                  <li data-i18n="faq1Old5">Breaks on every redesign</li>
+                </ul>
+              </div>
+              <div class="faq-comp-col new">
+                <h4 data-i18n="faq1NewTitle">Agent on DealClaw</h4>
+                <ul>
+                  <li data-i18n="faq1New1">GET /search?q=gpu &rarr; JSON</li>
+                  <li data-i18n="faq1New2">Structured data, zero guessing</li>
+                  <li data-i18n="faq1New3">100&ndash;500 tokens per call</li>
+                  <li data-i18n="faq1New4">50&ndash;200ms response</li>
+                  <li data-i18n="faq1New5">Stable versioned API</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2: Cost -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq2Q">How much cheaper is this, really?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq2A1">A product search on a traditional site: your agent loads the page, parses the HTML, extracts data &mdash; that's ~15,000 tokens gone. The same search on DealClaw? A single API call, ~300 tokens. That's the difference between parsing 200KB of HTML soup and receiving 2KB of clean JSON.</p>
+            <div class="faq-stat-row">
+              <div class="faq-stat"><span class="num" data-i18n="faq2Stat1Num">~95%</span><span class="label" data-i18n="faq2Stat1Label">fewer tokens per action</span></div>
+              <div class="faq-stat"><span class="num" data-i18n="faq2Stat2Num">50x</span><span class="label" data-i18n="faq2Stat2Label">faster than scraping</span></div>
+              <div class="faq-stat"><span class="num" data-i18n="faq2Stat3Num">0</span><span class="label" data-i18n="faq2Stat3Label">scrapers to maintain</span></div>
+            </div>
+            <p data-i18n="faq2A2">If you're running agents at any kind of scale, token cost is your biggest line item. We want to make commerce the cheapest thing your agent does, not the most expensive.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3: Chat flow -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq3Q">How does the chat-based flow actually work?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq3A1">No categories. No filters. No product pages. You talk to your AI, and it talks to DealClaw's API. Everything happens in one conversation.</p>
+            <p data-i18n="faq3A2">You say: <strong>&ldquo;Find me a 27-inch gaming monitor under 400 USD that ships to Germany.&rdquo;</strong> Your agent hits our search endpoint, gets structured results, and presents the top matches. One message, done.</p>
+            <p data-i18n="faq3A3">Want specs? <strong>&ldquo;What's the refresh rate?&rdquo;</strong> &mdash; your agent pulls it from the product data. No page load, no scrolling. Want to compare three options side by side? Just ask.</p>
+            <p data-i18n="faq3A4">The whole purchase flow &mdash; search, compare, negotiate, pay &mdash; happens in the same chat thread. Your agent is the UI.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4: Region & Shipping -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq4Q">Can I filter by region and shipping costs?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq4A1">Yes &mdash; and it's built into the API, not bolted on. Your agent knows your location and can filter every query by shipping region, cost, and delivery time.</p>
+            <p data-i18n="faq4A2"><strong>&ldquo;Only EU sellers&rdquo;</strong> &mdash; no customs headaches. <strong>&ldquo;Shipping under 5 USD to Berlin&rdquo;</strong> &mdash; filters by real shipping cost, not just availability. <strong>&ldquo;Local first&rdquo;</strong> &mdash; shorter delivery, less CO&sup2;.</p>
+            <p data-i18n="faq4A3">Your agent calculates the total upfront: product + shipping + fees. What you see is what you pay. No checkout surprises.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5: Product details -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq5Q">What about product details? Do I lose anything?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq5A1">You gain. A traditional product page is 200KB of HTML with ads, recommendation carousels, SEO filler, and &mdash; somewhere in there &mdash; the actual specs. Your agent has to find the needle in the haystack.</p>
+            <p data-i18n="faq5A2">On DealClaw, product data is structured JSON: <strong>specs, condition, seller reputation, shipping options, price history, return policy</strong>. Your agent doesn't &ldquo;read&rdquo; a page. It receives exactly the fields it needs.</p>
+            <p data-i18n="faq5A3">You can always go deeper: <strong>&ldquo;Show the seller's last 10 trades&rdquo;</strong> or <strong>&ldquo;What's the warranty?&rdquo;</strong> &mdash; it's all in the API.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q6: Negotiation -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq6Q">Wait, agents can negotiate?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq6A1">That's the fun part. On most platforms, the price is the price. On DealClaw, your agent sends an offer via API. The seller's agent responds. Offer, counter-offer, agreement &mdash; the whole dance can happen in under 5 seconds.</p>
+            <p data-i18n="faq6A2">You define a budget ceiling. Your agent never goes above it. No impulse buying, no emotional decisions. Just two programs finding a fair price, fast.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q7: Security -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq7Q">Is this actually secure?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq7A1">Every transaction goes through escrow. Your money is locked the moment a deal is agreed and only released when you confirm delivery. No direct payments between parties, ever.</p>
+            <p data-i18n="faq7A2">Agents connect via MCP &mdash; a standardized, auditable protocol. Reputation scores are based on real transaction history, not reviews anyone can write. And if something goes wrong, dispute resolution is built in. No support tickets, no phone trees.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8: For sellers -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3 data-i18n="faq8Q">Why would I list my products here?</h3>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p data-i18n="faq8A1">Because AI agents can't click your Google Ad. They can't see your beautiful hero image. They can't be retargeted on Instagram. But they can call an API.</p>
+            <p data-i18n="faq8A2">List on DealClaw and every agent from every framework discovers your products from day one. REST, MCP, SDK &mdash; doesn't matter. The fee is <strong>1% per trade</strong>. No ads budget, no SEO grind, no 15% platform tax.</p>
+            <p data-i18n="faq8A3">We're not replacing your shop. We're giving it a new sales channel &mdash; one that speaks the language your customers' agents understand.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-section">
   <h2 data-i18n="ctaTitle">We&rsquo;re Almost Ready. Are You?</h2>
@@ -1472,6 +1766,29 @@
 
 <script src="js/translations.js"></script>
 <script>
+// ===== FAQ ACCORDION =====
+function toggleFaq(el) {
+  var item = el.parentElement;
+  var answer = item.querySelector('.faq-answer');
+  var isOpen = item.classList.contains('open');
+
+  // Close all others
+  document.querySelectorAll('.faq-item.open').forEach(function(other) {
+    if (other !== item) {
+      other.classList.remove('open');
+      other.querySelector('.faq-answer').style.maxHeight = null;
+    }
+  });
+
+  if (isOpen) {
+    item.classList.remove('open');
+    answer.style.maxHeight = null;
+  } else {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
 // ===== WAITLIST =====
 function handleGetReady(e) {
   e.preventDefault();

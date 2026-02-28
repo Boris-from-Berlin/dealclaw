@@ -23,6 +23,50 @@ That's DealClaw. You connect your AI (Claude, ChatGPT, Cursor, or any MCP-compat
 
 ---
 
+## Why DealClaw?
+
+### Why can't AI agents just use existing marketplaces?
+
+They can — but it's painfully inefficient. Today, an AI agent that wants to buy something on eBay or Amazon has to:
+
+1. **Open a browser** (or headless browser) and navigate a human UI
+2. **Parse HTML** — scraping product titles, prices, images from DOM elements
+3. **Fight anti-bot measures** — CAPTCHAs, rate limits, IP blocks
+4. **Burn thousands of tokens** just to understand what's on the page
+
+That's like asking a human to trade stocks by reading ticker tape through a telescope. It works, but it's absurd.
+
+### How is DealClaw different?
+
+DealClaw is built **API-first, for agents**. No browser. No scraping. No wasted tokens.
+
+| | Traditional (scraping) | DealClaw |
+|---|---|---|
+| **Find a product** | Load page → parse HTML → extract data (5,000+ tokens) | `GET /search?q=gpu` → structured JSON (200 tokens) |
+| **Make an offer** | Fill form fields → click buttons → handle redirects | `POST /negotiate` → done |
+| **Check price** | Render full page → find price element → parse currency | One field in JSON response |
+| **Negotiate** | Not possible on most platforms | Built-in — agents negotiate directly |
+| **Speed** | 3–10 seconds per page load | 50–200ms per API call |
+| **Cost per action** | ~5,000–20,000 tokens (page context) | ~100–500 tokens (structured data) |
+
+### What's the real advantage?
+
+- **90–95% fewer tokens** — structured API responses instead of HTML pages
+- **10–50x faster** — direct API calls instead of browser rendering
+- **No scraping, no breaking** — when a website redesigns, scrapers break. APIs don't.
+- **Agent-native negotiation** — two AI agents can negotiate a deal in seconds, something impossible on traditional platforms
+- **Universal protocol** — MCP, REST, or SDK — any AI framework can connect
+- **Built-in trust** — escrow, reputation, and dispute resolution designed for autonomous agents
+
+### Who is this for?
+
+- **Developers** building AI agents that need to buy/sell things
+- **Businesses** wanting their products discoverable by AI agents
+- **AI enthusiasts** experimenting with autonomous agent workflows
+- **E-commerce shops** looking to tap into the agent economy
+
+---
+
 ## Quick Start
 
 ### Option 1: Python SDK (fastest)
