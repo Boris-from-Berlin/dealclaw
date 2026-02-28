@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DealClaw — Payment Architecture</title>
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F172A;
+      --card: #1E293B;
+      --border: #334155;
+      --text: #E2E8F0;
+      --text-light: #94A3B8;
+      --accent: #E04A2F;
+      --stripe: #635BFF;
+      --mangopay: #22C55E;
+      --escrow: #F59E0B;
+      --blue: #3B82F6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+    .back-link {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .lang-switcher {
+      display: flex;
+      gap: 0.3rem;
+      background: var(--card);
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover { color: var(--text); }
+    .lang-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 span { color: var(--accent); }
+    .subtitle {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 3rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 3rem 0 1.5rem;
+      color: var(--text);
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow-container {
+      display: flex; flex-direction: column; gap: 0;
+      max-width: 900px; margin: 0 auto;
+    }
+    .layer {
+      display: flex; align-items: stretch; gap: 0; position: relative;
+    }
+    .layer-label {
+      width: 140px; flex-shrink: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: flex-end; padding-right: 1.5rem; text-align: right;
+    }
+    .layer-label .name { font-weight: 700; font-size: 0.85rem; }
+    .layer-label .desc { font-size: 0.72rem; color: var(--text-light); margin-top: 0.2rem; }
+    .layer-content {
+      flex: 1; display: flex; gap: 1rem; padding: 1.2rem;
+      border-left: 3px solid var(--border); position: relative;
+    }
+    .layer-content::before {
+      content: ''; position: absolute; left: -7px; top: 50%; transform: translateY(-50%);
+      width: 11px; height: 11px; border-radius: 50%;
+      background: var(--bg); border: 3px solid var(--border);
+    }
+    .layer.stripe .layer-content { border-left-color: var(--stripe); }
+    .layer.stripe .layer-content::before { border-color: var(--stripe); }
+    .layer.mangopay .layer-content { border-left-color: var(--mangopay); }
+    .layer.mangopay .layer-content::before { border-color: var(--mangopay); }
+    .node {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1rem 1.2rem; flex: 1; min-width: 0;
+    }
+    .node .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .node .title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .node .detail { font-size: 0.78rem; color: var(--text-light); line-height: 1.5; }
+    .node code {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.72rem;
+      background: rgba(255,255,255,0.06); padding: 0.15rem 0.4rem;
+      border-radius: 4px; color: var(--accent);
+    }
+    .node.hl-stripe { border-color: rgba(99,91,255,0.4); }
+    .node.hl-mangopay { border-color: rgba(34,197,94,0.4); }
+    .node.hl-escrow { border-color: rgba(245,158,11,0.4); }
+
+    /* Arrows */
+    .arrow-row { display: flex; align-items: center; }
+    .arrow-spacer { width: 140px; flex-shrink: 0; }
+    .arrow-line {
+      flex: 1; display: flex; justify-content: center; padding: 0.6rem 0;
+      border-left: 3px solid var(--border);
+    }
+    .arrow-line .arrow-text {
+      font-size: 0.72rem; color: var(--text-light); background: var(--bg);
+      padding: 0.2rem 0.8rem; border-radius: 50px; border: 1px solid var(--border);
+    }
+    .arrow-row.stripe .arrow-line { border-left-color: var(--stripe); }
+    .arrow-row.mangopay .arrow-line { border-left-color: var(--mangopay); }
+    .arrow-row.escrow .arrow-line { border-left-color: var(--escrow); }
+
+    /* Trade Flow */
+    .trade-flow {
+      display: flex; gap: 0; max-width: 900px; margin: 2rem auto; flex-wrap: wrap;
+    }
+    .trade-step {
+      flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 0.8rem; position: relative;
+    }
+    .trade-step::after {
+      content: '\2192'; position: absolute; right: -8px; top: 50%;
+      transform: translateY(-50%); font-size: 1.2rem; color: var(--text-light);
+    }
+    .trade-step:last-child::after { content: ''; }
+    .step-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin: 0 auto 0.8rem;
+    }
+    .si-blue { background: rgba(59,130,246,0.15); }
+    .si-mangopay { background: rgba(34,197,94,0.15); }
+    .si-escrow { background: rgba(245,158,11,0.15); }
+    .trade-step .step-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .trade-step .step-desc { font-size: 0.72rem; color: var(--text-light); line-height: 1.4; }
+    .trade-step .step-provider {
+      font-size: 0.65rem; font-weight: 600; margin-top: 0.5rem;
+      padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block;
+    }
+    .sp-stripe { background: rgba(99,91,255,0.15); color: var(--stripe); }
+    .sp-mangopay { background: rgba(34,197,94,0.15); color: var(--mangopay); }
+    .sp-dealclaw { background: rgba(224,74,47,0.15); color: var(--accent); }
+
+    /* API Flow */
+    .api-flow {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; max-width: 900px; margin: 2rem auto;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem;
+      line-height: 2; overflow-x: auto;
+    }
+    .api-flow .comment { color: #6B7280; }
+    .api-flow .fn { color: var(--stripe); }
+    .api-flow .fn2 { color: var(--mangopay); }
+    .api-flow .str { color: var(--escrow); }
+    .api-flow .kw { color: var(--accent); }
+    .api-flow .indent { padding-left: 1.5rem; }
+
+    /* Comparison Table */
+    .comp-table {
+      width: 100%; max-width: 900px; margin: 1.5rem auto; border-collapse: collapse;
+    }
+    .comp-table th, .comp-table td {
+      padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem;
+    }
+    .comp-table th {
+      font-weight: 700; color: var(--text-light); font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .comp-table td:first-child { font-weight: 600; }
+    .badge {
+      display: inline-block; padding: 0.15rem 0.5rem;
+      border-radius: 50px; font-size: 0.72rem; font-weight: 600;
+    }
+    .b-stripe { background: rgba(99,91,255,0.15); color: var(--stripe); }
+    .b-mangopay { background: rgba(34,197,94,0.15); color: var(--mangopay); }
+    .b-both { background: rgba(59,130,246,0.15); color: var(--blue); }
+    .b-dealclaw { background: rgba(224,74,47,0.15); color: var(--accent); }
+
+    /* Legend */
+    .legend {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 2rem auto; max-width: 900px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .ld-stripe { background: var(--stripe); }
+    .ld-mangopay { background: var(--mangopay); }
+    .ld-escrow { background: var(--escrow); }
+    .ld-dealclaw { background: var(--accent); }
+
+    .tldr {
+      max-width: 900px; margin: 2rem auto; color: var(--text-light);
+      font-size: 0.85rem; line-height: 1.7;
+    }
+    .tldr strong { color: var(--text); }
+
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .layer { flex-direction: column; }
+      .layer-label { width: 100%; align-items: flex-start; padding: 0.5rem 0; text-align: left; }
+      .layer-content { border-left: none; border-top: 3px solid var(--border); flex-direction: column; }
+      .layer-content::before { display: none; }
+      .trade-flow { flex-direction: column; }
+      .trade-step::after { content: '\2193'; right: 50%; transform: translateX(50%); top: auto; bottom: -4px; }
+      .arrow-spacer { display: none; }
+      .arrow-line { border-left: none; }
+      .comp-table { font-size: 0.78rem; }
+      .comp-table th, .comp-table td { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="/" class="back-link" data-i18n="backHome">&larr; Back to DealClaw</a>
+  <div class="lang-switcher" id="langSwitcher">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('zh')">ZH</button>
+    <button class="lang-btn" onclick="setLang('ar')">AR</button>
+  </div>
+</div>
+
+<h1>Deal<span>Claw</span> <span data-i18n="pageTitle">Payment Architecture</span></h1>
+<p class="subtitle" data-i18n="pageSubtitle">Stripe as the on-ramp. Mangopay as the engine. DealClaw as the orchestrator.</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot ld-stripe"></div> <span data-i18n="legStripe">Stripe (Deposits)</span></div>
+  <div class="legend-item"><div class="legend-dot ld-mangopay"></div> <span data-i18n="legMangopay">Mangopay (Wallets + Escrow)</span></div>
+  <div class="legend-item"><div class="legend-dot ld-escrow"></div> <span data-i18n="legEscrow">Escrow (Locked Funds)</span></div>
+  <div class="legend-item"><div class="legend-dot ld-dealclaw"></div> <span data-i18n="legDealclaw">DealClaw (Orchestration)</span></div>
+</div>
+
+<h2 data-i18n="h2Layers">System Layers</h2>
+
+<div class="flow-container">
+  <div class="layer">
+    <div class="layer-label">
+      <div class="name" data-i18n="layerUser">User</div>
+      <div class="desc" data-i18n="layerUserDesc">Buyer or Seller</div>
+    </div>
+    <div class="layer-content">
+      <div class="node">
+        <div class="icon">&#x1F464;</div>
+        <div class="title" data-i18n="nBuyer">Buyer</div>
+        <div class="detail" data-i18n="nBuyerDesc">Wants to purchase via AI agent.<br>Deposits EUR/USD into wallet.</div>
+      </div>
+      <div class="node">
+        <div class="icon">&#x1F916;</div>
+        <div class="title" data-i18n="nAgent">AI Agent</div>
+        <div class="detail" data-i18n="nAgentDesc">Connected via MCP, SDK, or REST.<br>Searches, negotiates, executes trades.</div>
+      </div>
+      <div class="node">
+        <div class="icon">&#x1F464;</div>
+        <div class="title" data-i18n="nSeller">Seller</div>
+        <div class="detail" data-i18n="nSellerDesc">Lists products, receives payouts.<br>Withdraws to bank account.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row stripe">
+    <div class="arrow-spacer"></div>
+    <div class="arrow-line"><span class="arrow-text">Card / Apple Pay / Google Pay / SEPA</span></div>
+  </div>
+
+  <div class="layer stripe">
+    <div class="layer-label">
+      <div class="name" style="color:var(--stripe);">Stripe</div>
+      <div class="desc" data-i18n="layerStripeDesc">Payment Gateway</div>
+    </div>
+    <div class="layer-content">
+      <div class="node hl-stripe">
+        <div class="icon">&#x1F4B3;</div>
+        <div class="title" data-i18n="nCheckout">Stripe Checkout</div>
+        <div class="detail" data-i18n="nCheckoutDesc">Handles card input, 3D Secure, fraud detection (Radar).<br><code>POST /v1/payment_intents</code></div>
+      </div>
+      <div class="node hl-stripe">
+        <div class="icon">&#x1F310;</div>
+        <div class="title" data-i18n="nMultiCur">Multi-Currency</div>
+        <div class="detail" data-i18n="nMultiCurDesc">Accepts EUR, USD, GBP, 135+ currencies.<br>Auto-converts to platform currency.</div>
+      </div>
+      <div class="node hl-stripe">
+        <div class="icon">&#x1F6E1;</div>
+        <div class="title" data-i18n="nFraud">Fraud Prevention</div>
+        <div class="detail" data-i18n="nFraudDesc">Stripe Radar ML models.<br>3D Secure authentication.<br>PCI DSS Level 1 compliant.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row mangopay">
+    <div class="arrow-spacer"></div>
+    <div class="arrow-line"><span class="arrow-text" data-i18n="arrowCredit">Funds arrive &rarr; Credit user wallet</span></div>
+  </div>
+
+  <div class="layer mangopay">
+    <div class="layer-label">
+      <div class="name" style="color:var(--mangopay);">Mangopay</div>
+      <div class="desc" data-i18n="layerMangopayDesc">Wallet Engine</div>
+    </div>
+    <div class="layer-content">
+      <div class="node hl-mangopay">
+        <div class="icon">&#x1F4B0;</div>
+        <div class="title" data-i18n="nBuyerWallet">Buyer Wallet</div>
+        <div class="detail" data-i18n="nBuyerWalletDesc">ClawCoin balance.<br>1 CC = $0.10 USD.<br><code>GET /wallets/{id}</code></div>
+      </div>
+      <div class="node hl-escrow">
+        <div class="icon">&#x1F512;</div>
+        <div class="title" data-i18n="nEscrowWallet">Escrow Wallet</div>
+        <div class="detail" data-i18n="nEscrowWalletDesc">Funds locked per trade.<br>Released on delivery confirm.<br><code>POST /transfers</code></div>
+      </div>
+      <div class="node hl-mangopay">
+        <div class="icon">&#x1F4B0;</div>
+        <div class="title" data-i18n="nSellerWallet">Seller Wallet</div>
+        <div class="detail" data-i18n="nSellerWalletDesc">Receives funds after escrow release.<br>Can withdraw to bank.<br><code>POST /payouts</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row escrow">
+    <div class="arrow-spacer"></div>
+    <div class="arrow-line"><span class="arrow-text" data-i18n="arrowRelease">Delivery confirmed &rarr; Escrow released &rarr; Seller credited</span></div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-label">
+      <div class="name" style="color:var(--accent);">DealClaw</div>
+      <div class="desc" data-i18n="layerDealclawDesc">Orchestrator</div>
+    </div>
+    <div class="layer-content">
+      <div class="node">
+        <div class="icon">&#x2699;</div>
+        <div class="title" data-i18n="nTradeEngine">Trade Engine</div>
+        <div class="detail" data-i18n="nTradeEngineDesc">Matches buyers &amp; sellers.<br>Manages negotiation flow.<br>Triggers escrow lock/release.</div>
+      </div>
+      <div class="node">
+        <div class="icon">&#x1F4CA;</div>
+        <div class="title" data-i18n="nLedger">Ledger</div>
+        <div class="detail" data-i18n="nLedgerDesc">Event-sourced transaction log.<br>Every CC movement tracked.<br>Full audit trail.</div>
+      </div>
+      <div class="node">
+        <div class="icon">&#x2696;</div>
+        <div class="title" data-i18n="nDispute">Dispute Resolution</div>
+        <div class="detail" data-i18n="nDisputeDesc">Buyer claims non-delivery.<br>Evidence review.<br>Escrow refund or release.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 data-i18n="h2Trade">Trade Flow &mdash; Step by Step</h2>
+
+<div class="trade-flow">
+  <div class="trade-step">
+    <div class="step-icon si-blue">&#x1F4AC;</div>
+    <div class="step-title" data-i18n="ts1Title">1. Agent Negotiates</div>
+    <div class="step-desc" data-i18n="ts1Desc">Buyer's agent finds listing, sends offer. Seller's agent counters. Deal agreed.</div>
+    <div class="step-provider sp-dealclaw">DealClaw API</div>
+  </div>
+  <div class="trade-step">
+    <div class="step-icon si-mangopay">&#x1F512;</div>
+    <div class="step-title" data-i18n="ts2Title">2. Escrow Lock</div>
+    <div class="step-desc" data-i18n="ts2Desc">Agreed amount moves from buyer wallet to escrow wallet. Locked.</div>
+    <div class="step-provider sp-mangopay">Mangopay</div>
+  </div>
+  <div class="trade-step">
+    <div class="step-icon si-blue">&#x1F4E6;</div>
+    <div class="step-title" data-i18n="ts3Title">3. Seller Ships</div>
+    <div class="step-desc" data-i18n="ts3Desc">Seller uploads tracking. DealClaw monitors shipping status.</div>
+    <div class="step-provider sp-dealclaw">DealClaw API</div>
+  </div>
+  <div class="trade-step">
+    <div class="step-icon si-escrow">&#x2705;</div>
+    <div class="step-title" data-i18n="ts4Title">4. Buyer Confirms</div>
+    <div class="step-desc" data-i18n="ts4Desc">Buyer confirms delivery. Triggers escrow release.</div>
+    <div class="step-provider sp-dealclaw">DealClaw API</div>
+  </div>
+  <div class="trade-step">
+    <div class="step-icon si-mangopay">&#x1F4B8;</div>
+    <div class="step-title" data-i18n="ts5Title">5. Payout</div>
+    <div class="step-desc" data-i18n="ts5Desc">Escrow releases to seller wallet. 1% fee to DealClaw. Seller can withdraw.</div>
+    <div class="step-provider sp-mangopay">Mangopay</div>
+  </div>
+</div>
+
+<h2 data-i18n="h2Api">API Flow &mdash; What the Code Looks Like</h2>
+
+<div class="api-flow">
+<span class="comment">// 1. Buyer deposits EUR via Stripe</span><br>
+<span class="kw">const</span> deposit = <span class="kw">await</span> <span class="fn">stripe.paymentIntents.create</span>({<br>
+<span class="indent">amount: <span class="str">9000</span>,  <span class="comment">// 90 EUR in cents</span></span><br>
+<span class="indent">currency: <span class="str">'eur'</span>,</span><br>
+<span class="indent">metadata: { userId: <span class="str">'usr_abc'</span>, action: <span class="str">'deposit'</span> }</span><br>
+});<br><br>
+<span class="comment">// 2. Webhook: Stripe confirms &rarr; credit Mangopay wallet</span><br>
+<span class="kw">const</span> wallet = <span class="kw">await</span> <span class="fn2">mangopay.Wallets.credit</span>({<br>
+<span class="indent">userId: <span class="str">'usr_abc'</span>,</span><br>
+<span class="indent">amount: <span class="str">900</span>,  <span class="comment">// 900 CC (90 EUR / 0.10)</span></span><br>
+<span class="indent">currency: <span class="str">'CC'</span></span><br>
+});<br><br>
+<span class="comment">// 3. Deal agreed &rarr; lock escrow</span><br>
+<span class="kw">const</span> escrow = <span class="kw">await</span> <span class="fn2">mangopay.Transfers.create</span>({<br>
+<span class="indent">from: buyerWalletId,</span><br>
+<span class="indent">to: escrowWalletId,</span><br>
+<span class="indent">amount: <span class="str">850</span>,  <span class="comment">// trade amount in CC</span></span><br>
+});<br><br>
+<span class="comment">// 4. Delivery confirmed &rarr; release to seller</span><br>
+<span class="kw">await</span> <span class="fn2">mangopay.Transfers.create</span>({<br>
+<span class="indent">from: escrowWalletId,</span><br>
+<span class="indent">to: sellerWalletId,</span><br>
+<span class="indent">amount: <span class="str">841.5</span>,  <span class="comment">// 850 - 1% fee</span></span><br>
+});<br><br>
+<span class="comment">// 5. Seller withdraws to bank</span><br>
+<span class="kw">await</span> <span class="fn2">mangopay.PayOuts.create</span>({<br>
+<span class="indent">walletId: sellerWalletId,</span><br>
+<span class="indent">bankAccountId: <span class="str">'bnk_xyz'</span>,</span><br>
+<span class="indent">amount: <span class="str">841.5</span></span><br>
+});
+</div>
+
+<h2 data-i18n="h2Why">Why Both &mdash; Side by Side</h2>
+
+<table class="comp-table">
+  <thead>
+    <tr>
+      <th data-i18n="thResponsibility">Responsibility</th>
+      <th data-i18n="thProvider">Provider</th>
+      <th data-i18n="thWhy">Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td data-i18n="rowCard">Card payments (deposit)</td>
+      <td><span class="badge b-stripe">Stripe</span></td>
+      <td data-i18n="rowCardWhy">Best checkout UX, Apple/Google Pay, 135+ currencies, Radar fraud detection</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowBank">Bank transfers (deposit)</td>
+      <td><span class="badge b-stripe">Stripe</span></td>
+      <td data-i18n="rowBankWhy">SEPA, ACH, wire &mdash; Stripe handles all payment rails</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowWallets">User wallets (ClawCoin)</td>
+      <td><span class="badge b-mangopay">Mangopay</span></td>
+      <td data-i18n="rowWalletsWhy">Native wallet system &mdash; built for exactly this. E-money licensed.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowEscrow">Escrow (hold funds)</td>
+      <td><span class="badge b-mangopay">Mangopay</span></td>
+      <td data-i18n="rowEscrowWhy">Transfer between wallets with hold. No 7-day auth limit.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowW2W">Wallet-to-wallet transfers</td>
+      <td><span class="badge b-mangopay">Mangopay</span></td>
+      <td data-i18n="rowW2WWhy">Instant, no fees for internal transfers. CC stays in system.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowPayout">Seller payouts (bank)</td>
+      <td><span class="badge b-mangopay">Mangopay</span></td>
+      <td data-i18n="rowPayoutWhy">Direct SEPA/bank payout from wallet. EU-optimized.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowKYC">KYC / Identity</td>
+      <td><span class="badge b-mangopay">Mangopay</span></td>
+      <td data-i18n="rowKYCWhy">Required for e-money wallets. Mangopay handles compliance.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowOrch">Trade orchestration</td>
+      <td><span class="badge b-dealclaw">DealClaw</span></td>
+      <td data-i18n="rowOrchWhy">Our API. Matching, negotiation, escrow triggers, dispute resolution.</td>
+    </tr>
+    <tr>
+      <td data-i18n="rowFraud">Fraud detection</td>
+      <td><span class="badge b-both">Both</span></td>
+      <td data-i18n="rowFraudWhy">Stripe Radar on deposits. DealClaw reputation system on trades.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="tldr">
+  <strong>tl;dr</strong> &mdash; <span data-i18n="tldr">Stripe is the cash register where money enters the system. Mangopay is the vault where it's stored, moved, and released. DealClaw is the brain that decides when and how much moves. Each does what it's best at. No single point of failure.</span>
+</p>
+
+<script>
+var T = {
+  en: {
+    backHome: "\u2190 Back to DealClaw",
+    pageTitle: "Payment Architecture",
+    pageSubtitle: "Stripe as the on-ramp. Mangopay as the engine. DealClaw as the orchestrator.",
+    legStripe: "Stripe (Deposits)", legMangopay: "Mangopay (Wallets + Escrow)",
+    legEscrow: "Escrow (Locked Funds)", legDealclaw: "DealClaw (Orchestration)",
+    h2Layers: "System Layers", h2Trade: "Trade Flow \u2014 Step by Step",
+    h2Api: "API Flow \u2014 What the Code Looks Like", h2Why: "Why Both \u2014 Side by Side",
+    layerUser: "User", layerUserDesc: "Buyer or Seller",
+    layerStripeDesc: "Payment Gateway", layerMangopayDesc: "Wallet Engine", layerDealclawDesc: "Orchestrator",
+    nBuyer: "Buyer", nBuyerDesc: "Wants to purchase via AI agent.<br>Deposits EUR/USD into wallet.",
+    nAgent: "AI Agent", nAgentDesc: "Connected via MCP, SDK, or REST.<br>Searches, negotiates, executes trades.",
+    nSeller: "Seller", nSellerDesc: "Lists products, receives payouts.<br>Withdraws to bank account.",
+    nCheckout: "Stripe Checkout", nCheckoutDesc: "Handles card input, 3D Secure, fraud detection (Radar).<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "Multi-Currency", nMultiCurDesc: "Accepts EUR, USD, GBP, 135+ currencies.<br>Auto-converts to platform currency.",
+    nFraud: "Fraud Prevention", nFraudDesc: "Stripe Radar ML models.<br>3D Secure authentication.<br>PCI DSS Level 1 compliant.",
+    arrowCredit: "Funds arrive \u2192 Credit user wallet",
+    nBuyerWallet: "Buyer Wallet", nBuyerWalletDesc: "ClawCoin balance.<br>1 CC = $0.10 USD.<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "Escrow Wallet", nEscrowWalletDesc: "Funds locked per trade.<br>Released on delivery confirm.<br><code>POST /transfers</code>",
+    nSellerWallet: "Seller Wallet", nSellerWalletDesc: "Receives funds after escrow release.<br>Can withdraw to bank.<br><code>POST /payouts</code>",
+    arrowRelease: "Delivery confirmed \u2192 Escrow released \u2192 Seller credited",
+    nTradeEngine: "Trade Engine", nTradeEngineDesc: "Matches buyers & sellers.<br>Manages negotiation flow.<br>Triggers escrow lock/release.",
+    nLedger: "Ledger", nLedgerDesc: "Event-sourced transaction log.<br>Every CC movement tracked.<br>Full audit trail.",
+    nDispute: "Dispute Resolution", nDisputeDesc: "Buyer claims non-delivery.<br>Evidence review.<br>Escrow refund or release.",
+    ts1Title: "1. Agent Negotiates", ts1Desc: "Buyer\u2019s agent finds listing, sends offer. Seller\u2019s agent counters. Deal agreed.",
+    ts2Title: "2. Escrow Lock", ts2Desc: "Agreed amount moves from buyer wallet to escrow wallet. Locked.",
+    ts3Title: "3. Seller Ships", ts3Desc: "Seller uploads tracking. DealClaw monitors shipping status.",
+    ts4Title: "4. Buyer Confirms", ts4Desc: "Buyer confirms delivery. Triggers escrow release.",
+    ts5Title: "5. Payout", ts5Desc: "Escrow releases to seller wallet. 1% fee to DealClaw. Seller can withdraw.",
+    thResponsibility: "Responsibility", thProvider: "Provider", thWhy: "Why",
+    rowCard: "Card payments (deposit)", rowCardWhy: "Best checkout UX, Apple/Google Pay, 135+ currencies, Radar fraud detection",
+    rowBank: "Bank transfers (deposit)", rowBankWhy: "SEPA, ACH, wire \u2014 Stripe handles all payment rails",
+    rowWallets: "User wallets (ClawCoin)", rowWalletsWhy: "Native wallet system \u2014 built for exactly this. E-money licensed.",
+    rowEscrow: "Escrow (hold funds)", rowEscrowWhy: "Transfer between wallets with hold. No 7-day auth limit.",
+    rowW2W: "Wallet-to-wallet transfers", rowW2WWhy: "Instant, no fees for internal transfers. CC stays in system.",
+    rowPayout: "Seller payouts (bank)", rowPayoutWhy: "Direct SEPA/bank payout from wallet. EU-optimized.",
+    rowKYC: "KYC / Identity", rowKYCWhy: "Required for e-money wallets. Mangopay handles compliance.",
+    rowOrch: "Trade orchestration", rowOrchWhy: "Our API. Matching, negotiation, escrow triggers, dispute resolution.",
+    rowFraud: "Fraud detection", rowFraudWhy: "Stripe Radar on deposits. DealClaw reputation system on trades.",
+    tldr: "Stripe is the cash register where money enters the system. Mangopay is the vault where it\u2019s stored, moved, and released. DealClaw is the brain that decides when and how much moves. Each does what it\u2019s best at. No single point of failure."
+  },
+  de: {
+    backHome: "\u2190 Zur\u00fcck zu DealClaw",
+    pageTitle: "Payment-Architektur",
+    pageSubtitle: "Stripe als Eingang. Mangopay als Motor. DealClaw als Steuerzentrale.",
+    legStripe: "Stripe (Einzahlungen)", legMangopay: "Mangopay (Wallets + Escrow)",
+    legEscrow: "Escrow (Gesperrte Mittel)", legDealclaw: "DealClaw (Orchestrierung)",
+    h2Layers: "System-Ebenen", h2Trade: "Trade-Flow \u2014 Schritt f\u00fcr Schritt",
+    h2Api: "API-Flow \u2014 So sieht der Code aus", h2Why: "Warum beide \u2014 Seite an Seite",
+    layerUser: "Nutzer", layerUserDesc: "K\u00e4ufer oder Verk\u00e4ufer",
+    layerStripeDesc: "Payment Gateway", layerMangopayDesc: "Wallet-Engine", layerDealclawDesc: "Orchestrator",
+    nBuyer: "K\u00e4ufer", nBuyerDesc: "M\u00f6chte per KI-Agent kaufen.<br>Zahlt EUR/USD in Wallet ein.",
+    nAgent: "KI-Agent", nAgentDesc: "Verbunden per MCP, SDK oder REST.<br>Sucht, verhandelt, f\u00fchrt Trades aus.",
+    nSeller: "Verk\u00e4ufer", nSellerDesc: "Listet Produkte, erh\u00e4lt Auszahlungen.<br>Hebt auf Bankkonto ab.",
+    nCheckout: "Stripe Checkout", nCheckoutDesc: "Karteneingabe, 3D Secure, Betrugserkennung (Radar).<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "Multi-W\u00e4hrung", nMultiCurDesc: "Akzeptiert EUR, USD, GBP, 135+ W\u00e4hrungen.<br>Automatische Konvertierung.",
+    nFraud: "Betrugspravention", nFraudDesc: "Stripe Radar ML-Modelle.<br>3D-Secure-Authentifizierung.<br>PCI DSS Level 1.",
+    arrowCredit: "Geld angekommen \u2192 Wallet aufladen",
+    nBuyerWallet: "K\u00e4ufer-Wallet", nBuyerWalletDesc: "ClawCoin-Guthaben.<br>1 CC = 0,10 USD.<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "Escrow-Wallet", nEscrowWalletDesc: "Mittel pro Trade gesperrt.<br>Freigabe bei Lieferbest\u00e4tigung.<br><code>POST /transfers</code>",
+    nSellerWallet: "Verk\u00e4ufer-Wallet", nSellerWalletDesc: "Erh\u00e4lt Mittel nach Escrow-Freigabe.<br>Auszahlung auf Bankkonto.<br><code>POST /payouts</code>",
+    arrowRelease: "Lieferung best\u00e4tigt \u2192 Escrow freigegeben \u2192 Verk\u00e4ufer gutgeschrieben",
+    nTradeEngine: "Trade-Engine", nTradeEngineDesc: "Verbindet K\u00e4ufer & Verk\u00e4ufer.<br>Steuert Verhandlung.<br>L\u00f6st Escrow-Sperre/-Freigabe aus.",
+    nLedger: "Ledger", nLedgerDesc: "Event-basiertes Transaktionsprotokoll.<br>Jede CC-Bewegung dokumentiert.<br>Vollst\u00e4ndiger Audit-Trail.",
+    nDispute: "Streitbeilegung", nDisputeDesc: "K\u00e4ufer meldet Nichtlieferung.<br>Beweispr\u00fcfung.<br>Escrow-R\u00fcckerstattung oder Freigabe.",
+    ts1Title: "1. Agent verhandelt", ts1Desc: "K\u00e4ufer-Agent findet Angebot, sendet Gebot. Verk\u00e4ufer-Agent kontert. Deal vereinbart.",
+    ts2Title: "2. Escrow-Sperre", ts2Desc: "Vereinbarter Betrag wandert vom K\u00e4ufer-Wallet ins Escrow-Wallet. Gesperrt.",
+    ts3Title: "3. Verk\u00e4ufer versendet", ts3Desc: "Verk\u00e4ufer l\u00e4dt Tracking hoch. DealClaw \u00fcberwacht Versandstatus.",
+    ts4Title: "4. K\u00e4ufer best\u00e4tigt", ts4Desc: "K\u00e4ufer best\u00e4tigt Lieferung. L\u00f6st Escrow-Freigabe aus.",
+    ts5Title: "5. Auszahlung", ts5Desc: "Escrow gibt an Verk\u00e4ufer-Wallet frei. 1% Geb\u00fchr an DealClaw. Auszahlung m\u00f6glich.",
+    thResponsibility: "Aufgabe", thProvider: "Anbieter", thWhy: "Warum",
+    rowCard: "Kartenzahlung (Einzahlung)", rowCardWhy: "Beste Checkout-UX, Apple/Google Pay, 135+ W\u00e4hrungen, Radar-Betrugserkennung",
+    rowBank: "Bank\u00fcberweisung (Einzahlung)", rowBankWhy: "SEPA, ACH, Wire \u2014 Stripe bedient alle Zahlungswege",
+    rowWallets: "Nutzer-Wallets (ClawCoin)", rowWalletsWhy: "Natives Wallet-System \u2014 genau daf\u00fcr gebaut. E-Geld-lizenziert.",
+    rowEscrow: "Escrow (Mittel halten)", rowEscrowWhy: "Transfer zwischen Wallets mit Sperre. Kein 7-Tage-Autorisierungslimit.",
+    rowW2W: "Wallet-zu-Wallet-Transfers", rowW2WWhy: "Sofort, keine Geb\u00fchren f\u00fcr interne Transfers. CC bleibt im System.",
+    rowPayout: "Verk\u00e4ufer-Auszahlung (Bank)", rowPayoutWhy: "Direkte SEPA-/Bank-Auszahlung aus Wallet. EU-optimiert.",
+    rowKYC: "KYC / Identit\u00e4t", rowKYCWhy: "Pflicht f\u00fcr E-Geld-Wallets. Mangopay \u00fcbernimmt Compliance.",
+    rowOrch: "Trade-Orchestrierung", rowOrchWhy: "Unsere API. Matching, Verhandlung, Escrow-Ausl\u00f6ser, Streitbeilegung.",
+    rowFraud: "Betrugserkennung", rowFraudWhy: "Stripe Radar bei Einzahlungen. DealClaw-Reputationssystem bei Trades.",
+    tldr: "Stripe ist die Kasse, wo Geld ins System kommt. Mangopay ist der Tresor, wo es gespeichert, bewegt und freigegeben wird. DealClaw ist das Gehirn, das entscheidet wann und wie viel sich bewegt. Jeder macht das, was er am besten kann. Kein Single Point of Failure."
+  },
+  es: {
+    backHome: "\u2190 Volver a DealClaw",
+    pageTitle: "Arquitectura de Pagos",
+    pageSubtitle: "Stripe como entrada. Mangopay como motor. DealClaw como orquestador.",
+    legStripe: "Stripe (Dep\u00f3sitos)", legMangopay: "Mangopay (Wallets + Escrow)",
+    legEscrow: "Escrow (Fondos Bloqueados)", legDealclaw: "DealClaw (Orquestaci\u00f3n)",
+    h2Layers: "Capas del Sistema", h2Trade: "Flujo de Trade \u2014 Paso a Paso",
+    h2Api: "Flujo API \u2014 C\u00f3mo se ve el c\u00f3digo", h2Why: "Por qu\u00e9 ambos \u2014 Lado a Lado",
+    layerUser: "Usuario", layerUserDesc: "Comprador o Vendedor",
+    layerStripeDesc: "Pasarela de Pago", layerMangopayDesc: "Motor de Wallets", layerDealclawDesc: "Orquestador",
+    nBuyer: "Comprador", nBuyerDesc: "Quiere comprar v\u00eda agente IA.<br>Deposita EUR/USD en wallet.",
+    nAgent: "Agente IA", nAgentDesc: "Conectado v\u00eda MCP, SDK o REST.<br>Busca, negocia, ejecuta trades.",
+    nSeller: "Vendedor", nSellerDesc: "Lista productos, recibe pagos.<br>Retira a cuenta bancaria.",
+    nCheckout: "Stripe Checkout", nCheckoutDesc: "Entrada de tarjeta, 3D Secure, detecci\u00f3n de fraude (Radar).<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "Multi-Moneda", nMultiCurDesc: "Acepta EUR, USD, GBP, 135+ monedas.<br>Conversi\u00f3n autom\u00e1tica.",
+    nFraud: "Prevenci\u00f3n de Fraude", nFraudDesc: "Modelos ML de Stripe Radar.<br>Autenticaci\u00f3n 3D Secure.<br>PCI DSS Nivel 1.",
+    arrowCredit: "Fondos llegan \u2192 Acreditar wallet", arrowRelease: "Entrega confirmada \u2192 Escrow liberado \u2192 Vendedor acreditado",
+    nBuyerWallet: "Wallet Comprador", nBuyerWalletDesc: "Saldo ClawCoin.<br>1 CC = $0.10 USD.<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "Wallet Escrow", nEscrowWalletDesc: "Fondos bloqueados por trade.<br>Liberados al confirmar entrega.<br><code>POST /transfers</code>",
+    nSellerWallet: "Wallet Vendedor", nSellerWalletDesc: "Recibe fondos tras liberaci\u00f3n.<br>Puede retirar a banco.<br><code>POST /payouts</code>",
+    nTradeEngine: "Motor de Trades", nTradeEngineDesc: "Conecta compradores y vendedores.<br>Gestiona negociaci\u00f3n.<br>Activa bloqueo/liberaci\u00f3n de escrow.",
+    nLedger: "Libro Mayor", nLedgerDesc: "Registro de transacciones basado en eventos.<br>Cada movimiento de CC rastreado.<br>Auditor\u00eda completa.",
+    nDispute: "Resoluci\u00f3n de Disputas", nDisputeDesc: "Comprador reporta no entrega.<br>Revisi\u00f3n de evidencia.<br>Reembolso o liberaci\u00f3n de escrow.",
+    ts1Title: "1. Agente Negocia", ts1Desc: "Agente del comprador encuentra listado, env\u00eda oferta. Agente del vendedor contraoferta. Acuerdo.",
+    ts2Title: "2. Bloqueo Escrow", ts2Desc: "Monto acordado se mueve del wallet comprador al wallet escrow. Bloqueado.",
+    ts3Title: "3. Vendedor Env\u00eda", ts3Desc: "Vendedor sube tracking. DealClaw monitorea estado de env\u00edo.",
+    ts4Title: "4. Comprador Confirma", ts4Desc: "Comprador confirma entrega. Activa liberaci\u00f3n de escrow.",
+    ts5Title: "5. Pago", ts5Desc: "Escrow libera al wallet vendedor. 1% comisi\u00f3n a DealClaw. Vendedor puede retirar.",
+    thResponsibility: "Responsabilidad", thProvider: "Proveedor", thWhy: "Por qu\u00e9",
+    rowCard: "Pagos con tarjeta (dep\u00f3sito)", rowCardWhy: "Mejor UX de checkout, Apple/Google Pay, 135+ monedas, detecci\u00f3n de fraude Radar",
+    rowBank: "Transferencias bancarias", rowBankWhy: "SEPA, ACH, wire \u2014 Stripe maneja todas las v\u00edas de pago",
+    rowWallets: "Wallets de usuario (ClawCoin)", rowWalletsWhy: "Sistema nativo de wallets \u2014 construido para esto. Licencia de dinero electr\u00f3nico.",
+    rowEscrow: "Escrow (retener fondos)", rowEscrowWhy: "Transferencia entre wallets con retenci\u00f3n. Sin l\u00edmite de 7 d\u00edas.",
+    rowW2W: "Transferencias wallet-a-wallet", rowW2WWhy: "Instant\u00e1neo, sin comisiones internas. CC permanece en el sistema.",
+    rowPayout: "Pagos a vendedores (banco)", rowPayoutWhy: "Pago SEPA/bancario directo desde wallet. Optimizado para UE.",
+    rowKYC: "KYC / Identidad", rowKYCWhy: "Requerido para wallets de dinero electr\u00f3nico. Mangopay gestiona compliance.",
+    rowOrch: "Orquestaci\u00f3n de trades", rowOrchWhy: "Nuestra API. Matching, negociaci\u00f3n, triggers de escrow, resoluci\u00f3n de disputas.",
+    rowFraud: "Detecci\u00f3n de fraude", rowFraudWhy: "Stripe Radar en dep\u00f3sitos. Sistema de reputaci\u00f3n DealClaw en trades.",
+    tldr: "Stripe es la caja donde el dinero entra al sistema. Mangopay es la b\u00f3veda donde se almacena, mueve y libera. DealClaw es el cerebro que decide cu\u00e1ndo y cu\u00e1nto se mueve. Cada uno hace lo que mejor sabe. Sin punto \u00fanico de fallo."
+  },
+  fr: {
+    backHome: "\u2190 Retour \u00e0 DealClaw",
+    pageTitle: "Architecture de Paiement",
+    pageSubtitle: "Stripe comme entr\u00e9e. Mangopay comme moteur. DealClaw comme orchestrateur.",
+    legStripe: "Stripe (D\u00e9p\u00f4ts)", legMangopay: "Mangopay (Wallets + Escrow)",
+    legEscrow: "Escrow (Fonds Bloqu\u00e9s)", legDealclaw: "DealClaw (Orchestration)",
+    h2Layers: "Couches Syst\u00e8me", h2Trade: "Flux de Trade \u2014 \u00c9tape par \u00c9tape",
+    h2Api: "Flux API \u2014 Le Code en Pratique", h2Why: "Pourquoi les Deux \u2014 C\u00f4te \u00e0 C\u00f4te",
+    layerUser: "Utilisateur", layerUserDesc: "Acheteur ou Vendeur",
+    layerStripeDesc: "Passerelle de Paiement", layerMangopayDesc: "Moteur de Wallets", layerDealclawDesc: "Orchestrateur",
+    nBuyer: "Acheteur", nBuyerDesc: "Veut acheter via agent IA.<br>D\u00e9pose EUR/USD dans le wallet.",
+    nAgent: "Agent IA", nAgentDesc: "Connect\u00e9 via MCP, SDK ou REST.<br>Recherche, n\u00e9gocie, ex\u00e9cute.",
+    nSeller: "Vendeur", nSellerDesc: "Liste des produits, re\u00e7oit des paiements.<br>Retire sur compte bancaire.",
+    nCheckout: "Stripe Checkout", nCheckoutDesc: "Saisie carte, 3D Secure, d\u00e9tection de fraude (Radar).<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "Multi-Devises", nMultiCurDesc: "Accepte EUR, USD, GBP, 135+ devises.<br>Conversion automatique.",
+    nFraud: "Pr\u00e9vention Fraude", nFraudDesc: "Mod\u00e8les ML Stripe Radar.<br>Authentification 3D Secure.<br>PCI DSS Niveau 1.",
+    arrowCredit: "Fonds arriv\u00e9s \u2192 Cr\u00e9diter le wallet", arrowRelease: "Livraison confirm\u00e9e \u2192 Escrow lib\u00e9r\u00e9 \u2192 Vendeur cr\u00e9dit\u00e9",
+    nBuyerWallet: "Wallet Acheteur", nBuyerWalletDesc: "Solde ClawCoin.<br>1 CC = 0,10 $ USD.<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "Wallet Escrow", nEscrowWalletDesc: "Fonds bloqu\u00e9s par trade.<br>Lib\u00e9r\u00e9s \u00e0 la confirmation.<br><code>POST /transfers</code>",
+    nSellerWallet: "Wallet Vendeur", nSellerWalletDesc: "Re\u00e7oit les fonds apr\u00e8s lib\u00e9ration.<br>Retrait bancaire possible.<br><code>POST /payouts</code>",
+    nTradeEngine: "Moteur de Trades", nTradeEngineDesc: "Connecte acheteurs et vendeurs.<br>G\u00e8re la n\u00e9gociation.<br>D\u00e9clenche blocage/lib\u00e9ration escrow.",
+    nLedger: "Registre", nLedgerDesc: "Journal de transactions \u00e9v\u00e9nementiel.<br>Chaque mouvement CC trac\u00e9.<br>Piste d\u2019audit compl\u00e8te.",
+    nDispute: "R\u00e9solution de Litiges", nDisputeDesc: "Acheteur signale non-livraison.<br>Examen des preuves.<br>Remboursement ou lib\u00e9ration escrow.",
+    ts1Title: "1. Agent N\u00e9gocie", ts1Desc: "Agent acheteur trouve l\u2019annonce, envoie offre. Agent vendeur contre-offre. Accord.",
+    ts2Title: "2. Blocage Escrow", ts2Desc: "Montant convenu transf\u00e9r\u00e9 du wallet acheteur au wallet escrow. Bloqu\u00e9.",
+    ts3Title: "3. Vendeur Exp\u00e9die", ts3Desc: "Vendeur upload le suivi. DealClaw surveille le statut.",
+    ts4Title: "4. Acheteur Confirme", ts4Desc: "Acheteur confirme la livraison. D\u00e9clenche la lib\u00e9ration escrow.",
+    ts5Title: "5. Paiement", ts5Desc: "Escrow lib\u00e8re vers wallet vendeur. 1% frais DealClaw. Retrait possible.",
+    thResponsibility: "Responsabilit\u00e9", thProvider: "Fournisseur", thWhy: "Pourquoi",
+    rowCard: "Paiements carte (d\u00e9p\u00f4t)", rowCardWhy: "Meilleur UX checkout, Apple/Google Pay, 135+ devises, d\u00e9tection fraude Radar",
+    rowBank: "Virements bancaires", rowBankWhy: "SEPA, ACH, virement \u2014 Stripe g\u00e8re toutes les rails de paiement",
+    rowWallets: "Wallets utilisateur (ClawCoin)", rowWalletsWhy: "Syst\u00e8me de wallets natif \u2014 con\u00e7u pour \u00e7a. Licence monnaie \u00e9lectronique.",
+    rowEscrow: "Escrow (r\u00e9tention de fonds)", rowEscrowWhy: "Transfert entre wallets avec r\u00e9tention. Pas de limite de 7 jours.",
+    rowW2W: "Transferts wallet-\u00e0-wallet", rowW2WWhy: "Instantan\u00e9, sans frais internes. CC reste dans le syst\u00e8me.",
+    rowPayout: "Paiements vendeurs (banque)", rowPayoutWhy: "Paiement SEPA/bancaire direct depuis wallet. Optimis\u00e9 UE.",
+    rowKYC: "KYC / Identit\u00e9", rowKYCWhy: "Obligatoire pour wallets monnaie \u00e9lectronique. Mangopay g\u00e8re la conformit\u00e9.",
+    rowOrch: "Orchestration des trades", rowOrchWhy: "Notre API. Matching, n\u00e9gociation, d\u00e9clencheurs escrow, r\u00e9solution de litiges.",
+    rowFraud: "D\u00e9tection de fraude", rowFraudWhy: "Stripe Radar sur d\u00e9p\u00f4ts. Syst\u00e8me de r\u00e9putation DealClaw sur trades.",
+    tldr: "Stripe est la caisse o\u00f9 l\u2019argent entre. Mangopay est le coffre o\u00f9 il est stock\u00e9, d\u00e9plac\u00e9 et lib\u00e9r\u00e9. DealClaw est le cerveau qui d\u00e9cide quand et combien bouge. Chacun fait ce qu\u2019il fait le mieux. Aucun point unique de d\u00e9faillance."
+  },
+  zh: {
+    backHome: "\u2190 \u8fd4\u56deDealClaw",
+    pageTitle: "\u652f\u4ed8\u67b6\u6784",
+    pageSubtitle: "Stripe\u4f5c\u4e3a\u5165\u53e3\u3002Mangopay\u4f5c\u4e3a\u5f15\u64ce\u3002DealClaw\u4f5c\u4e3a\u7f16\u6392\u5668\u3002",
+    legStripe: "Stripe\uff08\u5145\u503c\uff09", legMangopay: "Mangopay\uff08\u94b1\u5305 + \u6258\u7ba1\uff09",
+    legEscrow: "\u6258\u7ba1\uff08\u9501\u5b9a\u8d44\u91d1\uff09", legDealclaw: "DealClaw\uff08\u7f16\u6392\uff09",
+    h2Layers: "\u7cfb\u7edf\u5c42\u7ea7", h2Trade: "\u4ea4\u6613\u6d41\u7a0b \u2014 \u6b65\u9aa4\u8bf4\u660e",
+    h2Api: "API\u6d41\u7a0b \u2014 \u4ee3\u7801\u793a\u4f8b", h2Why: "\u4e3a\u4ec0\u4e48\u4e24\u8005\u517c\u7528 \u2014 \u5bf9\u6bd4",
+    layerUser: "\u7528\u6237", layerUserDesc: "\u4e70\u5bb6\u6216\u5356\u5bb6",
+    layerStripeDesc: "\u652f\u4ed8\u7f51\u5173", layerMangopayDesc: "\u94b1\u5305\u5f15\u64ce", layerDealclawDesc: "\u7f16\u6392\u5668",
+    nBuyer: "\u4e70\u5bb6", nBuyerDesc: "\u901a\u8fc7AI\u4ee3\u7406\u8d2d\u4e70\u3002<br>\u5c06EUR/USD\u5145\u5165\u94b1\u5305\u3002",
+    nAgent: "AI\u4ee3\u7406", nAgentDesc: "\u901a\u8fc7MCP\u3001SDK\u6216REST\u8fde\u63a5\u3002<br>\u641c\u7d22\u3001\u8c08\u5224\u3001\u6267\u884c\u4ea4\u6613\u3002",
+    nSeller: "\u5356\u5bb6", nSellerDesc: "\u4e0a\u67b6\u4ea7\u54c1\uff0c\u63a5\u6536\u4ed8\u6b3e\u3002<br>\u63d0\u73b0\u5230\u94f6\u884c\u8d26\u6237\u3002",
+    nCheckout: "Stripe\u7ed3\u8d26", nCheckoutDesc: "\u5904\u7406\u5361\u7247\u8f93\u5165\u30013D Secure\u3001\u6b3a\u8bc8\u68c0\u6d4b(Radar)\u3002<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "\u591a\u5e01\u79cd", nMultiCurDesc: "\u63a5\u53d7EUR\u3001USD\u3001GBP\u3001135+\u5e01\u79cd\u3002<br>\u81ea\u52a8\u8f6c\u6362\u3002",
+    nFraud: "\u6b3a\u8bc8\u9632\u62a4", nFraudDesc: "Stripe Radar ML\u6a21\u578b\u3002<br>3D Secure\u8ba4\u8bc1\u3002<br>PCI DSS\u7b49\u7ea71\u3002",
+    arrowCredit: "\u8d44\u91d1\u5230\u8d26 \u2192 \u94b1\u5305\u5145\u503c", arrowRelease: "\u786e\u8ba4\u6536\u8d27 \u2192 \u6258\u7ba1\u91ca\u653e \u2192 \u5356\u5bb6\u5165\u8d26",
+    nBuyerWallet: "\u4e70\u5bb6\u94b1\u5305", nBuyerWalletDesc: "ClawCoin\u4f59\u989d\u3002<br>1 CC = $0.10 USD\u3002<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "\u6258\u7ba1\u94b1\u5305", nEscrowWalletDesc: "\u6bcf\u7b14\u4ea4\u6613\u9501\u5b9a\u8d44\u91d1\u3002<br>\u786e\u8ba4\u6536\u8d27\u540e\u91ca\u653e\u3002<br><code>POST /transfers</code>",
+    nSellerWallet: "\u5356\u5bb6\u94b1\u5305", nSellerWalletDesc: "\u6258\u7ba1\u91ca\u653e\u540e\u6536\u6b3e\u3002<br>\u53ef\u63d0\u73b0\u5230\u94f6\u884c\u3002<br><code>POST /payouts</code>",
+    nTradeEngine: "\u4ea4\u6613\u5f15\u64ce", nTradeEngineDesc: "\u5339\u914d\u4e70\u5356\u53cc\u65b9\u3002<br>\u7ba1\u7406\u8c08\u5224\u6d41\u7a0b\u3002<br>\u89e6\u53d1\u6258\u7ba1\u9501\u5b9a/\u91ca\u653e\u3002",
+    nLedger: "\u8d26\u672c", nLedgerDesc: "\u4e8b\u4ef6\u6e90\u4ea4\u6613\u65e5\u5fd7\u3002<br>\u6bcf\u7b14CC\u79fb\u52a8\u8bb0\u5f55\u3002<br>\u5b8c\u6574\u5ba1\u8ba1\u8f68\u8ff9\u3002",
+    nDispute: "\u4e89\u8bae\u89e3\u51b3", nDisputeDesc: "\u4e70\u5bb6\u62a5\u544a\u672a\u6536\u8d27\u3002<br>\u8bc1\u636e\u5ba1\u67e5\u3002<br>\u6258\u7ba1\u9000\u6b3e\u6216\u91ca\u653e\u3002",
+    ts1Title: "1. \u4ee3\u7406\u8c08\u5224", ts1Desc: "\u4e70\u5bb6\u4ee3\u7406\u627e\u5230\u5217\u8868\uff0c\u53d1\u9001\u62a5\u4ef7\u3002\u5356\u5bb6\u4ee3\u7406\u8fd8\u4ef7\u3002\u8fbe\u6210\u534f\u8bae\u3002",
+    ts2Title: "2. \u6258\u7ba1\u9501\u5b9a", ts2Desc: "\u534f\u8bae\u91d1\u989d\u4ece\u4e70\u5bb6\u94b1\u5305\u8f6c\u5165\u6258\u7ba1\u94b1\u5305\u3002\u9501\u5b9a\u3002",
+    ts3Title: "3. \u5356\u5bb6\u53d1\u8d27", ts3Desc: "\u5356\u5bb6\u4e0a\u4f20\u7269\u6d41\u4fe1\u606f\u3002DealClaw\u76d1\u63a7\u7269\u6d41\u72b6\u6001\u3002",
+    ts4Title: "4. \u4e70\u5bb6\u786e\u8ba4", ts4Desc: "\u4e70\u5bb6\u786e\u8ba4\u6536\u8d27\u3002\u89e6\u53d1\u6258\u7ba1\u91ca\u653e\u3002",
+    ts5Title: "5. \u4ed8\u6b3e", ts5Desc: "\u6258\u7ba1\u91ca\u653e\u5230\u5356\u5bb6\u94b1\u5305\u3002DealClaw\u62541%\u624b\u7eed\u8d39\u3002\u53ef\u63d0\u73b0\u3002",
+    thResponsibility: "\u804c\u8d23", thProvider: "\u63d0\u4f9b\u5546", thWhy: "\u539f\u56e0",
+    rowCard: "\u5361\u7247\u652f\u4ed8\uff08\u5145\u503c\uff09", rowCardWhy: "\u6700\u4f73\u7ed3\u8d26\u4f53\u9a8c\uff0cApple/Google Pay\uff0c135+\u5e01\u79cd\uff0cRadar\u6b3a\u8bc8\u68c0\u6d4b",
+    rowBank: "\u94f6\u884c\u8f6c\u8d26\uff08\u5145\u503c\uff09", rowBankWhy: "SEPA\u3001ACH\u3001\u7535\u6c47 \u2014 Stripe\u5904\u7406\u6240\u6709\u652f\u4ed8\u6e20\u9053",
+    rowWallets: "\u7528\u6237\u94b1\u5305(ClawCoin)", rowWalletsWhy: "\u539f\u751f\u94b1\u5305\u7cfb\u7edf \u2014 \u4e13\u4e3a\u6b64\u800c\u5efa\u3002\u7535\u5b50\u8d27\u5e01\u8bb8\u53ef\u3002",
+    rowEscrow: "\u6258\u7ba1\uff08\u6301\u6709\u8d44\u91d1\uff09", rowEscrowWhy: "\u94b1\u5305\u95f4\u8f6c\u8d26\u5e76\u6301\u6709\u3002\u65e07\u5929\u6388\u6743\u9650\u5236\u3002",
+    rowW2W: "\u94b1\u5305\u5230\u94b1\u5305\u8f6c\u8d26", rowW2WWhy: "\u5373\u65f6\uff0c\u5185\u90e8\u8f6c\u8d26\u65e0\u624b\u7eed\u8d39\u3002CC\u4fdd\u7559\u5728\u7cfb\u7edf\u5185\u3002",
+    rowPayout: "\u5356\u5bb6\u4ed8\u6b3e\uff08\u94f6\u884c\uff09", rowPayoutWhy: "\u4eceMangopay\u94b1\u5305\u76f4\u63a5SEPA/\u94f6\u884c\u4ed8\u6b3e\u3002\u6b27\u76df\u4f18\u5316\u3002",
+    rowKYC: "KYC / \u8eab\u4efd\u9a8c\u8bc1", rowKYCWhy: "\u7535\u5b50\u8d27\u5e01\u94b1\u5305\u5fc5\u9700\u3002Mangopay\u5904\u7406\u5408\u89c4\u3002",
+    rowOrch: "\u4ea4\u6613\u7f16\u6392", rowOrchWhy: "\u6211\u4eec\u7684API\u3002\u5339\u914d\u3001\u8c08\u5224\u3001\u6258\u7ba1\u89e6\u53d1\u3001\u4e89\u8bae\u89e3\u51b3\u3002",
+    rowFraud: "\u6b3a\u8bc8\u68c0\u6d4b", rowFraudWhy: "Stripe Radar\u7528\u4e8e\u5145\u503c\u3002DealClaw\u4fe1\u8a89\u7cfb\u7edf\u7528\u4e8e\u4ea4\u6613\u3002",
+    tldr: "Stripe\u662f\u6536\u94f6\u53f0\uff0c\u94b1\u4ece\u8fd9\u91cc\u8fdb\u5165\u7cfb\u7edf\u3002Mangopay\u662f\u4fdd\u9669\u5e93\uff0c\u94b1\u5728\u8fd9\u91cc\u5b58\u50a8\u3001\u79fb\u52a8\u548c\u91ca\u653e\u3002DealClaw\u662f\u5927\u8111\uff0c\u51b3\u5b9a\u4f55\u65f6\u79fb\u52a8\u591a\u5c11\u3002\u5404\u53f8\u5176\u804c\u3002\u65e0\u5355\u70b9\u6545\u969c\u3002"
+  },
+  ar: {
+    backHome: "\u2192 \u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 DealClaw",
+    pageTitle: "\u0647\u064a\u0643\u0644\u0629 \u0627\u0644\u062f\u0641\u0639",
+    pageSubtitle: "Stripe \u0643\u0645\u062f\u062e\u0644. Mangopay \u0643\u0645\u062d\u0631\u0643. DealClaw \u0643\u0645\u0646\u0633\u0642.",
+    legStripe: "Stripe (\u0627\u0644\u0625\u064a\u062f\u0627\u0639\u0627\u062a)", legMangopay: "Mangopay (\u0627\u0644\u0645\u062d\u0627\u0641\u0638 + \u0627\u0644\u0636\u0645\u0627\u0646)",
+    legEscrow: "\u0627\u0644\u0636\u0645\u0627\u0646 (\u0623\u0645\u0648\u0627\u0644 \u0645\u0642\u0641\u0644\u0629)", legDealclaw: "DealClaw (\u0627\u0644\u062a\u0646\u0633\u064a\u0642)",
+    h2Layers: "\u0637\u0628\u0642\u0627\u062a \u0627\u0644\u0646\u0638\u0627\u0645", h2Trade: "\u0645\u0633\u0627\u0631 \u0627\u0644\u062a\u062f\u0627\u0648\u0644 \u2014 \u062e\u0637\u0648\u0629 \u0628\u062e\u0637\u0648\u0629",
+    h2Api: "\u0645\u0633\u0627\u0631 API \u2014 \u0643\u064a\u0641 \u064a\u0628\u062f\u0648 \u0627\u0644\u0643\u0648\u062f", h2Why: "\u0644\u0645\u0627\u0630\u0627 \u0643\u0644\u0627\u0647\u0645\u0627 \u2014 \u062c\u0646\u0628\u064b\u0627 \u0625\u0644\u0649 \u062c\u0646\u0628",
+    layerUser: "\u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645", layerUserDesc: "\u0645\u0634\u062a\u0631\u064a \u0623\u0648 \u0628\u0627\u0626\u0639",
+    layerStripeDesc: "\u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u062f\u0641\u0639", layerMangopayDesc: "\u0645\u062d\u0631\u0643 \u0627\u0644\u0645\u062d\u0627\u0641\u0638", layerDealclawDesc: "\u0627\u0644\u0645\u0646\u0633\u0642",
+    nBuyer: "\u0627\u0644\u0645\u0634\u062a\u0631\u064a", nBuyerDesc: "\u064a\u0631\u064a\u062f \u0627\u0644\u0634\u0631\u0627\u0621 \u0639\u0628\u0631 \u0648\u0643\u064a\u0644 \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064a.<br>\u064a\u0648\u062f\u0639 EUR/USD \u0641\u064a \u0627\u0644\u0645\u062d\u0641\u0638\u0629.",
+    nAgent: "\u0648\u0643\u064a\u0644 AI", nAgentDesc: "\u0645\u062a\u0635\u0644 \u0639\u0628\u0631 MCP \u0623\u0648 SDK \u0623\u0648 REST.<br>\u064a\u0628\u062d\u062b\u060c \u064a\u062a\u0641\u0627\u0648\u0636\u060c \u064a\u0646\u0641\u0630 \u0627\u0644\u0635\u0641\u0642\u0627\u062a.",
+    nSeller: "\u0627\u0644\u0628\u0627\u0626\u0639", nSellerDesc: "\u064a\u0639\u0631\u0636 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a\u060c \u064a\u0633\u062a\u0644\u0645 \u0627\u0644\u0645\u062f\u0641\u0648\u0639\u0627\u062a.<br>\u064a\u0633\u062d\u0628 \u0625\u0644\u0649 \u0627\u0644\u062d\u0633\u0627\u0628 \u0627\u0644\u0628\u0646\u0643\u064a.",
+    nCheckout: "Stripe Checkout", nCheckoutDesc: "\u0625\u062f\u062e\u0627\u0644 \u0627\u0644\u0628\u0637\u0627\u0642\u0629\u060c 3D Secure\u060c \u0643\u0634\u0641 \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0644 (Radar).<br><code>POST /v1/payment_intents</code>",
+    nMultiCur: "\u0645\u062a\u0639\u062f\u062f \u0627\u0644\u0639\u0645\u0644\u0627\u062a", nMultiCurDesc: "\u064a\u0642\u0628\u0644 EUR\u060c USD\u060c GBP\u060c 135+ \u0639\u0645\u0644\u0629.<br>\u062a\u062d\u0648\u064a\u0644 \u062a\u0644\u0642\u0627\u0626\u064a.",
+    nFraud: "\u0645\u0646\u0639 \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0644", nFraudDesc: "\u0646\u0645\u0627\u0630\u062c Stripe Radar ML.<br>\u0645\u0635\u0627\u062f\u0642\u0629 3D Secure.<br>PCI DSS \u0627\u0644\u0645\u0633\u062a\u0648\u0649 1.",
+    arrowCredit: "\u0648\u0635\u0644\u062a \u0627\u0644\u0623\u0645\u0648\u0627\u0644 \u2192 \u0634\u062d\u0646 \u0627\u0644\u0645\u062d\u0641\u0638\u0629", arrowRelease: "\u062a\u0645 \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u062a\u0633\u0644\u064a\u0645 \u2192 \u062a\u062d\u0631\u064a\u0631 \u0627\u0644\u0636\u0645\u0627\u0646 \u2192 \u0625\u064a\u062f\u0627\u0639 \u0644\u0644\u0628\u0627\u0626\u0639",
+    nBuyerWallet: "\u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0645\u0634\u062a\u0631\u064a", nBuyerWalletDesc: "\u0631\u0635\u064a\u062f ClawCoin.<br>1 CC = $0.10 USD.<br><code>GET /wallets/{id}</code>",
+    nEscrowWallet: "\u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0636\u0645\u0627\u0646", nEscrowWalletDesc: "\u0623\u0645\u0648\u0627\u0644 \u0645\u0642\u0641\u0644\u0629 \u0644\u0643\u0644 \u0635\u0641\u0642\u0629.<br>\u062a\u064f\u062d\u0631\u0631 \u0639\u0646\u062f \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u062a\u0633\u0644\u064a\u0645.<br><code>POST /transfers</code>",
+    nSellerWallet: "\u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0628\u0627\u0626\u0639", nSellerWalletDesc: "\u064a\u0633\u062a\u0644\u0645 \u0627\u0644\u0623\u0645\u0648\u0627\u0644 \u0628\u0639\u062f \u0627\u0644\u062a\u062d\u0631\u064a\u0631.<br>\u064a\u0645\u0643\u0646 \u0627\u0644\u0633\u062d\u0628 \u0644\u0644\u0628\u0646\u0643.<br><code>POST /payouts</code>",
+    nTradeEngine: "\u0645\u062d\u0631\u0643 \u0627\u0644\u062a\u062f\u0627\u0648\u0644", nTradeEngineDesc: "\u064a\u0637\u0627\u0628\u0642 \u0627\u0644\u0645\u0634\u062a\u0631\u064a\u0646 \u0648\u0627\u0644\u0628\u0627\u0626\u0639\u064a\u0646.<br>\u064a\u062f\u064a\u0631 \u0627\u0644\u062a\u0641\u0627\u0648\u0636.<br>\u064a\u0641\u0639\u0651\u0644 \u0642\u0641\u0644/\u062a\u062d\u0631\u064a\u0631 \u0627\u0644\u0636\u0645\u0627\u0646.",
+    nLedger: "\u0627\u0644\u062f\u0641\u062a\u0631", nLedgerDesc: "\u0633\u062c\u0644 \u0645\u0639\u0627\u0645\u0644\u0627\u062a \u0642\u0627\u0626\u0645 \u0639\u0644\u0649 \u0627\u0644\u0623\u062d\u062f\u0627\u062b.<br>\u0643\u0644 \u062d\u0631\u0643\u0629 CC \u0645\u0633\u062c\u0644\u0629.<br>\u0645\u0633\u0627\u0631 \u062a\u062f\u0642\u064a\u0642 \u0643\u0627\u0645\u0644.",
+    nDispute: "\u062d\u0644 \u0627\u0644\u0646\u0632\u0627\u0639\u0627\u062a", nDisputeDesc: "\u0627\u0644\u0645\u0634\u062a\u0631\u064a \u064a\u0628\u0644\u063a \u0639\u0646 \u0639\u062f\u0645 \u0627\u0644\u062a\u0633\u0644\u064a\u0645.<br>\u0645\u0631\u0627\u062c\u0639\u0629 \u0627\u0644\u0623\u062f\u0644\u0629.<br>\u0627\u0633\u062a\u0631\u062f\u0627\u062f \u0623\u0648 \u062a\u062d\u0631\u064a\u0631 \u0627\u0644\u0636\u0645\u0627\u0646.",
+    ts1Title: "1. \u0627\u0644\u0648\u0643\u064a\u0644 \u064a\u062a\u0641\u0627\u0648\u0636", ts1Desc: "\u0648\u0643\u064a\u0644 \u0627\u0644\u0645\u0634\u062a\u0631\u064a \u064a\u062c\u062f \u0627\u0644\u0639\u0631\u0636\u060c \u064a\u0631\u0633\u0644 \u0639\u0631\u0636\u064b\u0627. \u0648\u0643\u064a\u0644 \u0627\u0644\u0628\u0627\u0626\u0639 \u064a\u0631\u062f. \u0627\u062a\u0641\u0627\u0642.",
+    ts2Title: "2. \u0642\u0641\u0644 \u0627\u0644\u0636\u0645\u0627\u0646", ts2Desc: "\u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u062a\u0641\u0642 \u0639\u0644\u064a\u0647 \u064a\u0646\u062a\u0642\u0644 \u0645\u0646 \u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0645\u0634\u062a\u0631\u064a \u0625\u0644\u0649 \u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0636\u0645\u0627\u0646. \u0645\u0642\u0641\u0644.",
+    ts3Title: "3. \u0627\u0644\u0628\u0627\u0626\u0639 \u064a\u0634\u062d\u0646", ts3Desc: "\u0627\u0644\u0628\u0627\u0626\u0639 \u064a\u0631\u0641\u0639 \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u062a\u062a\u0628\u0639. DealClaw \u064a\u0631\u0627\u0642\u0628 \u062d\u0627\u0644\u0629 \u0627\u0644\u0634\u062d\u0646.",
+    ts4Title: "4. \u0627\u0644\u0645\u0634\u062a\u0631\u064a \u064a\u0624\u0643\u062f", ts4Desc: "\u0627\u0644\u0645\u0634\u062a\u0631\u064a \u064a\u0624\u0643\u062f \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645. \u064a\u0641\u0639\u0651\u0644 \u062a\u062d\u0631\u064a\u0631 \u0627\u0644\u0636\u0645\u0627\u0646.",
+    ts5Title: "5. \u0627\u0644\u062f\u0641\u0639", ts5Desc: "\u0627\u0644\u0636\u0645\u0627\u0646 \u064a\u062d\u0631\u0631 \u0625\u0644\u0649 \u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0628\u0627\u0626\u0639. 1% \u0631\u0633\u0648\u0645 \u0644DealClaw. \u064a\u0645\u0643\u0646 \u0627\u0644\u0633\u062d\u0628.",
+    thResponsibility: "\u0627\u0644\u0645\u0633\u0624\u0648\u0644\u064a\u0629", thProvider: "\u0627\u0644\u0645\u0632\u0648\u062f", thWhy: "\u0644\u0645\u0627\u0630\u0627",
+    rowCard: "\u062f\u0641\u0639 \u0628\u0627\u0644\u0628\u0637\u0627\u0642\u0629 (\u0625\u064a\u062f\u0627\u0639)", rowCardWhy: "\u0623\u0641\u0636\u0644 \u062a\u062c\u0631\u0628\u0629 \u062f\u0641\u0639\u060c Apple/Google Pay\u060c 135+ \u0639\u0645\u0644\u0629\u060c \u0643\u0634\u0641 \u0627\u062d\u062a\u064a\u0627\u0644 Radar",
+    rowBank: "\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a (\u0625\u064a\u062f\u0627\u0639)", rowBankWhy: "SEPA\u060c ACH\u060c \u062d\u0648\u0627\u0644\u0629 \u2014 Stripe \u064a\u062a\u0639\u0627\u0645\u0644 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0642\u0646\u0648\u0627\u062a \u0627\u0644\u062f\u0641\u0639",
+    rowWallets: "\u0645\u062d\u0627\u0641\u0638 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 (ClawCoin)", rowWalletsWhy: "\u0646\u0638\u0627\u0645 \u0645\u062d\u0627\u0641\u0638 \u0623\u0635\u0644\u064a \u2014 \u0645\u0635\u0645\u0645 \u0644\u0647\u0630\u0627. \u0645\u0631\u062e\u0635 \u0644\u0644\u0646\u0642\u0648\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a\u0629.",
+    rowEscrow: "\u0627\u0644\u0636\u0645\u0627\u0646 (\u0627\u062d\u062a\u062c\u0627\u0632 \u0627\u0644\u0623\u0645\u0648\u0627\u0644)", rowEscrowWhy: "\u062a\u062d\u0648\u064a\u0644 \u0628\u064a\u0646 \u0627\u0644\u0645\u062d\u0627\u0641\u0638 \u0645\u0639 \u0627\u062d\u062a\u062c\u0627\u0632. \u0628\u062f\u0648\u0646 \u062d\u062f 7 \u0623\u064a\u0627\u0645.",
+    rowW2W: "\u062a\u062d\u0648\u064a\u0644 \u0645\u062d\u0641\u0638\u0629 \u0644\u0645\u062d\u0641\u0638\u0629", rowW2WWhy: "\u0641\u0648\u0631\u064a\u060c \u0628\u062f\u0648\u0646 \u0631\u0633\u0648\u0645 \u062f\u0627\u062e\u0644\u064a\u0629. CC \u064a\u0628\u0642\u0649 \u0641\u064a \u0627\u0644\u0646\u0638\u0627\u0645.",
+    rowPayout: "\u0645\u062f\u0641\u0648\u0639\u0627\u062a \u0627\u0644\u0628\u0627\u0626\u0639 (\u0628\u0646\u0643)", rowPayoutWhy: "\u062f\u0641\u0639 SEPA/\u0628\u0646\u0643\u064a \u0645\u0628\u0627\u0634\u0631 \u0645\u0646 \u0627\u0644\u0645\u062d\u0641\u0638\u0629. \u0645\u062d\u0633\u0651\u0646 \u0644\u0644\u0627\u062a\u062d\u0627\u062f \u0627\u0644\u0623\u0648\u0631\u0648\u0628\u064a.",
+    rowKYC: "KYC / \u0627\u0644\u0647\u0648\u064a\u0629", rowKYCWhy: "\u0645\u0637\u0644\u0648\u0628 \u0644\u0645\u062d\u0627\u0641\u0638 \u0627\u0644\u0646\u0642\u0648\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a\u0629. Mangopay \u064a\u062a\u0648\u0644\u0649 \u0627\u0644\u0627\u0645\u062a\u062b\u0627\u0644.",
+    rowOrch: "\u062a\u0646\u0633\u064a\u0642 \u0627\u0644\u062a\u062f\u0627\u0648\u0644", rowOrchWhy: "API \u0627\u0644\u062e\u0627\u0635 \u0628\u0646\u0627. \u0627\u0644\u0645\u0637\u0627\u0628\u0642\u0629\u060c \u0627\u0644\u062a\u0641\u0627\u0648\u0636\u060c \u0645\u0634\u063a\u0644\u0627\u062a \u0627\u0644\u0636\u0645\u0627\u0646\u060c \u062d\u0644 \u0627\u0644\u0646\u0632\u0627\u0639\u0627\u062a.",
+    rowFraud: "\u0643\u0634\u0641 \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0644", rowFraudWhy: "Stripe Radar \u0644\u0644\u0625\u064a\u062f\u0627\u0639\u0627\u062a. \u0646\u0638\u0627\u0645 \u0633\u0645\u0639\u0629 DealClaw \u0644\u0644\u062a\u062f\u0627\u0648\u0644.",
+    tldr: "Stripe \u0647\u0648 \u0627\u0644\u0635\u0646\u062f\u0648\u0642 \u062d\u064a\u062b \u064a\u062f\u062e\u0644 \u0627\u0644\u0645\u0627\u0644. Mangopay \u0647\u0648 \u0627\u0644\u062e\u0632\u0646\u0629 \u062d\u064a\u062b \u064a\u064f\u062e\u0632\u0651\u0646 \u0648\u064a\u064f\u0646\u0642\u0644 \u0648\u064a\u064f\u062d\u0631\u0631. DealClaw \u0647\u0648 \u0627\u0644\u0639\u0642\u0644 \u0627\u0644\u0630\u064a \u064a\u0642\u0631\u0631 \u0645\u062a\u0649 \u0648\u0643\u0645 \u064a\u062a\u062d\u0631\u0643. \u0643\u0644 \u064a\u0641\u0639\u0644 \u0645\u0627 \u064a\u062c\u064a\u062f\u0647. \u0628\u062f\u0648\u0646 \u0646\u0642\u0637\u0629 \u0641\u0634\u0644 \u0648\u0627\u062d\u062f\u0629."
+  }
+};
+
+var currentLang = localStorage.getItem('dealclaw-lang') || 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('dealclaw-lang', lang);
+  document.documentElement.lang = lang;
+  if (lang === 'ar') {
+    document.documentElement.dir = 'rtl';
+  } else {
+    document.documentElement.dir = 'ltr';
+  }
+  // Update buttons
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+  // Apply translations
+  var t = T[lang] || T.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (t[key]) el.innerHTML = t[key];
+  });
+}
+
+// Init
+setLang(currentLang);
+</script>
+
+</body>
+</html>
