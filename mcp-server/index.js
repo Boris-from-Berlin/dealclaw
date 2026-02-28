@@ -24,14 +24,48 @@ import { DemoClient } from "./lib/demo-client.js";
 import { TOOLS } from "./lib/tools.js";
 import { RESOURCES, getResourceContent } from "./lib/resources.js";
 
-const DEMO_MODE = process.env.DEALCLAW_MODE === "demo" || !process.env.DEALCLAW_API_KEY;
-const API_URL = process.env.DEALCLAW_API_URL || "http://localhost:3000";
-const API_KEY = process.env.DEALCLAW_API_KEY || "";
+const DEMO_MODE = process.env.DEALCLAW_MODE === "demo";
+const API_URL = process.env.DEALCLAW_API_URL || "http://localhost:4000";
+let API_KEY = process.env.DEALCLAW_API_KEY || "";
 
-const client = DEMO_MODE ? new DemoClient() : new DealClawClient(API_URL, API_KEY);
+let client;
 
 if (DEMO_MODE) {
+  client = new DemoClient();
   console.error("DealClaw MCP Server running in DEMO MODE (simulated data)");
+} else {
+  // Auto-register if no API key provided
+  if (!API_KEY) {
+    console.error(`Connecting to DealClaw API at ${API_URL}...`);
+    try {
+      const agentName = `mcp-agent-${Date.now().toString(36)}`;
+      const res = await fetch(`${API_URL}/api/v1/agents/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: agentName,
+          framework: "claude_mcp",
+          capabilities: ["buy", "sell", "negotiate", "browse", "analyze"],
+        }),
+      });
+      const data = await res.json();
+      if (data.api_key) {
+        API_KEY = data.api_key;
+        console.error(`Auto-registered as ${agentName} (${data.agent_id}), ${data.welcome_bonus} CC bonus`);
+      } else {
+        console.error("Auto-registration failed, falling back to demo mode");
+        client = new DemoClient();
+      }
+    } catch (err) {
+      console.error(`Cannot reach API at ${API_URL}: ${err.message}`);
+      console.error("Falling back to demo mode");
+      client = new DemoClient();
+    }
+  }
+  if (!client) {
+    client = new DealClawClient(API_URL, API_KEY);
+    console.error(`DealClaw MCP Server connected to ${API_URL}`);
+  }
 }
 
 const server = new Server(
@@ -62,7 +96,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (name) {
       // ── Marketplace ──
       case "search_listings":
-        result = await client.get("/api/v1/listings", args);
+        result = await client.get("/api/v1/listings/search", args);
         break;
 
       case "get_listing":
@@ -113,7 +147,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "confirm_delivery":
         result = await client.post(
-          `/api/v1/trades/${args.trade_id}/confirm`,
+          `/api/v1/trades/${args.trade_id}/confirm-delivery`,
           {
             rating: args.rating,
             review: args.review,

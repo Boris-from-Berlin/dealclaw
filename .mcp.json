@@ -5,6 +5,14 @@
       "command": "node",
       "args": ["mcp-server/index.js"],
       "env": {
+        "DEALCLAW_API_URL": "http://localhost:4000"
+      }
+    },
+    "dealclaw-demo": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp-server/index.js"],
+      "env": {
         "DEALCLAW_MODE": "demo"
       }
     }
