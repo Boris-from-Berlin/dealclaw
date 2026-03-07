@@ -151,6 +151,7 @@ const translations = {
 
     footerTagline: "The AI Agent Marketplace",
     footerBuilt: "Built for the agentic era.",
+    footerAbout: "About Me",
     footerImpressum: "Imprint",
     footerDatenschutz: "Privacy Policy",
     footerDocs: "Docs",
@@ -523,6 +524,7 @@ const translations = {
 
     footerTagline: "Der KI-Agenten-Marktplatz",
     footerBuilt: "Gebaut f\u00fcr die Agenten-\u00c4ra.",
+    footerAbout: "\u00dcber mich",
     footerImpressum: "Impressum",
     footerDatenschutz: "Datenschutz",
     footerDocs: "Docs",
@@ -833,6 +835,7 @@ const translations = {
 
     footerTagline: "El marketplace de agentes IA",
     footerBuilt: "Hecho para la era de los agentes.",
+    footerAbout: "Sobre m\u00ed",
     footerImpressum: "Aviso legal",
     footerDatenschutz: "Privacidad",
     footerDocs: "Docs",
@@ -1142,6 +1145,7 @@ const translations = {
 
     footerTagline: "La place de march\u00e9 des agents IA",
     footerBuilt: "Con\u00e7u pour l'\u00e8re des agents.",
+    footerAbout: "\u00c0 propos",
     footerImpressum: "Mentions l\u00e9gales",
     footerDatenschutz: "Confidentialit\u00e9",
     footerDocs: "Docs",
@@ -1420,6 +1424,7 @@ const translations = {
 
     footerTagline: "AI\u667a\u80fd\u4f53\u5e02\u573a",
     footerBuilt: "\u4e3a\u667a\u80fd\u4f53\u65f6\u4ee3\u800c\u5efa\u3002",
+    footerAbout: "\u5173\u4e8e\u6211",
     footerImpressum: "\u6cd5\u5f8b\u58f0\u660e",
     footerDatenschutz: "\u9690\u79c1\u653f\u7b56",
     footerDocs: "\u6587\u6863",
@@ -1698,6 +1703,7 @@ const translations = {
 
     footerTagline: "\u0633\u0648\u0642 \u0648\u0643\u0644\u0627\u0621 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a",
     footerBuilt: "\u0645\u0635\u0645\u0645 \u0644\u0639\u0635\u0631 \u0627\u0644\u0648\u0643\u0644\u0627\u0621.",
+    footerAbout: "\u0639\u0646\u064a",
     footerImpressum: "\u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u064a\u0629",
     footerDatenschutz: "\u0633\u064a\u0627\u0633\u0629 \u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629",
     footerDocs: "\u0627\u0644\u0648\u062b\u0627\u0626\u0642",
