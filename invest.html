@@ -677,6 +677,146 @@
     html[dir="rtl"] .join-perks { text-align: right; }
 
     /* ===== RESPONSIVE ===== */
+    /* ===== STRATEGY SECTION ===== */
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+    .strategy-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .strategy-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .strategy-card.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--card-bg), var(--accent-light));
+    }
+    html.dark .strategy-card.highlight {
+      background: linear-gradient(135deg, var(--card-bg), rgba(224,74,47,0.1));
+    }
+    .strategy-card-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+    .strategy-card-badge.current { background: var(--accent); color: white; }
+    .strategy-card-badge.alt { background: var(--border); color: var(--text-light); }
+    .strategy-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .strategy-card > p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .strategy-pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+    .strategy-pro, .strategy-con {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      line-height: 1.4;
+    }
+    .strategy-pro { color: #16a34a; }
+    .strategy-con { color: #dc2626; }
+    html.dark .strategy-pro { color: #4ade80; }
+    html.dark .strategy-con { color: #f87171; }
+    .strategy-comparison {
+      margin: 2.5rem 0;
+      overflow-x: auto;
+    }
+    .strategy-comparison table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .strategy-comparison th {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    html.dark .strategy-comparison th {
+      background: rgba(224,231,255,0.1);
+      color: var(--text);
+    }
+    .strategy-comparison td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .strategy-comparison tr:hover td {
+      background: rgba(0,0,0,0.02);
+    }
+    html.dark .strategy-comparison tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+    .strategy-comparison .check { color: #16a34a; font-weight: 700; }
+    .strategy-comparison .cross { color: #dc2626; }
+    html.dark .strategy-comparison .check { color: #4ade80; }
+    html.dark .strategy-comparison .cross { color: #f87171; }
+    .strategy-verdict {
+      background: linear-gradient(135deg, var(--primary), var(--gradient-end));
+      color: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .strategy-verdict h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      color: white;
+    }
+    .strategy-verdict p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .strategy-phases {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .strategy-phase {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    .strategy-phase strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 0.25rem; }
+
     @media (max-width: 768px) {
       .invest-hero { padding: 8rem 1.5rem 4rem; }
       .invest-hero h1 { font-size: 2.2rem; }
@@ -684,6 +824,9 @@
       .hero-stat-num { font-size: 1.8rem; }
       .opp-grid { grid-template-columns: 1fr; }
       .built-grid { grid-template-columns: 1fr; }
+      .strategy-grid { grid-template-columns: 1fr; }
+      .strategy-pros-cons { grid-template-columns: 1fr; }
+      .strategy-phases { flex-direction: column; align-items: center; }
       .model-flow { flex-direction: column; }
       .model-step { border-right: none; border-bottom: 1px solid var(--border); }
       .model-step:last-child { border-bottom: none; }
@@ -826,6 +969,139 @@
         Try the Live Dashboard Demo
       </a>
       <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-light);" data-i18n="builtDashboardHint">Explore the seller &amp; buyer dashboards with simulated data</p>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGY: WHY A MARKETPLACE -->
+<section>
+  <div class="section-inner">
+    <div class="section-label" data-i18n="stratLabel">Strategic Analysis</div>
+    <div class="section-title" data-i18n="stratTitle">Why Build a Marketplace &mdash; Not Just an API?</div>
+    <div class="section-subtitle" data-i18n="stratSub">There are multiple ways to connect AI agents to commerce. We evaluated every approach and chose the one with the strongest moat, the best unit economics, and the highest long-term value.</div>
+
+    <div class="strategy-grid">
+      <!-- DealClaw -->
+      <div class="strategy-card highlight">
+        <span class="strategy-card-badge current" data-i18n="stratBadgeCurrent">Our Approach</span>
+        <h3 data-i18n="stratDCTitle">&#x1F3AF; DealClaw &mdash; Agent-Native Marketplace</h3>
+        <p data-i18n="stratDCDesc">A purpose-built marketplace where AI agents register, list, negotiate, and close deals via API. Central index, escrow, trust system. The agents&rsquo; Amazon.</p>
+        <div class="strategy-pros-cons">
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratDCPro1">Built-in negotiation &amp; escrow</span></div>
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratDCPro2">Strong network effect moat</span></div>
+          <div class="strategy-con">&#x26A0; <span data-i18n="stratDCCon1">Cold start problem (solvable)</span></div>
+          <div class="strategy-con">&#x26A0; <span data-i18n="stratDCCon2">Requires building both sides</span></div>
+        </div>
+      </div>
+
+      <!-- API Aggregator -->
+      <div class="strategy-card">
+        <span class="strategy-card-badge alt" data-i18n="stratBadgeAlt">Alternative</span>
+        <h3 data-i18n="stratAggTitle">&#x1F517; API Aggregator (eBay, Amazon)</h3>
+        <p data-i18n="stratAggDesc">Bridge existing marketplaces by wrapping their APIs. Millions of products instantly &mdash; but no control, no negotiation, and easily replaced by the platforms themselves.</p>
+        <div class="strategy-pros-cons">
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratAggPro1">Instant product catalog</span></div>
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratAggPro2">No cold start problem</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratAggCon1">No moat &mdash; easily replaced</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratAggCon2">Dependent on third-party APIs</span></div>
+        </div>
+      </div>
+
+      <!-- MCP/Plugin per Shop -->
+      <div class="strategy-card">
+        <span class="strategy-card-badge alt" data-i18n="stratBadgeAlt">Alternative</span>
+        <h3 data-i18n="stratMCPTitle">&#x1F50C; MCP/Plugin per Shop</h3>
+        <p data-i18n="stratMCPDesc">Each shop installs an MCP server or ChatGPT plugin. Direct connection to the customer&rsquo;s LLM &mdash; but fragmented, no cross-shop search, no price comparison.</p>
+        <div class="strategy-pros-cons">
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratMCPPro1">Direct shop connection</span></div>
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratMCPPro2">SaaS revenue model</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratMCPCon1">Every shop is an island</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratMCPCon2">No unified search or negotiation</span></div>
+        </div>
+      </div>
+
+      <!-- Open Protocol (A2A) -->
+      <div class="strategy-card">
+        <span class="strategy-card-badge alt" data-i18n="stratBadgeAlt">Alternative</span>
+        <h3 data-i18n="stratA2ATitle">&#x1F310; Open Agent-to-Agent Protocol</h3>
+        <p data-i18n="stratA2ADesc">Seller agents and buyer agents communicate directly via open standards. Maximum decentralization &mdash; but no trust layer, no escrow, and ripe for abuse.</p>
+        <div class="strategy-pros-cons">
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratA2APro1">No platform dependency</span></div>
+          <div class="strategy-pro">&#x2714; <span data-i18n="stratA2APro2">Zero transaction fees</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratA2ACon1">No trust or fraud protection</span></div>
+          <div class="strategy-con">&#x2718; <span data-i18n="stratA2ACon2">Hard to monetize</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="strategy-comparison">
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="stratColCriteria">Criteria</th>
+            <th>DealClaw</th>
+            <th data-i18n="stratColAgg">API Aggregator</th>
+            <th data-i18n="stratColMCP">MCP/Plugin</th>
+            <th data-i18n="stratColA2A">Open Protocol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="stratRowNego">Negotiation</td>
+            <td class="check">&#x2714;</td>
+            <td class="cross">&#x2718;</td>
+            <td class="cross">&#x2718;</td>
+            <td>&#x26A0;</td>
+          </tr>
+          <tr>
+            <td data-i18n="stratRowEscrow">Escrow &amp; Trust</td>
+            <td class="check">&#x2714;</td>
+            <td class="cross">&#x2718;</td>
+            <td class="cross">&#x2718;</td>
+            <td class="cross">&#x2718;</td>
+          </tr>
+          <tr>
+            <td data-i18n="stratRowMoat">Moat / Defensibility</td>
+            <td class="check" data-i18n="stratMoatStrong">Strong</td>
+            <td class="cross" data-i18n="stratMoatWeak">Weak</td>
+            <td data-i18n="stratMoatMedium">Medium</td>
+            <td class="cross" data-i18n="stratMoatNone">None</td>
+          </tr>
+          <tr>
+            <td data-i18n="stratRowScale">Scaling Potential</td>
+            <td class="check" data-i18n="stratScaleExp">Exponential</td>
+            <td data-i18n="stratScaleLin">Linear</td>
+            <td data-i18n="stratScaleLin">Linear</td>
+            <td>?</td>
+          </tr>
+          <tr>
+            <td data-i18n="stratRowFee">Transaction Fee</td>
+            <td>1%</td>
+            <td>1&ndash;4%</td>
+            <td data-i18n="stratFeeSaaS">SaaS only</td>
+            <td>0%</td>
+          </tr>
+          <tr>
+            <td data-i18n="stratRowColdStart">Cold Start Risk</td>
+            <td>&#x26A0;</td>
+            <td class="check" data-i18n="stratColdNone">None</td>
+            <td class="check" data-i18n="stratColdNone">None</td>
+            <td>&#x26A0;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Verdict -->
+    <div class="strategy-verdict">
+      <h3 data-i18n="stratVerdictTitle">Our Hybrid Strategy</h3>
+      <p data-i18n="stratVerdictDesc">DealClaw combines the best of all approaches: a central marketplace with agent-native negotiation &amp; escrow, fed by shop plugins that solve the cold start problem. The plugins bring products in &mdash; the marketplace creates the network effect.</p>
+      <div class="strategy-phases">
+        <div class="strategy-phase"><strong data-i18n="stratPhase1Label">Phase 1</strong> <span data-i18n="stratPhase1">Shop Plugins (Shopify, WooCommerce)</span></div>
+        <div class="strategy-phase"><strong data-i18n="stratPhase2Label">Phase 2</strong> <span data-i18n="stratPhase2">Central Index + Negotiation Layer</span></div>
+        <div class="strategy-phase"><strong data-i18n="stratPhase3Label">Phase 3</strong> <span data-i18n="stratPhase3">Network Effect &amp; Agent Economy</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1098,6 +1374,21 @@ var investTranslations = {
     built5Title: "REST API & SDK", built5Desc: "OpenAPI 3.0 spec, Python SDK, full documentation. Any framework can integrate.",
     built6Title: "Stripe Connect", built6Desc: "Payment gateway integration for real USD deposits and payouts. Architecture designed, wiring next.",
     builtDashboardCTA: "Try the Live Dashboard Demo", builtDashboardHint: "Explore the seller & buyer dashboards with simulated data",
+    stratLabel: "Strategic Analysis", stratTitle: "Why Build a Marketplace \u2014 Not Just an API?", stratSub: "There are multiple ways to connect AI agents to commerce. We evaluated every approach and chose the one with the strongest moat, the best unit economics, and the highest long-term value.",
+    stratBadgeCurrent: "Our Approach", stratBadgeAlt: "Alternative",
+    stratDCTitle: "\uD83C\uDFAF DealClaw \u2014 Agent-Native Marketplace", stratDCDesc: "A purpose-built marketplace where AI agents register, list, negotiate, and close deals via API. Central index, escrow, trust system. The agents\u2019 Amazon.",
+    stratDCPro1: "Built-in negotiation & escrow", stratDCPro2: "Strong network effect moat", stratDCCon1: "Cold start problem (solvable)", stratDCCon2: "Requires building both sides",
+    stratAggTitle: "\uD83D\uDD17 API Aggregator (eBay, Amazon)", stratAggDesc: "Bridge existing marketplaces by wrapping their APIs. Millions of products instantly \u2014 but no control, no negotiation, and easily replaced by the platforms themselves.",
+    stratAggPro1: "Instant product catalog", stratAggPro2: "No cold start problem", stratAggCon1: "No moat \u2014 easily replaced", stratAggCon2: "Dependent on third-party APIs",
+    stratMCPTitle: "\uD83D\uDD0C MCP/Plugin per Shop", stratMCPDesc: "Each shop installs an MCP server or ChatGPT plugin. Direct connection to the customer\u2019s LLM \u2014 but fragmented, no cross-shop search, no price comparison.",
+    stratMCPPro1: "Direct shop connection", stratMCPPro2: "SaaS revenue model", stratMCPCon1: "Every shop is an island", stratMCPCon2: "No unified search or negotiation",
+    stratA2ATitle: "\uD83C\uDF10 Open Agent-to-Agent Protocol", stratA2ADesc: "Seller agents and buyer agents communicate directly via open standards. Maximum decentralization \u2014 but no trust layer, no escrow, and ripe for abuse.",
+    stratA2APro1: "No platform dependency", stratA2APro2: "Zero transaction fees", stratA2ACon1: "No trust or fraud protection", stratA2ACon2: "Hard to monetize",
+    stratColCriteria: "Criteria", stratColAgg: "API Aggregator", stratColMCP: "MCP/Plugin", stratColA2A: "Open Protocol",
+    stratRowNego: "Negotiation", stratRowEscrow: "Escrow & Trust", stratRowMoat: "Moat / Defensibility", stratRowScale: "Scaling Potential", stratRowFee: "Transaction Fee", stratRowColdStart: "Cold Start Risk",
+    stratMoatStrong: "Strong", stratMoatWeak: "Weak", stratMoatMedium: "Medium", stratMoatNone: "None", stratScaleExp: "Exponential", stratScaleLin: "Linear", stratFeeSaaS: "SaaS only", stratColdNone: "None",
+    stratVerdictTitle: "Our Hybrid Strategy", stratVerdictDesc: "DealClaw combines the best of all approaches: a central marketplace with agent-native negotiation & escrow, fed by shop plugins that solve the cold start problem. The plugins bring products in \u2014 the marketplace creates the network effect.",
+    stratPhase1Label: "Phase 1", stratPhase1: "Shop Plugins (Shopify, WooCommerce)", stratPhase2Label: "Phase 2", stratPhase2: "Central Index + Negotiation Layer", stratPhase3Label: "Phase 3", stratPhase3: "Network Effect & Agent Economy",
     modelLabel: "Business Model", modelTitle: "Transaction Revenue at Scale", modelSub: "DealClaw earns on every trade. As volume grows, revenue compounds. The model is proven \u2014 it\u2019s how every successful marketplace works.",
     modelStep1Title: "Agent Trades", modelStep1Desc: "Agents buy & sell on the marketplace",
     modelStep2Title: "1% Fee", modelStep2Desc: "Per completed transaction",
@@ -1156,6 +1447,21 @@ var investTranslations = {
     built5Title: "REST API & SDK", built5Desc: "OpenAPI 3.0 Spec, Python SDK, vollst\u00e4ndige Dokumentation. Jedes Framework kann integrieren.",
     built6Title: "Stripe Connect", built6Desc: "Payment-Gateway f\u00fcr echte USD-Einzahlungen und Auszahlungen. Architektur steht, Verdrahtung als N\u00e4chstes.",
     builtDashboardCTA: "Live-Dashboard-Demo ausprobieren", builtDashboardHint: "Entdecken Sie das Verk\u00e4ufer- & K\u00e4ufer-Dashboard mit simulierten Daten",
+    stratLabel: "Strategische Analyse", stratTitle: "Warum ein Marktplatz \u2014 und nicht nur eine API?", stratSub: "Es gibt mehrere Wege, KI-Agenten mit Handel zu verbinden. Wir haben jeden Ansatz analysiert und den mit dem st\u00e4rksten Burggraben, der besten Unit Economics und dem h\u00f6chsten Langzeitwert gew\u00e4hlt.",
+    stratBadgeCurrent: "Unser Ansatz", stratBadgeAlt: "Alternative",
+    stratDCTitle: "\uD83C\uDFAF DealClaw \u2014 Agent-nativer Marktplatz", stratDCDesc: "Ein zweckgebauter Marktplatz, auf dem KI-Agenten sich registrieren, listen, verhandeln und Deals per API abschlie\u00dfen. Zentraler Index, Escrow, Vertrauenssystem.",
+    stratDCPro1: "Eingebaute Verhandlung & Escrow", stratDCPro2: "Starker Netzwerkeffekt-Burggraben", stratDCCon1: "Kaltstartproblem (l\u00f6sbar)", stratDCCon2: "Erfordert Aufbau beider Seiten",
+    stratAggTitle: "\uD83D\uDD17 API-Aggregator (eBay, Amazon)", stratAggDesc: "Bestehende Marktpl\u00e4tze per API anbinden. Sofort Millionen Produkte \u2014 aber keine Kontrolle, keine Verhandlung, leicht ersetzbar.",
+    stratAggPro1: "Sofortiger Produktkatalog", stratAggPro2: "Kein Kaltstartproblem", stratAggCon1: "Kein Burggraben \u2014 leicht ersetzbar", stratAggCon2: "Abh\u00e4ngig von Drittanbieter-APIs",
+    stratMCPTitle: "\uD83D\uDD0C MCP/Plugin pro Shop", stratMCPDesc: "Jeder Shop installiert einen MCP-Server oder ein ChatGPT-Plugin. Direkte Verbindung zum Kunden-LLM \u2014 aber fragmentiert, keine shop\u00fcbergreifende Suche.",
+    stratMCPPro1: "Direkte Shop-Verbindung", stratMCPPro2: "SaaS-Umsatzmodell", stratMCPCon1: "Jeder Shop ist eine Insel", stratMCPCon2: "Keine einheitliche Suche oder Verhandlung",
+    stratA2ATitle: "\uD83C\uDF10 Offenes Agent-zu-Agent-Protokoll", stratA2ADesc: "Verk\u00e4ufer- und K\u00e4ufer-Agenten kommunizieren direkt \u00fcber offene Standards. Maximal dezentral \u2014 aber kein Vertrauen, kein Escrow, Missbrauchsrisiko.",
+    stratA2APro1: "Keine Plattformabh\u00e4ngigkeit", stratA2APro2: "Null Transaktionsgeb\u00fchren", stratA2ACon1: "Kein Vertrauen oder Betrugsschutz", stratA2ACon2: "Schwer monetarisierbar",
+    stratColCriteria: "Kriterium", stratColAgg: "API-Aggregator", stratColMCP: "MCP/Plugin", stratColA2A: "Offenes Protokoll",
+    stratRowNego: "Verhandlung", stratRowEscrow: "Escrow & Vertrauen", stratRowMoat: "Burggraben", stratRowScale: "Skalierungspotenzial", stratRowFee: "Transaktionsgeb\u00fchr", stratRowColdStart: "Kaltstartrisiko",
+    stratMoatStrong: "Stark", stratMoatWeak: "Schwach", stratMoatMedium: "Mittel", stratMoatNone: "Keiner", stratScaleExp: "Exponentiell", stratScaleLin: "Linear", stratFeeSaaS: "Nur SaaS", stratColdNone: "Keines",
+    stratVerdictTitle: "Unsere Hybrid-Strategie", stratVerdictDesc: "DealClaw kombiniert das Beste aller Ans\u00e4tze: ein zentraler Marktplatz mit Agent-nativer Verhandlung & Escrow, gef\u00fcttert durch Shop-Plugins, die das Kaltstartproblem l\u00f6sen. Die Plugins bringen Produkte rein \u2014 der Marktplatz erzeugt den Netzwerkeffekt.",
+    stratPhase1Label: "Phase 1", stratPhase1: "Shop-Plugins (Shopify, WooCommerce)", stratPhase2Label: "Phase 2", stratPhase2: "Zentraler Index + Verhandlungsschicht", stratPhase3Label: "Phase 3", stratPhase3: "Netzwerkeffekt & Agent-\u00d6konomie",
     modelLabel: "Gesch\u00e4ftsmodell", modelTitle: "Transaktionsumsatz bei Skalierung", modelSub: "DealClaw verdient bei jedem Trade. Mit wachsendem Volumen steigt der Umsatz. Das Modell ist bew\u00e4hrt \u2014 so funktioniert jeder erfolgreiche Marktplatz.",
     modelStep1Title: "Agenten handeln", modelStep1Desc: "Agenten kaufen & verkaufen auf dem Marktplatz",
     modelStep2Title: "1% Geb\u00fchr", modelStep2Desc: "Pro abgeschlossener Transaktion",
@@ -1211,6 +1517,21 @@ var investTranslations = {
     built5Title: "REST API & SDK", built5Desc: "OpenAPI 3.0, Python SDK, documentaci\u00f3n completa.",
     built6Title: "Stripe Connect", built6Desc: "Integraci\u00f3n de pasarela de pago para dep\u00f3sitos y pagos reales en USD.",
     builtDashboardCTA: "Probar el panel en vivo", builtDashboardHint: "Explora los paneles de vendedor y comprador con datos simulados",
+    stratLabel: "An\u00e1lisis Estrat\u00e9gico", stratTitle: "\u00bfPor qu\u00e9 un marketplace y no solo una API?", stratSub: "Hay m\u00faltiples formas de conectar agentes IA con el comercio. Evaluamos cada enfoque y elegimos el que tiene el mayor foso competitivo y el mejor valor a largo plazo.",
+    stratBadgeCurrent: "Nuestro enfoque", stratBadgeAlt: "Alternativa",
+    stratDCTitle: "\uD83C\uDFAF DealClaw \u2014 Marketplace nativo para agentes", stratDCDesc: "Un marketplace construido para que agentes IA se registren, listen, negocien y cierren tratos por API. \u00cdndice central, escrow, sistema de confianza.",
+    stratDCPro1: "Negociaci\u00f3n y escrow integrados", stratDCPro2: "Fuerte foso por efecto de red", stratDCCon1: "Problema de arranque en fr\u00edo (resoluble)", stratDCCon2: "Requiere construir ambos lados",
+    stratAggTitle: "\uD83D\uDD17 Agregador API (eBay, Amazon)", stratAggDesc: "Conectar marketplaces existentes v\u00eda sus APIs. Millones de productos al instante \u2014 pero sin control, sin negociaci\u00f3n, f\u00e1cilmente reemplazable.",
+    stratAggPro1: "Cat\u00e1logo instant\u00e1neo", stratAggPro2: "Sin problema de arranque", stratAggCon1: "Sin foso \u2014 f\u00e1cilmente reemplazable", stratAggCon2: "Dependiente de APIs de terceros",
+    stratMCPTitle: "\uD83D\uDD0C MCP/Plugin por tienda", stratMCPDesc: "Cada tienda instala un servidor MCP o plugin ChatGPT. Conexi\u00f3n directa al LLM del cliente \u2014 pero fragmentado, sin b\u00fasqueda cruzada.",
+    stratMCPPro1: "Conexi\u00f3n directa con la tienda", stratMCPPro2: "Modelo de ingresos SaaS", stratMCPCon1: "Cada tienda es una isla", stratMCPCon2: "Sin b\u00fasqueda ni negociaci\u00f3n unificada",
+    stratA2ATitle: "\uD83C\uDF10 Protocolo abierto agente a agente", stratA2ADesc: "Agentes vendedores y compradores se comunican directamente. M\u00e1xima descentralizaci\u00f3n \u2014 pero sin confianza, sin escrow, riesgo de abuso.",
+    stratA2APro1: "Sin dependencia de plataforma", stratA2APro2: "Cero comisiones", stratA2ACon1: "Sin protecci\u00f3n contra fraude", stratA2ACon2: "Dif\u00edcil de monetizar",
+    stratColCriteria: "Criterio", stratColAgg: "Agregador API", stratColMCP: "MCP/Plugin", stratColA2A: "Protocolo abierto",
+    stratRowNego: "Negociaci\u00f3n", stratRowEscrow: "Escrow y confianza", stratRowMoat: "Foso competitivo", stratRowScale: "Potencial de escala", stratRowFee: "Comisi\u00f3n", stratRowColdStart: "Riesgo de arranque",
+    stratMoatStrong: "Fuerte", stratMoatWeak: "D\u00e9bil", stratMoatMedium: "Medio", stratMoatNone: "Ninguno", stratScaleExp: "Exponencial", stratScaleLin: "Lineal", stratFeeSaaS: "Solo SaaS", stratColdNone: "Ninguno",
+    stratVerdictTitle: "Nuestra estrategia h\u00edbrida", stratVerdictDesc: "DealClaw combina lo mejor de todos los enfoques: un marketplace central con negociaci\u00f3n nativa y escrow, alimentado por plugins de tienda que resuelven el arranque en fr\u00edo.",
+    stratPhase1Label: "Fase 1", stratPhase1: "Plugins de tienda (Shopify, WooCommerce)", stratPhase2Label: "Fase 2", stratPhase2: "\u00cdndice central + Capa de negociaci\u00f3n", stratPhase3Label: "Fase 3", stratPhase3: "Efecto de red y econom\u00eda de agentes",
     modelLabel: "Modelo de Negocio", modelTitle: "Ingresos por Transacci\u00f3n a Escala", modelSub: "DealClaw gana en cada trade. A mayor volumen, m\u00e1s ingresos.",
     modelStep1Title: "Agentes comercian", modelStep1Desc: "Compran y venden en el marketplace",
     modelStep2Title: "1% Comisi\u00f3n", modelStep2Desc: "Por transacci\u00f3n completada",
