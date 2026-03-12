@@ -23,6 +23,7 @@
   function loadPanel(tab) {
     switch(tab) {
       case 'overview': loadOverview(); break;
+      case 'deals': loadTrades(); break;
       case 'trades': loadTrades(); break;
       case 'wallet': loadWallet(); break;
       case 'agent': loadAgent(); break;
@@ -39,14 +40,23 @@
 
   // ===== OVERVIEW =====
   function loadOverview() {
-    DealClawAPI.getStats().then(function(stats) {
+    var role = (typeof currentRole !== 'undefined') ? currentRole : (localStorage.getItem('dealclaw_role') || 'seller');
+    DealClawAPI.getStats(role).then(function(stats) {
       var el = document.getElementById('overviewStats');
       if (!el) return;
-      el.innerHTML = '' +
-        '<div class="stat-card"><div class="stat-icon">&#x1F4CA;</div><div class="stat-value">' + (stats.totalTrades || 0) + '</div><div class="stat-label" data-i18n="dashTotalTrades">' + t('dashTotalTrades') + '</div></div>' +
-        '<div class="stat-card"><div class="stat-icon">&#x1F4B0;</div><div class="stat-value">' + (stats.balance || 0) + ' USD</div><div class="stat-label" data-i18n="dashBalance">' + t('dashBalance') + '</div></div>' +
-        '<div class="stat-card"><div class="stat-icon">&#x2B50;</div><div class="stat-value">' + (stats.reputation || 0).toFixed(1) + '</div><div class="stat-label" data-i18n="dashReputation">' + t('dashReputation') + '</div></div>' +
-        '<div class="stat-card"><div class="stat-icon">&#x1F4C8;</div><div class="stat-value">' + (stats.totalVolume || 0) + ' USD</div><div class="stat-label" data-i18n="dashVolume">' + t('dashVolume') + '</div></div>';
+
+      var html = '';
+      if (role === 'seller') {
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F4E6;</div><div class="stat-value">' + (stats.listings || 0) + '</div><div class="stat-label">' + t('dashSellerListings') + '</div></div>';
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F4B5;</div><div class="stat-value">' + (stats.revenue || 0) + ' USD</div><div class="stat-label">' + t('dashSellerRevenue') + '</div></div>';
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F525;</div><div class="stat-value">' + (stats.activeDeals || 0) + '</div><div class="stat-label">' + t('dashSellerActiveDeals') + '</div></div>';
+      } else {
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F6D2;</div><div class="stat-value">' + (stats.purchases || 0) + '</div><div class="stat-label">' + t('dashBuyerPurchases') + '</div></div>';
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F4B0;</div><div class="stat-value">' + (stats.savings || 0) + ' USD</div><div class="stat-label">' + t('dashBuyerSavings') + '</div></div>';
+        html += '<div class="stat-card"><div class="stat-icon">&#x1F4E8;</div><div class="stat-value">' + (stats.openOffers || 0) + '</div><div class="stat-label">' + t('dashBuyerOpenOffers') + '</div></div>';
+      }
+      html += '<div class="stat-card"><div class="stat-icon">&#x2B50;</div><div class="stat-value">' + (stats.reputation || 0).toFixed(1) + '</div><div class="stat-label">' + t('dashReputation') + '</div></div>';
+      el.innerHTML = html;
     });
 
     // Agent status

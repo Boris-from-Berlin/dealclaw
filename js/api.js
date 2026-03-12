@@ -64,22 +64,36 @@ var DealClawAPI = (function() {
   }
 
   // ===== STATS (dashboard overview) =====
-  function getStats() {
+  function getStats(role) {
     if (mode === 'demo') {
       var trades = JSON.parse(localStorage.getItem('dealclaw_demo_trades') || '[]');
       var wallet = JSON.parse(localStorage.getItem('dealclaw_demo_wallet') || '{"balance":1000,"transactions":[]}');
       var agent = JSON.parse(localStorage.getItem('dealclaw_demo_agent') || '{"reputation":0,"totalTrades":0}');
       var totalVolume = trades.reduce(function(sum, t) { return sum + (t.price || 0); }, 0);
 
-      return Promise.resolve({
+      var base = {
         totalTrades: trades.length,
         balance: wallet.balance,
         reputation: agent.reputation || 0,
         totalVolume: totalVolume,
         activeTrades: trades.filter(function(t) { return t.status === 'active'; }).length
-      });
+      };
+
+      if (role === 'seller') {
+        var sellTrades = trades.filter(function(t) { return t.type === 'sell'; });
+        base.listings = sellTrades.length;
+        base.revenue = sellTrades.filter(function(t) { return t.status === 'completed'; }).reduce(function(sum, t) { return sum + (t.price || 0); }, 0);
+        base.activeDeals = sellTrades.filter(function(t) { return t.status === 'active'; }).length;
+      } else if (role === 'buyer') {
+        var buyTrades = trades.filter(function(t) { return t.type === 'buy'; });
+        base.purchases = buyTrades.filter(function(t) { return t.status === 'completed'; }).length;
+        base.savings = buyTrades.reduce(function(sum, t) { return sum + ((t.originalPrice || t.price) - t.price); }, 0);
+        base.openOffers = buyTrades.filter(function(t) { return t.status === 'active'; }).length;
+      }
+
+      return Promise.resolve(base);
     }
-    return fetch('/api/stats', {
+    return fetch('/api/stats?role=' + (role || ''), {
       headers: { 'Authorization': 'Bearer ' + DealClawAuth.getToken() }
     }).then(function(r) { return r.json(); });
   }

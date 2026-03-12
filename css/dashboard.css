@@ -23,6 +23,28 @@
   font-size: 0.85rem; color: var(--text-light);
 }
 
+/* ===== ROLE SWITCHER ===== */
+.role-switcher {
+  display: flex; gap: 0; margin-bottom: 1.5rem;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; width: fit-content;
+}
+.role-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.4rem; font-size: 0.85rem; font-weight: 600;
+  font-family: inherit; background: transparent; color: var(--text-light);
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.role-btn:not(:last-child) { border-right: 1px solid var(--border); }
+.role-btn:hover { color: var(--primary); background: var(--bg); }
+.role-btn.active { background: var(--primary); color: white; }
+.role-btn.active svg { stroke: white; }
+html.dark .role-btn.active { background: var(--accent); }
+
+/* ===== TAB ICONS ===== */
+.tab-icon { vertical-align: -2px; margin-right: 0.4rem; }
+.dash-tab.active .tab-icon { stroke: white; }
+
 /* ===== TABS ===== */
 .dash-tabs {
   display: flex; gap: 0;

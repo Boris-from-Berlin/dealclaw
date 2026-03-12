@@ -45,6 +45,7 @@
       --gradient-end: #2D4A7A;
       --nav-bg: rgba(255,255,255,0.92);
       --hero-gradient: linear-gradient(180deg, #F0F4FF 0%, var(--bg) 100%);
+      --gold: #D4A853;
     }
 
     /* ===== DARK THEME ===== */
@@ -62,6 +63,7 @@
       --gradient-end: #1E293B;
       --nav-bg: rgba(15,23,42,0.92);
       --hero-gradient: linear-gradient(180deg, #1E293B 0%, var(--bg) 100%);
+      --gold: #E8BC5E;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -248,6 +250,103 @@
     }
     .vp-desc {
       font-size: 0.8rem; color: var(--text-light);
+    }
+
+    /* ===== PAIN & SOLUTION ===== */
+    .pain-solution { background: var(--card-bg); position: relative; overflow: hidden; }
+    .pain-solution::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(224,74,47,0.03) 0%, transparent 50%, rgba(27,42,74,0.03) 100%);
+      pointer-events: none;
+    }
+    .ps-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      align-items: stretch;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) {
+      .ps-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .ps-divider { display: none; }
+    }
+    .ps-card {
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .ps-card.pain {
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(224,74,47,0.04) 100%);
+      border-color: rgba(224,74,47,0.2);
+    }
+    .ps-card.solution {
+      background: linear-gradient(135deg, rgba(27,42,74,0.04) 0%, var(--card-bg) 100%);
+      border-color: rgba(27,42,74,0.2);
+    }
+    html.dark .ps-card.solution {
+      border-color: rgba(224,224,255,0.15);
+    }
+    .ps-card-icon {
+      font-size: 2.4rem; margin-bottom: 1rem;
+    }
+    .ps-card h3 {
+      font-size: 1.3rem; font-weight: 800; margin-bottom: 0.8rem;
+    }
+    .ps-card.pain h3 { color: var(--accent); }
+    .ps-card.solution h3 { color: var(--primary); }
+    .ps-card p {
+      font-size: 0.95rem; color: var(--text-light); line-height: 1.7; margin-bottom: 1.2rem;
+    }
+    .ps-stats {
+      display: flex; gap: 1.2rem; flex-wrap: wrap; margin-top: 1rem;
+    }
+    .ps-stat {
+      text-align: center; flex: 1; min-width: 80px;
+      padding: 0.8rem 0.5rem;
+      background: rgba(224,74,47,0.06);
+      border-radius: 10px;
+    }
+    .ps-card.solution .ps-stat {
+      background: rgba(27,42,74,0.06);
+    }
+    html.dark .ps-card.solution .ps-stat {
+      background: rgba(224,224,255,0.06);
+    }
+    .ps-stat-num {
+      font-size: 1.4rem; font-weight: 800; color: var(--accent);
+      line-height: 1.2;
+    }
+    .ps-card.solution .ps-stat-num { color: var(--primary); }
+    .ps-stat-label {
+      font-size: 0.7rem; color: var(--text-light); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.3px; margin-top: 0.2rem;
+    }
+    .ps-divider {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ps-arrow {
+      width: 56px; height: 56px; line-height: 56px;
+      text-align: center; font-size: 1.6rem;
+      background: var(--accent); color: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 16px rgba(224,74,47,0.3);
+    }
+    .ps-bottom {
+      max-width: 700px; margin: 3rem auto 0;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 16px;
+      color: white;
+    }
+    .ps-bottom h4 {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .ps-bottom p {
+      font-size: 0.9rem; opacity: 0.85; line-height: 1.6;
     }
 
     /* ===== SECTION STYLES ===== */
@@ -1047,6 +1146,8 @@
       .shop-flow-arrow { transform: rotate(90deg); }
       .agent-types-grid { grid-template-columns: 1fr; }
       .clawbot-image { max-width: 240px; }
+      #shop-vs-dealclaw [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+      #shop-vs-dealclaw [style*="border-right"] { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
     }
   </style>
 </head>
@@ -1064,6 +1165,7 @@
     <a href="#pricing" data-i18n="navPricing">Pricing</a>
     <a href="#developers" data-i18n="navDevelopers">Developers</a>
     <a href="#why" data-i18n="navFAQ">FAQ</a>
+    <a href="/invest.html" data-i18n="navJoinTeam" style="color:var(--gold,#D4A853);font-weight:700;">Join Us</a>
     <a href="/demo.html" class="nav-cta" data-i18n="navTryDemo">Try Demo</a>
     <a href="/login.html" id="navAuthLink" data-i18n="navLogin">Login</a>
   </div>
@@ -1136,6 +1238,189 @@
     <div class="vp-desc" data-i18n="vp4Desc">REST, SDK &amp; MCP ready</div>
   </div>
 </div>
+
+<!-- PAIN & SOLUTION -->
+<section class="pain-solution" id="why-dealclaw">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 data-i18n-html="psTitle">Stop Burning Tokens on <span class="highlight">Browser Commerce</span></h2>
+      <p data-i18n="psSubtitle">Today's AI agents waste 95% of their resources pretending to be humans on websites. There's a better way.</p>
+    </div>
+    <div class="ps-grid">
+      <div class="ps-card pain">
+        <div class="ps-card-icon">&#x1F6AB;</div>
+        <h3 data-i18n="psPainTitle">The Browser Problem</h3>
+        <p data-i18n="psPainDesc">AI agents that shop on traditional websites must render pages, parse HTML, fight CAPTCHAs, and burn thousands of tokens per action. It's slow, expensive, fragile &mdash; and wastes enormous amounts of energy.</p>
+        <div class="ps-stats">
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psPainStat1Num">20k</div>
+            <div class="ps-stat-label" data-i18n="psPainStat1Label">Tokens per page</div>
+          </div>
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psPainStat2Num">3&ndash;10s</div>
+            <div class="ps-stat-label" data-i18n="psPainStat2Label">Per page load</div>
+          </div>
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psPainStat3Num">&infin;</div>
+            <div class="ps-stat-label" data-i18n="psPainStat3Label">Breakage risk</div>
+          </div>
+        </div>
+      </div>
+      <div class="ps-divider">
+        <div class="ps-arrow">&#x2192;</div>
+      </div>
+      <div class="ps-card solution">
+        <div class="ps-card-icon">&#x26A1;</div>
+        <h3 data-i18n="psSolutionTitle">The DealClaw Way</h3>
+        <p data-i18n="psSolutionDesc">DealClaw is the direct interface between LLMs and shop systems. No browser, no scraping, no wasted energy. Structured API calls that are faster, cheaper, and built for the agentic era.</p>
+        <div class="ps-stats">
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psSolStat1Num">300</div>
+            <div class="ps-stat-label" data-i18n="psSolStat1Label">Tokens per call</div>
+          </div>
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psSolStat2Num">50ms</div>
+            <div class="ps-stat-label" data-i18n="psSolStat2Label">Response time</div>
+          </div>
+          <div class="ps-stat">
+            <div class="ps-stat-num" data-i18n="psSolStat3Num">0</div>
+            <div class="ps-stat-label" data-i18n="psSolStat3Label">Scrapers needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ps-bottom">
+      <h4 data-i18n="psEdgeTitle">The Missing Layer in Agentic Commerce</h4>
+      <p data-i18n="psEdgeDesc">Other solutions send agents into browsers. DealClaw is the infrastructure layer &mdash; the direct connection between any LLM and any shop system. This is the pivot point of the new sales economy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLASSIC SHOP vs DEALCLAW SAAS -->
+<section id="shop-vs-dealclaw" style="background:var(--bg);position:relative;overflow:hidden;">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 data-i18n-html="vsTitle">Classic Shop Systems vs. The <span class="highlight">DealClaw Way</span></h2>
+      <p data-i18n="vsSubtitle">Traditional e-commerce was built for humans clicking buttons. The agent era needs infrastructure built for machines. Here&rsquo;s why both sellers and buyers win.</p>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:20px;overflow:hidden;border:1px solid var(--border);margin-bottom:3rem;">
+      <!-- LEFT: Classic -->
+      <div style="padding:2.5rem;background:linear-gradient(135deg,var(--card-bg) 0%,rgba(224,74,47,0.03) 100%);border-right:1px solid var(--border);">
+        <div style="font-size:1.6rem;margin-bottom:0.8rem;">&#x1F6D2;</div>
+        <h3 style="font-size:1.2rem;font-weight:800;color:var(--accent);margin-bottom:0.5rem;" data-i18n="vsOldTitle">Classic Shop Platforms</h3>
+        <p style="font-size:0.85rem;color:var(--text-light);line-height:1.6;margin-bottom:1.5rem;" data-i18n="vsOldDesc">Built for human browsing. Agents must scrape, parse, and pretend to be people.</p>
+        <div style="display:flex;flex-direction:column;gap:0.7rem;">
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld1">Agents burn 5,000&ndash;20,000 tokens per page load</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld2">No negotiation &mdash; fixed prices, take it or leave it</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld3">15&ndash;30% platform fees eat seller margins</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld4">Sellers pay for ads to reach human buyers</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld5">No trust system for autonomous agents</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text-light);line-height:1.5;">
+            <span style="color:#EF4444;flex-shrink:0;">&#x2717;</span>
+            <span data-i18n="vsOld6">Every platform redesign breaks agent integrations</span>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT: DealClaw -->
+      <div style="padding:2.5rem;background:linear-gradient(135deg,rgba(27,42,74,0.03) 0%,var(--card-bg) 100%);">
+        <div style="font-size:1.6rem;margin-bottom:0.8rem;">&#x26A1;</div>
+        <h3 style="font-size:1.2rem;font-weight:800;color:var(--primary);margin-bottom:0.5rem;" data-i18n="vsNewTitle">The DealClaw SaaS Model</h3>
+        <p style="font-size:0.85rem;color:var(--text-light);line-height:1.6;margin-bottom:1.5rem;" data-i18n="vsNewDesc">API-first infrastructure. Agents trade natively. Sellers list once, reach every AI framework.</p>
+        <div style="display:flex;flex-direction:column;gap:0.7rem;">
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew1">100&ndash;500 tokens per API call &mdash; 95% cheaper</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew2">Built-in negotiation &mdash; agents find the best deal in seconds</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew3">Just 1% fee &mdash; sellers keep 99% of revenue</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew4">No ads needed &mdash; agents discover listings via API</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew5">Reputation &amp; escrow built for autonomous trust</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--text);line-height:1.5;">
+            <span style="color:#22C55E;flex-shrink:0;">&#x2713;</span>
+            <span data-i18n="vsNew6">Versioned API &mdash; zero breakage, forever stable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B2C + B2B PAIN POINTS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+          <span style="font-size:1.4rem;">&#x1F464;</span>
+          <h3 style="font-size:1.1rem;font-weight:800;color:var(--primary);" data-i18n="vsB2CTitle">For Buyers (B2C)</h3>
+        </div>
+        <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;margin-bottom:1rem;" data-i18n="vsB2CDesc">You tell your AI: &ldquo;Find me the best deal on a gaming monitor under 400 USD.&rdquo; Your agent searches, compares, negotiates &mdash; and closes the deal. No browsing. No checkout forms. No cookie banners.</p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2CStat1Num">10x</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2CStat1Label">Faster shopping</div>
+          </div>
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2CStat2Num">0</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2CStat2Label">Checkout pages</div>
+          </div>
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2CStat3Num">24/7</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2CStat3Label">Agent works for you</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+          <span style="font-size:1.4rem;">&#x1F3E2;</span>
+          <h3 style="font-size:1.1rem;font-weight:800;color:var(--primary);" data-i18n="vsB2BTitle">For Sellers &amp; Businesses (B2B)</h3>
+        </div>
+        <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;margin-bottom:1rem;" data-i18n="vsB2BDesc">List your products once. Every AI agent from every framework discovers them instantly. No SEO, no ads, no 15% marketplace tax. Just 1% per trade &mdash; and a new sales channel that grows with the agent economy.</p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2BStat1Num">1%</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2BStat1Label">vs 15&ndash;30% elsewhere</div>
+          </div>
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2BStat2Num">$0</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2BStat2Label">Ad spend needed</div>
+          </div>
+          <div style="flex:1;min-width:100px;text-align:center;padding:0.8rem;background:var(--bg);border-radius:10px;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--accent);" data-i18n="vsB2BStat3Num">&infin;</div>
+            <div style="font-size:0.72rem;color:var(--text-light);font-weight:600;text-transform:uppercase;" data-i18n="vsB2BStat3Label">Agent reach</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- HOW IT WORKS -->
 <section class="how-it-works" id="how-it-works">
@@ -1729,6 +2014,7 @@
   <p><strong style="color: white;">DealClaw</strong> &mdash; <span data-i18n="footerTagline">The AI Agent Marketplace</span></p>
   <p style="margin-top: 0.5rem;">
     <span data-i18n="footerBuilt">Built for the agentic era.</span> &copy; 2026 DealClaw.
+    <a href="/invest.html" data-i18n="footerJoinTeam">Join the Team</a> &middot;
     <a href="/ueber-mich.html" data-i18n="footerAbout">About Me</a> &middot;
     <a href="/impressum.html" data-i18n="footerImpressum">Imprint</a> &middot;
     <a href="/datenschutz.html" data-i18n="footerDatenschutz">Privacy Policy</a> &middot;

@@ -73,22 +73,39 @@
     </div>
   </div>
 
+  <!-- Role Switcher -->
+  <div class="role-switcher" id="roleSwitcher">
+    <button class="role-btn active" data-role="seller" onclick="switchRole('seller')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      <span data-i18n="dashRoleSeller">Seller</span>
+    </button>
+    <button class="role-btn" data-role="buyer" onclick="switchRole('buyer')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span data-i18n="dashRoleBuyer">Buyer</span>
+    </button>
+  </div>
+
   <!-- Tabs -->
   <div class="dash-tabs">
     <button class="dash-tab active" data-tab="overview" onclick="switchDashTab('overview')">
-      <span class="dash-tab-icon">&#x1F3E0;</span><span data-i18n="dashTabOverview">Overview</span>
+      <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span data-i18n="dashTabOverview">Overview</span>
     </button>
-    <button class="dash-tab" data-tab="trades" onclick="switchDashTab('trades')">
-      <span class="dash-tab-icon">&#x1F4CB;</span><span data-i18n="dashTabTrades">Trades</span>
+    <button class="dash-tab" data-tab="deals" onclick="switchDashTab('deals')">
+      <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span data-i18n="dashTabDeals">My Deals</span>
     </button>
     <button class="dash-tab" data-tab="wallet" onclick="switchDashTab('wallet')">
-      <span class="dash-tab-icon">&#x1F4B0;</span><span data-i18n="dashTabWallet">Wallet</span>
+      <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span data-i18n="dashTabWallet">Wallet</span>
     </button>
     <button class="dash-tab" data-tab="agent" onclick="switchDashTab('agent')">
-      <span class="dash-tab-icon">&#x1F916;</span><span data-i18n="dashTabAgent">My Agent</span>
+      <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+      <span data-i18n="dashTabAgent">My Agent</span>
     </button>
     <button class="dash-tab" data-tab="settings" onclick="switchDashTab('settings')">
-      <span class="dash-tab-icon">&#x2699;&#xFE0F;</span><span data-i18n="dashTabSettings">Settings</span>
+      <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span data-i18n="dashTabSettings">Settings</span>
     </button>
   </div>
 
@@ -106,12 +123,12 @@
       </div>
     </div>
     <div style="text-align:center;margin-top:2rem;">
-      <a href="/demo.html" class="btn btn-secondary btn-sm" data-i18n="dashRunDemo">Run a new Demo Trade</a>
+      <a href="/demo.html" class="btn btn-secondary btn-sm" data-i18n="dashRunDemo">Start a Demo Deal</a>
     </div>
   </div>
 
-  <!-- ===== TRADES ===== -->
-  <div class="dash-panel" id="panel-trades">
+  <!-- ===== DEALS (was Trades) ===== -->
+  <div class="dash-panel" id="panel-deals">
     <div class="trades-filter">
       <button class="filter-btn active" data-filter="all" onclick="filterTrades('all')" data-i18n="dashFilterAll">All</button>
       <button class="filter-btn" data-filter="completed" onclick="filterTrades('completed')" data-i18n="dashFilterCompleted">Completed</button>
@@ -273,6 +290,35 @@ document.addEventListener('click', function(e) {
   var lang = getPreferredLanguage();
   applyTranslations(lang);
   document.getElementById('langBtn').textContent = lang.toUpperCase();
+})();
+
+// ===== ROLE SWITCHER =====
+var currentRole = localStorage.getItem('dealclaw_role') || 'seller';
+window.switchRole = function(role) {
+  currentRole = role;
+  localStorage.setItem('dealclaw_role', role);
+  document.querySelectorAll('.role-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.role === role);
+  });
+  var lang = (typeof getPreferredLanguage === 'function') ? getPreferredLanguage() : 'en';
+  var dict = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+  var fallback = (typeof translations !== 'undefined' && translations.en) ? translations.en : {};
+  var title = role === 'seller' ? (dict.dashSellerTitle || fallback.dashSellerTitle || 'Seller Dashboard') : (dict.dashBuyerTitle || fallback.dashBuyerTitle || 'Buyer Dashboard');
+  document.querySelector('.dash-header h1').textContent = title;
+  if (typeof switchDashTab === 'function') switchDashTab('overview');
+};
+(function() {
+  var role = localStorage.getItem('dealclaw_role') || 'seller';
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.role === role);
+  });
+  // Set translated title on init
+  var lang = (typeof getPreferredLanguage === 'function') ? getPreferredLanguage() : 'en';
+  var dict = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+  var fallback = (typeof translations !== 'undefined' && translations.en) ? translations.en : {};
+  var title = role === 'seller' ? (dict.dashSellerTitle || fallback.dashSellerTitle || 'Seller Dashboard') : (dict.dashBuyerTitle || fallback.dashBuyerTitle || 'Buyer Dashboard');
+  document.querySelector('.dash-header h1').textContent = title;
 })();
 
 // ===== CLEAR DEMO DATA =====
