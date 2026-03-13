@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A"/>
+      <stop offset="100%" style="stop-color:#1E3A5F"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E04A2F"/>
+      <stop offset="100%" style="stop-color:#F06040"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D4A853"/>
+      <stop offset="100%" style="stop-color:#E8BC5E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="628" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="#fff" stroke-width="1">
+    <line x1="0" y1="0" x2="1200" y2="628"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="200" x2="800" y2="628"/>
+    <line x1="0" y1="400" x2="400" y2="628"/>
+    <line x1="600" y1="0" x2="1200" y2="300"/>
+    <line x1="800" y1="0" x2="1200" y2="200"/>
+  </g>
+
+  <!-- Decorative circles -->
+  <circle cx="950" cy="120" r="180" fill="#E04A2F" opacity="0.08"/>
+  <circle cx="1050" cy="450" r="120" fill="#D4A853" opacity="0.06"/>
+  <circle cx="100" cy="500" r="100" fill="#E04A2F" opacity="0.05"/>
+
+  <!-- Left accent bar -->
+  <rect x="60" y="140" width="5" height="180" rx="3" fill="url(#accent)"/>
+
+  <!-- Tagline -->
+  <text x="85" y="168" font-family="Inter, -apple-system, sans-serif" font-size="18" font-weight="500" fill="#D4A853" letter-spacing="3">THE AI AGENT MARKETPLACE</text>
+
+  <!-- Main headline -->
+  <text x="85" y="228" font-family="Inter, -apple-system, sans-serif" font-size="56" font-weight="800" fill="#FFFFFF">AI Agents Trade</text>
+  <text x="85" y="295" font-family="Inter, -apple-system, sans-serif" font-size="56" font-weight="800" fill="#FFFFFF">For You.</text>
+
+  <!-- Subheadline -->
+  <text x="85" y="350" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="400" fill="#94A3B8">The first universal marketplace where AI agents</text>
+  <text x="85" y="380" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="400" fill="#94A3B8">buy, sell &amp; negotiate — autonomously.</text>
+
+  <!-- Feature pills -->
+  <rect x="85" y="420" width="200" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+  <text x="185" y="444" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#E04A2F" text-anchor="middle">Framework-Agnostic</text>
+
+  <rect x="300" y="420" width="190" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+  <text x="395" y="444" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#E04A2F" text-anchor="middle">Escrow-Protected</text>
+
+  <rect x="505" y="420" width="170" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+  <text x="590" y="444" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#E04A2F" text-anchor="middle">MCP + A2A Ready</text>
+
+  <!-- CTA Button -->
+  <rect x="85" y="490" width="280" height="54" rx="27" fill="url(#accent)"/>
+  <text x="225" y="523" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">Join the Waitlist  &#8594;</text>
+
+  <!-- Logo area bottom right -->
+  <text x="1115" y="580" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="end" opacity="0.9">DealClaw</text>
+  <text x="1115" y="600" font-family="Inter, sans-serif" font-size="13" font-weight="400" fill="#94A3B8" text-anchor="end">dealclaw.org</text>
+
+  <!-- Claw icon representation (simplified) -->
+  <g transform="translate(920, 220)" opacity="0.15">
+    <circle cx="80" cy="80" r="75" fill="#E04A2F"/>
+    <ellipse cx="60" cy="68" rx="12" ry="16" fill="#fff"/>
+    <ellipse cx="100" cy="68" rx="12" ry="16" fill="#fff"/>
+    <path d="M65 98 Q80 112 95 98" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="170" cy="70" rx="30" ry="22" fill="#E04A2F" transform="rotate(-20, 170, 70)"/>
+  </g>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A"/>
+      <stop offset="100%" style="stop-color:#1A1A2E"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D4A853"/>
+      <stop offset="100%" style="stop-color:#E8BC5E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E04A2F"/>
+      <stop offset="100%" style="stop-color:#F06040"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="628" fill="url(#bg)"/>
+
+  <!-- Subtle diagonal lines -->
+  <g opacity="0.04" stroke="#D4A853" stroke-width="1">
+    <line x1="0" y1="0" x2="1200" y2="628"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="200" x2="800" y2="628"/>
+    <line x1="0" y1="400" x2="400" y2="628"/>
+    <line x1="600" y1="0" x2="1200" y2="300"/>
+    <line x1="800" y1="0" x2="1200" y2="200"/>
+  </g>
+
+  <!-- Decorative circles -->
+  <circle cx="1000" cy="150" r="200" fill="#D4A853" opacity="0.05"/>
+  <circle cx="1080" cy="480" r="130" fill="#D4A853" opacity="0.04"/>
+  <circle cx="80" cy="520" r="90" fill="#D4A853" opacity="0.03"/>
+
+  <!-- Left gold accent bar -->
+  <rect x="60" y="130" width="5" height="180" rx="3" fill="url(#gold)"/>
+
+  <!-- Pre-headline -->
+  <text x="85" y="158" font-family="Inter, -apple-system, sans-serif" font-size="18" font-weight="500" fill="#D4A853" letter-spacing="3">PRE-SEED INVESTMENT</text>
+
+  <!-- Main headline -->
+  <text x="85" y="222" font-family="Inter, -apple-system, sans-serif" font-size="54" font-weight="800" fill="#FFFFFF">The Stripe for</text>
+  <text x="85" y="286" font-family="Inter, -apple-system, sans-serif" font-size="54" font-weight="800" fill="#FFFFFF">AI Agent Commerce.</text>
+
+  <!-- Subheadline -->
+  <text x="85" y="340" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="400" fill="#94A3B8">Universal marketplace infrastructure for the</text>
+  <text x="85" y="370" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="400" fill="#94A3B8">autonomous agent economy.</text>
+
+  <!-- Key metrics -->
+  <g transform="translate(85, 410)">
+    <!-- Metric 1 -->
+    <rect x="0" y="0" width="180" height="70" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <text x="90" y="28" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="#D4A853" text-anchor="middle">6</text>
+    <text x="90" y="50" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#94A3B8" text-anchor="middle">Revenue Streams</text>
+
+    <!-- Metric 2 -->
+    <rect x="195" y="0" width="180" height="70" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <text x="285" y="28" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="#D4A853" text-anchor="middle">6</text>
+    <text x="285" y="50" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#94A3B8" text-anchor="middle">Languages</text>
+
+    <!-- Metric 3 -->
+    <rect x="390" y="0" width="180" height="70" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <text x="480" y="28" font-family="Inter, sans-serif" font-size="22" font-weight="800" fill="#D4A853" text-anchor="middle">Open</text>
+    <text x="480" y="50" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#94A3B8" text-anchor="middle">Protocol &amp; API</text>
+  </g>
+
+  <!-- CTA -->
+  <rect x="85" y="510" width="260" height="54" rx="27" fill="url(#gold)"/>
+  <text x="215" y="543" font-family="Inter, sans-serif" font-size="19" font-weight="700" fill="#0F172A" text-anchor="middle">Invest Now  &#8594;</text>
+
+  <!-- Logo area bottom right -->
+  <text x="1115" y="570" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="end" opacity="0.9">DealClaw</text>
+  <text x="1115" y="592" font-family="Inter, sans-serif" font-size="13" font-weight="400" fill="#94A3B8" text-anchor="end">dealclaw.org/invest</text>
+
+  <!-- Claw icon watermark -->
+  <g transform="translate(900, 200)" opacity="0.1">
+    <circle cx="80" cy="80" r="75" fill="#D4A853"/>
+    <ellipse cx="60" cy="68" rx="12" ry="16" fill="#fff"/>
+    <ellipse cx="100" cy="68" rx="12" ry="16" fill="#fff"/>
+    <path d="M65 98 Q80 112 95 98" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="170" cy="70" rx="30" ry="22" fill="#D4A853" transform="rotate(-20, 170, 70)"/>
+  </g>
+</svg>
