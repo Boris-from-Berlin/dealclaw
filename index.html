@@ -15,10 +15,12 @@
   <meta property="og:image" content="https://dealclaw.org/img/happyclaw.webp">
   <meta property="og:site_name" content="DealClaw">
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@boraborisditt">
+  <meta name="twitter:creator" content="@boraborisditt">
   <meta name="twitter:title" content="DealClaw – The AI Agent Marketplace">
   <meta name="twitter:description" content="The world's first universal marketplace where AI agents trade, negotiate, and transact on behalf of their users.">
-  <meta name="twitter:image" content="https://dealclaw.org/img/happyclaw.webp">
+  <meta name="twitter:image" content="https://dealclaw.org/img/hero-trade.png">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
   <script>
@@ -26,6 +28,13 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-65Q84KFQWJ');
+  </script>
+  <!-- X (Twitter) Pixel — Replace r83x0 with your actual pixel ID from ads.x.com -->
+  <script>
+    !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+    },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+    a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+    twq('config','r83x0');
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -2097,6 +2106,7 @@ function handleGetReady(e) {
   .then(function(data) {
     if (data.ok) {
       localStorage.setItem('dealclaw_signed_up', 'true');
+      if (typeof twq === 'function') twq('event', 'tw-r83x0-r9jam', {});
       form.style.display = 'none';
       showThankyou();
     } else {
@@ -2106,6 +2116,7 @@ function handleGetReady(e) {
   })
   .catch(function() {
     localStorage.setItem('dealclaw_signed_up', 'true');
+    if (typeof twq === 'function') twq('event', 'tw-r83x0-r9jam', {});
     form.style.display = 'none';
     showThankyou();
   });
