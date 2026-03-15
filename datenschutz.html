@@ -23,87 +23,20 @@
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1B2A4A;
-      --accent: #E8792F;
-      --bg: #FAFBFC;
-      --text: #333333;
-      --text-light: #6B7280;
-      --border: #E5E7EB;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text); background: var(--bg);
-      -webkit-font-smoothing: antialiased;
-    }
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem; height: 64px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .nav-logo {
-      font-size: 1.4rem; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px;
-    }
-    .nav-logo span { color: var(--accent); }
-    .nav-back {
-      color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 500;
-    }
-    .nav-back:hover { color: var(--primary); }
-    .content {
-      max-width: 720px; margin: 0 auto;
-      padding: 7rem 2rem 4rem;
-    }
-    h1 {
-      font-size: 2rem; font-weight: 800; color: var(--primary);
-      margin-bottom: 0.5rem; letter-spacing: -0.5px;
-    }
-    .last-updated {
-      font-size: 0.85rem; color: var(--text-light); margin-bottom: 2rem;
-    }
-    h2 {
-      font-size: 1.2rem; font-weight: 700; color: var(--primary);
-      margin: 2.5rem 0 0.75rem;
-    }
-    h3 {
-      font-size: 1.05rem; font-weight: 600; color: var(--primary);
-      margin: 1.5rem 0 0.5rem;
-    }
-    p, li {
-      font-size: 0.95rem; color: var(--text); line-height: 1.7;
-      margin-bottom: 0.75rem;
-    }
-    ul { padding-left: 1.5rem; margin-bottom: 1rem; }
-    a { color: var(--accent); }
-    footer {
-      background: var(--primary); color: rgba(255,255,255,0.6);
-      padding: 2rem; text-align: center; font-size: 0.85rem;
-    }
-    footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; }
-    .cookie-banner { display:none; position:fixed; bottom:0; left:0; right:0; z-index:9999; background:var(--primary); color:rgba(255,255,255,0.9); padding:1.2rem 2rem; box-shadow:0 -4px 20px rgba(0,0,0,0.15); }
-    .cookie-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; justify-content:space-between; }
-    .cookie-text { flex:1; min-width:280px; font-size:0.85rem; line-height:1.5; }
-    .cookie-text a { color:var(--accent); text-decoration:none; }
-    .cookie-buttons { display:flex; gap:0.75rem; flex-shrink:0; }
-    .cookie-btn { padding:0.6rem 1.4rem; border-radius:8px; font-size:0.85rem; font-weight:600; font-family:inherit; cursor:pointer; border:none; transition:all 0.2s; }
-    .cookie-btn-accept { background:var(--accent); color:white; }
-    .cookie-btn-accept:hover { opacity:0.9; }
-    .cookie-btn-reject { background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); }
-    .cookie-btn-reject:hover { background:rgba(255,255,255,0.2); }
-  </style>
+  <link rel="stylesheet" href="css/shared.css?v=20260226">
+  <link rel="stylesheet" href="css/legal.css?v=20260226">
 </head>
 <body>
 
 <nav>
   <a href="/" class="nav-logo">Deal<span>Claw</span></a>
-  <a href="/" class="nav-back">&larr; Zur Startseite</a>
+  <div class="nav-controls">
+    <a href="/" class="nav-back" data-i18n="legalNavBack">&larr; Home</a>
+    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()"></button>
+  </div>
 </nav>
 
-<div class="content">
+<div class="legal-content">
   <h1>Datenschutzerkl&auml;rung</h1>
   <p class="last-updated">Stand: Februar 2026</p>
 
@@ -213,12 +146,15 @@
   </p>
 </div>
 
+<!-- FOOTER -->
 <footer>
-  <p><strong style="color:white;">DealClaw</strong> &mdash; The AI Agent Marketplace</p>
-  <p style="margin-top:0.5rem;">
-    <a href="/">Home</a> &middot;
-    <a href="/impressum.html">Impressum</a> &middot;
-    <a href="/datenschutz.html">Datenschutz</a>
+  <img src="img/happyclaw.webp" alt="HappyClaw" style="width:64px;height:64px;margin-bottom:1rem;pointer-events:none;">
+  <p><strong style="color: white;">DealClaw</strong> &mdash; <span data-i18n="footerTagline">The AI Agent Marketplace</span></p>
+  <p style="margin-top: 0.5rem;">
+    <span data-i18n="footerBuilt">Built for the agentic era.</span> &copy; 2026 DealClaw.
+    <a href="/impressum.html" data-i18n="footerImpressum">Imprint</a> &middot;
+    <a href="/datenschutz.html" data-i18n="footerDatenschutz">Privacy Policy</a> &middot;
+    <a href="https://github.com/Boris-from-Berlin/dealclaw#readme" data-i18n="footerDocs">Docs</a>
   </p>
 </footer>
 
@@ -226,15 +162,38 @@
 <div class="cookie-banner" id="cookieBanner">
   <div class="cookie-inner">
     <div class="cookie-text">
-      Diese Website nutzt technisch notwendigen lokalen Speicher. Mehr in unserer <a href="/datenschutz.html">Datenschutzerkl&auml;rung</a>.
+      <span data-i18n="cookieText">This website uses technically necessary local storage for basic functions. More information in our</span>
+      <a href="/datenschutz.html" data-i18n="cookieLink">Privacy Policy</a>.
     </div>
     <div class="cookie-buttons">
-      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')">Nur notwendige</button>
-      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')">Alle akzeptieren</button>
+      <button class="cookie-btn cookie-btn-reject" onclick="handleCookieChoice('reject')" data-i18n="cookieReject">Necessary only</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="handleCookieChoice('accept')" data-i18n="cookieAccept">Accept all</button>
     </div>
   </div>
 </div>
+
+<script src="js/translations.js?v=20260226"></script>
 <script>
+// Dark mode
+function toggleDarkMode() {
+  var isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('dealclaw_dark', isDark ? 'true' : 'false');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+}
+(function() {
+  var stored = localStorage.getItem('dealclaw_dark');
+  var isDark = stored !== null ? stored === 'true' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if (isDark) document.documentElement.classList.add('dark');
+  document.getElementById('darkToggle').innerHTML = isDark ? '&#x2600;' : '&#x263E;';
+})();
+
+// Language (apply translations to data-i18n elements)
+(function() {
+  var lang = getPreferredLanguage();
+  applyTranslations(lang);
+})();
+
+// Cookie banner
 function handleCookieChoice(choice) {
   localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
   document.getElementById('cookieBanner').style.display = 'none';

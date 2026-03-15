@@ -1,0 +1,31 @@
+/* Legal pages (Impressum, Datenschutz) — extends shared.css */
+.legal-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 7rem 2rem 4rem;
+}
+.legal-content h1 {
+  font-size: 2rem; font-weight: 800; color: var(--primary);
+  margin-bottom: 2rem; letter-spacing: -0.5px;
+}
+.legal-content h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--primary);
+  margin: 2rem 0 0.75rem;
+}
+.legal-content h3 {
+  font-size: 1.05rem; font-weight: 600; color: var(--primary);
+  margin: 1.5rem 0 0.5rem;
+}
+.legal-content p, .legal-content li {
+  font-size: 0.95rem; color: var(--text); line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+.legal-content ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+.legal-content a { color: var(--accent); }
+.legal-content .last-updated {
+  font-size: 0.85rem; color: var(--text-light); margin-bottom: 2rem;
+}
+.nav-back {
+  color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+}
+.nav-back:hover { color: var(--primary); }
