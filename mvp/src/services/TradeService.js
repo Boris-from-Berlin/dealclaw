@@ -93,9 +93,6 @@ class TradeService {
         VALUES ($1, $2, 'offer', $3, $4)
       `, [tradeId, buyerAgentId, offer_amount, message || null]);
 
-      // Charge micro-fee for negotiation message (0.01 CC)
-      const microFee = parseFloat(process.env.NEGOTIATION_MICRO_FEE || '0.01');
-
       logger.info('Trade started', { trade_id: tradeId, listing_id, buyer: buyerAgentId, seller: listing.agent_id });
 
       return {
@@ -106,7 +103,6 @@ class TradeService {
         current_offer: offer_amount,
         buyer_agent_id: buyerAgentId,
         seller_agent_id: listing.agent_id,
-        negotiation_fee_charged: microFee,
         created_at: new Date().toISOString(),
       };
     });
@@ -261,13 +257,47 @@ class TradeService {
       const err = new Error('Not authorized'); err.status = 403; throw err;
     }
 
-    await query("UPDATE trades SET status = 'cancelled', updated_at = NOW() WHERE trade_id = $1", [tradeId]);
-    await query(`
-      INSERT INTO negotiation_messages (trade_id, from_agent_id, action, message)
-      VALUES ($1, $2, 'decline', $3)
-    `, [tradeId, agentId, reason || 'Trade declined']);
+    // If escrow is active, release funds back to the buyer
+    if (trade.status === 'escrow_active') {
+      const agreedPrice = parseFloat(trade.agreed_price);
 
-    logger.info('Trade declined', { trade_id: tradeId, by: agentId, reason });
+      await transaction(async (client) => {
+        // Find buyer wallet and release locked funds
+        const { rows: [buyerWallet] } = await client.query(`
+          SELECT w.id, w.available_balance, w.locked_balance FROM wallets w
+          JOIN users u ON w.user_id = u.id
+          JOIN agents a ON a.user_id = u.id
+          WHERE a.agent_id = $1
+        `, [trade.buyer_agent_id]);
+
+        if (buyerWallet) {
+          await client.query(
+            'UPDATE wallets SET locked_balance = locked_balance - $1, available_balance = available_balance + $1, updated_at = NOW() WHERE id = $2',
+            [agreedPrice, buyerWallet.id]
+          );
+
+          const newBalance = parseFloat(buyerWallet.available_balance) + agreedPrice;
+          await client.query(`
+            INSERT INTO transactions (transaction_id, wallet_id, type, amount, balance_after, description, trade_id)
+            VALUES ($1, $2, 'escrow_release', $3, $4, $5, $6)
+          `, [`txn_refund_${tradeId}`, buyerWallet.id, agreedPrice, newBalance, `Escrow refunded — trade ${tradeId} declined`, tradeId]);
+        }
+
+        await client.query("UPDATE trades SET status = 'cancelled', updated_at = NOW() WHERE trade_id = $1", [tradeId]);
+        await client.query(`
+          INSERT INTO negotiation_messages (trade_id, from_agent_id, action, message)
+          VALUES ($1, $2, 'decline', $3)
+        `, [tradeId, agentId, reason || 'Trade declined']);
+      });
+    } else {
+      await query("UPDATE trades SET status = 'cancelled', updated_at = NOW() WHERE trade_id = $1", [tradeId]);
+      await query(`
+        INSERT INTO negotiation_messages (trade_id, from_agent_id, action, message)
+        VALUES ($1, $2, 'decline', $3)
+      `, [tradeId, agentId, reason || 'Trade declined']);
+    }
+
+    logger.info('Trade declined', { trade_id: tradeId, by: agentId, reason, had_escrow: trade.status === 'escrow_active' });
     return { trade_id: tradeId, status: 'cancelled', reason };
   }
 
@@ -343,12 +373,18 @@ class TradeService {
         VALUES ($1, $2, $3, $4, $5)
       `, [tradeId, agentId, trade.seller_agent_id, rating, review || null]);
 
-      // Update agent stats
+      // Update agent stats — increment trade counts for both, but only add rating to seller
       await client.query(`
         UPDATE agents SET total_trades = total_trades + 1, successful_trades = successful_trades + 1,
-          reputation_score = reputation_score + $1, updated_at = NOW()
-        WHERE agent_id IN ($2, $3)
-      `, [rating, trade.buyer_agent_id, trade.seller_agent_id]);
+          updated_at = NOW()
+        WHERE agent_id IN ($1, $2)
+      `, [trade.buyer_agent_id, trade.seller_agent_id]);
+
+      // Add rating to seller's reputation only
+      await client.query(`
+        UPDATE agents SET reputation_score = reputation_score + $1, updated_at = NOW()
+        WHERE agent_id = $2
+      `, [rating, trade.seller_agent_id]);
 
       // Auto-promote tier based on successful trades
       for (const aid of [trade.buyer_agent_id, trade.seller_agent_id]) {

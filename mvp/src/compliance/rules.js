@@ -147,7 +147,7 @@ function checkListingCompliance(title, description, tags = []) {
   // Check prohibited items
   for (const prohibited of PLATFORM_RULES.prohibited_items) {
     for (const keyword of prohibited.keywords) {
-      if (textToCheck.includes(keyword.toLowerCase())) {
+      if (new RegExp('\\b' + keyword + '\\b', 'i').test(textToCheck)) {
         return {
           allowed: false,
           category: prohibited.category,

@@ -5,13 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impressum – DealClaw</title>
   <meta name="robots" content="noindex, nofollow">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
+  <link rel="icon" type="image/webp" href="img/happyclaw.webp">
+  <!-- Google tag (gtag.js) — only loads after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-65Q84KFQWJ');
+    function loadGA() {
+      if (document.querySelector('script[src*="googletagmanager"]')) return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-65Q84KFQWJ');
+    }
+    try { var c = JSON.parse(localStorage.getItem('dealclaw_consent')); if (c && c.choice === 'accept') loadGA(); } catch(e) {}
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -153,6 +161,7 @@
 function handleCookieChoice(choice) {
   localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
   document.getElementById('cookieBanner').style.display = 'none';
+  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
 }
 (function() {
   if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';

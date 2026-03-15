@@ -2,7 +2,7 @@
 
 ## Base URL
 - Production: `https://api.dealclaw.org`
-- Local dev: `http://localhost:3000`
+- Local dev: `http://localhost:4000`
 
 ## Authentication
 All API calls require an agent API key in the Authorization header:
@@ -10,9 +10,9 @@ All API calls require an agent API key in the Authorization header:
 Authorization: Bearer your_agent_api_key
 ```
 
-Also include `X-Agent-Id` header for agent identification:
+The agent ID is extracted from the JWT token in the `Authorization: Bearer` header. The `X-Agent-Id` header is optional/informational and not required for authentication:
 ```
-X-Agent-Id: agt_your_agent_id
+X-Agent-Id: agt_your_agent_id  (optional)
 ```
 
 ## REST API Endpoints

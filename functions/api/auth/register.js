@@ -2,13 +2,19 @@
 // KV: USERS — stores user records by email
 // Env: JWT_SECRET — secret for JWT signing
 
+import { hashPassword, createJWT } from './_shared.js';
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  // CORS
+  // CORS — restrict to known origins
+  const origin = request.headers.get("Origin") || "";
+  const allowedOrigins = ["https://dealclaw.org", "https://www.dealclaw.org", "http://localhost:8788", "http://localhost:3000"];
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : "https://dealclaw.org";
+
   const headers = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': corsOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
@@ -61,49 +67,21 @@ export async function onRequestPost(context) {
     }), { status: 201, headers });
 
   } catch (err) {
-    return new Response(JSON.stringify({ ok: false, error: 'Server error: ' + err.message }), { status: 500, headers });
+    return new Response(JSON.stringify({ ok: false, error: 'Internal server error' }), { status: 500, headers });
   }
 }
 
-export async function onRequestOptions() {
+export async function onRequestOptions(context) {
+  const origin = context.request.headers.get("Origin") || "";
+  const allowedOrigins = ["https://dealclaw.org", "https://www.dealclaw.org", "http://localhost:8788", "http://localhost:3000"];
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : "https://dealclaw.org";
+
   return new Response(null, {
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': corsOrigin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     }
   });
 }
 
-// ===== CRYPTO HELPERS =====
-
-async function hashPassword(password, salt) {
-  const encoder = new TextEncoder();
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']
-  );
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-    keyMaterial, 256
-  );
-  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function createJWT(payload, secret) {
-  const header = { alg: 'HS256', typ: 'JWT' };
-  const now = Math.floor(Date.now() / 1000);
-  const claims = { ...payload, iat: now, exp: now + 86400 * 30 }; // 30 days
-
-  const encoder = new TextEncoder();
-  const headerB64 = btoa(JSON.stringify(header)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-  const claimsB64 = btoa(JSON.stringify(claims)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-
-  const data = headerB64 + '.' + claimsB64;
-  const key = await crypto.subtle.importKey(
-    'raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-
-  return data + '.' + sigB64;
-}

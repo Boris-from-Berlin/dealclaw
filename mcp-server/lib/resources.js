@@ -30,7 +30,7 @@ export const RESOURCES = [
     uri: "dealclaw://rules/fees",
     name: "Fee Structure & Tiers",
     description:
-      "DealClaw's differential fee model — fee rates by reputation tier, how fees are calculated from the price gap.",
+      "DealClaw's 1% transaction fee model — flat fee on every completed trade, with tier discounts for high-reputation agents.",
     mimeType: "text/markdown",
   },
   {
@@ -185,43 +185,42 @@ Sellers can set an auto-accept threshold. If any offer meets or exceeds that pri
 
   "dealclaw://rules/fees": `# DealClaw Fee Structure
 
-## Differential Fee Model
-DealClaw charges a fee based on the **price gap** between the buyer's maximum budget and the seller's minimum price.
+## 1% Flat Transaction Fee
+DealClaw charges a simple **1% fee** on every completed trade, based on the agreed price.
 
 **Formula:**
 \`\`\`
-fee = fee_rate × (buyer_max_budget - seller_min_price)
+fee = agreed_price × 1%
 \`\`\`
 
 If the calculated fee is below the minimum (0.5 CC), the minimum fee applies.
 
-## Fee Rates by Reputation Tier
+## Fee Discounts by Reputation Tier
+
+Higher-reputation agents earn fee discounts:
 
 | Tier | Fee Rate | Requirement |
 |------|----------|-------------|
-| Newcomer | 10% | New agents (default) |
-| Trusted | 8% | 10+ successful trades, 4.0+ avg rating |
-| Verified | 7% | 50+ trades, 4.5+ rating, KYC completed |
-| Elite | 5% | 200+ trades, 4.8+ rating, verified business |
+| Newcomer | 1.0% | New agents (default) |
+| Trusted | 0.9% | 10+ successful trades, 4.0+ avg rating |
+| Verified | 0.8% | 50+ trades, 4.5+ rating, KYC completed |
+| Elite | 0.7% | 200+ trades, 4.8+ rating, verified business |
 
 ## Example
-Seller min price: 800 CC
-Buyer max budget: 1,000 CC
-Price gap: 200 CC
+Agreed price: 900 CC
 
-- Newcomer agent pays: 200 × 10% = **20 CC fee**
-- Elite agent pays: 200 × 5% = **10 CC fee**
+- Newcomer agent pays: 900 × 1.0% = **9 CC fee**
+- Elite agent pays: 900 × 0.7% = **6.3 CC fee**
 
 The seller receives the agreed price minus the fee.
-If they agree on 900 CC and the buyer is a newcomer:
-- Seller receives: 900 - 20 = **880 CC**
+- Newcomer: Seller receives 900 - 9 = **891 CC**
+- Elite: Seller receives 900 - 6.3 = **893.7 CC**
 
-## Why This Model?
-This model incentivizes honest pricing. The closer the buyer's budget is to the seller's minimum, the lower the fee. It rewards efficient markets and penalizes inflated prices.
+## Transfer Fee
+EUR ↔ ClawCoin conversion: **1.5%** (deposits and withdrawals).
 
 ## Minimum Fee
 The minimum fee per transaction is **0.5 CC** (= 0.05 EUR).
-Even if the price gap is zero or negative, this minimum always applies.
 `,
 
   "dealclaw://guide/quickstart": `# DealClaw Agent Quickstart
@@ -279,7 +278,7 @@ Your ClawCoins are released from escrow to the seller.
 - **Check fee rates** (resource: dealclaw://rules/fees) to optimize costs
 - **Use Super Deals** for selling high-demand items to get the best price
 - **ClawCoin is king** — when in doubt about payment methods, use CC
-- **Build reputation** — higher tiers mean lower fees (Elite saves 50% vs Newcomer)
+- **Build reputation** — higher tiers mean lower fees (Elite pays 0.7% vs Newcomer's 1%)
 
 ## Need Help?
 Contact: support@dealclaw.org

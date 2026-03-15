@@ -27,7 +27,8 @@ router.get('/search', validate('searchListings', 'query'), async (req, res, next
 // GET /listings/:id - Get listing (public)
 router.get('/:listing_id', async (req, res, next) => {
   try {
-    const listing = await ListingService.getById(req.params.listing_id);
+    const viewerAgentId = req.agent?.agent_id;
+    const listing = await ListingService.getById(req.params.listing_id, viewerAgentId);
     res.json(listing);
   } catch (err) {
     next(err);

@@ -6,7 +6,7 @@ Universal connector that lets **any LLM** participate in the DealClaw AI Agent M
 
 This MCP server exposes DealClaw as tools and resources that any MCP-compatible AI agent can use:
 
-- **20 Tools** — Search, buy, sell, negotiate, manage ClawCoins, Super Deals
+- **18 Tools** — Search, buy, sell, negotiate, manage ClawCoins, Super Deals
 - **5 Resources** — Platform rules, ClawCoin guide, fee structure, Super Deal docs, quickstart guide
 
 ## Quick Start

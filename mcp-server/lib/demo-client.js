@@ -220,6 +220,7 @@ export class DemoClient {
     const routes = [
       // Listings
       { method: "GET", pattern: /^\/api\/v1\/listings$/, handler: "_getListings" },
+      { method: "GET", pattern: /^\/api\/v1\/listings\/search$/, handler: "_getListings" },
       { method: "GET", pattern: /^\/api\/v1\/listings\/([^/]+)$/, handler: "_getListingById" },
       { method: "POST", pattern: /^\/api\/v1\/listings$/, handler: "_createListing" },
       { method: "PUT", pattern: /^\/api\/v1\/listings\/([^/]+)$/, handler: "_updateListing" },
@@ -228,7 +229,8 @@ export class DemoClient {
       { method: "POST", pattern: /^\/api\/v1\/trades\/negotiate$/, handler: "_negotiate" },
       { method: "POST", pattern: /^\/api\/v1\/trades\/([^/]+)\/accept$/, handler: "_acceptTrade" },
       { method: "GET", pattern: /^\/api\/v1\/trades\/([^/]+)$/, handler: "_getTrade" },
-      { method: "POST", pattern: /^\/api\/v1\/trades\/([^/]+)\/confirm$/, handler: "_confirmTrade" },
+      { method: "POST", pattern: /^\/api\/v1\/trades\/([^/]+)\/decline$/, handler: "_declineTrade" },
+      { method: "POST", pattern: /^\/api\/v1\/trades\/([^/]+)\/confirm(-delivery)?$/, handler: "_confirmTrade" },
 
       // Super Deals
       { method: "POST", pattern: /^\/api\/v1\/superdeals\/offer$/, handler: "_superDealOffer" },
@@ -333,14 +335,26 @@ export class DemoClient {
 
       // Sort
       if (queryParams.sort) {
-        const sortField = queryParams.sort.replace(/^-/, "");
-        const desc = queryParams.sort.startsWith("-");
-        results.sort((a, b) => {
-          const aVal = a[sortField] ?? 0;
-          const bVal = b[sortField] ?? 0;
-          if (typeof aVal === "string") return desc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
-          return desc ? bVal - aVal : aVal - bVal;
-        });
+        const sortMap = {
+          price_asc: (a, b) => a.min_price - b.min_price,
+          price_desc: (a, b) => b.min_price - a.min_price,
+          newest: (a, b) => new Date(b.created_at) - new Date(a.created_at),
+          relevance: null, // no-op, already filtered by relevance
+        };
+        const sorter = sortMap[queryParams.sort];
+        if (sorter) {
+          results.sort(sorter);
+        } else {
+          // Fallback: treat as field name with optional - prefix for desc
+          const sortField = queryParams.sort.replace(/^-/, "");
+          const desc = queryParams.sort.startsWith("-");
+          results.sort((a, b) => {
+            const aVal = a[sortField] ?? 0;
+            const bVal = b[sortField] ?? 0;
+            if (typeof aVal === "string") return desc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+            return desc ? bVal - aVal : aVal - bVal;
+          });
+        }
       }
     }
 
@@ -556,6 +570,33 @@ export class DemoClient {
   }
 
   // ---------------------------------------------------------------------------
+  // POST /api/v1/trades/:id/decline
+  // ---------------------------------------------------------------------------
+
+  _declineTrade(id, body) {
+    const trade = this._trades.get(id);
+    if (!trade) this._notFound(`Trade ${id}`);
+
+    if (trade.status === 'completed') {
+      this._badRequest(`Trade ${id} is already completed`);
+    }
+
+    // Release escrow if funds were locked
+    if (trade.escrow_amount && trade.status === 'accepted') {
+      this._wallet.escrowed -= trade.escrow_amount;
+      this._wallet.available += trade.escrow_amount;
+      this._addTransaction("escrow_release", trade.escrow_amount, `Escrow released for declined trade ${id}`);
+    }
+
+    trade.status = "declined";
+    trade.decline_reason = (body && body.reason) || null;
+    trade.updated_at = new Date().toISOString();
+
+    this._log(`Trade ${id} declined`);
+    return trade;
+  }
+
+  // ---------------------------------------------------------------------------
   // POST /api/v1/superdeals/offer
   // ---------------------------------------------------------------------------
 
@@ -659,7 +700,7 @@ export class DemoClient {
       available: this._wallet.available,
       escrowed: this._wallet.escrowed,
       total: this._wallet.available + this._wallet.escrowed,
-      currency: "USD",
+      currency: "CC",
     };
   }
 
@@ -669,17 +710,15 @@ export class DemoClient {
 
   _getTransactions(queryParams) {
     let txs = [...this._wallet.transactions];
-
     if (queryParams) {
       if (queryParams.type) {
         txs = txs.filter((t) => t.type === queryParams.type);
       }
-      if (queryParams.limit) {
-        txs = txs.slice(0, Number(queryParams.limit));
-      }
+      const offset = Number(queryParams.offset) || 0;
+      const limit = Number(queryParams.limit) || 50;
+      txs = txs.slice(offset, offset + limit);
     }
-
-    return { transactions: txs, total: txs.length };
+    return { transactions: txs, total: this._wallet.transactions.length };
   }
 
   // ---------------------------------------------------------------------------
@@ -687,7 +726,7 @@ export class DemoClient {
   // ---------------------------------------------------------------------------
 
   _deposit(body) {
-    const amount = body.amount || 0;
+    const amount = body.amount_eur || body.amount || 0;
     if (amount <= 0) this._badRequest("Deposit amount must be positive");
 
     this._wallet.available += amount;
@@ -701,7 +740,7 @@ export class DemoClient {
         available: this._wallet.available,
         escrowed: this._wallet.escrowed,
         total: this._wallet.available + this._wallet.escrowed,
-        currency: "USD",
+        currency: "CC",
       },
     };
   }
@@ -724,7 +763,12 @@ export class DemoClient {
     if (body.capabilities) this._agent.capabilities = body.capabilities;
 
     this._log(`Agent registered/updated: ${this._agent.name}`);
-    return { ...this._agent };
+    return {
+      ...this._agent,
+      agent_id: 'demo_agent_001',
+      api_key: 'dealclaw_demo_key',
+      welcome_bonus: 100,
+    };
   }
 
   // ---------------------------------------------------------------------------

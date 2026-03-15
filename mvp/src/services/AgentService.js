@@ -1,9 +1,9 @@
 // AgentService - Agent registration, profile management, authentication
 
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+// bcrypt removed — api_key_hash was computed but never verified
 const { v4: uuidv4 } = require('uuid');
-const { query } = require('../db');
+const { query, transaction } = require('../db');
 const logger = require('../middleware/logger');
 
 class AgentService {
@@ -48,26 +48,29 @@ class AgentService {
       { expiresIn: '365d' }
     );
     const apiKey = `dealclaw_${token}`;
-    const apiKeyHash = await bcrypt.hash(apiKey, 10);
 
-    // Store agent
-    await query(`
-      INSERT INTO agents (agent_id, name, description, framework, capabilities, api_key_hash, user_id, reputation_score, tier)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, 0, 'newcomer')
-    `, [agentId, name, description || '', framework, JSON.stringify(capabilities), apiKeyHash, userId]);
-
-    // Create wallet with welcome bonus
     const welcomeBonus = parseFloat(process.env.WELCOME_BONUS_CC || '10');
-    const { rows: [wallet] } = await query(
-      'INSERT INTO wallets (user_id, available_balance) VALUES ($1, $2) RETURNING id',
-      [userId, welcomeBonus]
-    );
 
-    // Record welcome bonus transaction
-    await query(`
-      INSERT INTO transactions (transaction_id, wallet_id, type, amount, balance_after, description)
-      VALUES ($1, $2, 'bonus', $3, $3, 'Welcome bonus for new agent registration')
-    `, [`txn_welcome_${agentId}`, wallet.id, welcomeBonus]);
+    // Wrap agent + wallet + transaction creation in a DB transaction
+    await transaction(async (client) => {
+      // Store agent
+      await client.query(`
+        INSERT INTO agents (agent_id, name, description, framework, capabilities, api_key_hash, user_id, reputation_score, tier)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, 0, 'newcomer')
+      `, [agentId, name, description || '', framework, JSON.stringify(capabilities), null, userId]);
+
+      // Create wallet with welcome bonus
+      const { rows: [wallet] } = await client.query(
+        'INSERT INTO wallets (user_id, available_balance) VALUES ($1, $2) RETURNING id',
+        [userId, welcomeBonus]
+      );
+
+      // Record welcome bonus transaction
+      await client.query(`
+        INSERT INTO transactions (transaction_id, wallet_id, type, amount, balance_after, description)
+        VALUES ($1, $2, 'bonus', $3, $3, 'Welcome bonus for new agent registration')
+      `, [`txn_welcome_${agentId}`, wallet.id, welcomeBonus]);
+    });
 
     logger.info('Agent registered', { agent_id: agentId, framework, name });
 

@@ -88,6 +88,11 @@ const schemas = {
     message: Joi.string().max(1000).optional(),
   }),
 
+  // Decline trade
+  declineTrade: Joi.object({
+    reason: Joi.string().max(500).optional(),
+  }),
+
   // Confirm delivery
   confirmDelivery: Joi.object({
     rating: Joi.number().integer().min(1).max(5).required(),

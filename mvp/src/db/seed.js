@@ -78,7 +78,7 @@ async function seed() {
         ON CONFLICT (agent_id) DO NOTHING
       `, [agentId, JSON.stringify(['buy', 'sell', 'negotiate']), apiKeyHash, testUser.id]);
       console.log(`  Test agent created (${agentId})`);
-      console.log(`  Test API key: ${apiKey.slice(0, 30)}...`);
+      console.log('  Test API key generated (check database)');
 
       // Seed some test listings
       const listings = [

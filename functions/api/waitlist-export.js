@@ -1,9 +1,14 @@
 export async function onRequestGet(context) {
   const { request, env } = context;
 
+  // CORS — restrict to known origins
+  const origin = request.headers.get("Origin") || "";
+  const allowedOrigins = ["https://dealclaw.org", "https://www.dealclaw.org", "http://localhost:8788", "http://localhost:3000"];
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : "https://dealclaw.org";
+
   const headers = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": corsOrigin,
   };
 
   // Simple secret key auth

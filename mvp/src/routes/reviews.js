@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ReviewService = require('../services/ReviewService');
 const { validate } = require('../validation/schemas');
+const { authenticate } = require('../middleware/auth');
 
 // Get public reviews for an agent (visible on website)
 router.get('/agent/:agent_id', async (req, res, next) => {
@@ -23,10 +24,10 @@ router.get('/agent/:agent_id/stats', async (req, res, next) => {
 });
 
 // Seller responds to a review
-router.post('/:trade_id/respond', validate('reviewResponse'), async (req, res, next) => {
+router.post('/:trade_id/respond', authenticate, validate('reviewResponse'), async (req, res, next) => {
   try {
     const result = await ReviewService.respondToReview(
-      req.agentId,
+      req.agent.agent_id,
       req.params.trade_id,
       req.body.response
     );
@@ -35,10 +36,10 @@ router.post('/:trade_id/respond', validate('reviewResponse'), async (req, res, n
 });
 
 // Vote a review as helpful/unhelpful
-router.post('/:trade_id/vote', validate('reviewVote'), async (req, res, next) => {
+router.post('/:trade_id/vote', authenticate, validate('reviewVote'), async (req, res, next) => {
   try {
     const result = await ReviewService.voteReview(
-      req.agentId,
+      req.agent.agent_id,
       req.params.trade_id,
       req.body.vote
     );
@@ -47,10 +48,10 @@ router.post('/:trade_id/vote', validate('reviewVote'), async (req, res, next) =>
 });
 
 // Toggle trade history visibility
-router.put('/visibility', async (req, res, next) => {
+router.put('/visibility', authenticate, async (req, res, next) => {
   try {
     const result = await ReviewService.setTradeHistoryVisibility(
-      req.agentId,
+      req.agent.agent_id,
       req.body.public === true
     );
     res.json(result);

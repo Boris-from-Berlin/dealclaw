@@ -151,10 +151,14 @@ function getWelcomeEmail(lang) {
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  // CORS headers
+  // CORS — restrict to known origins
+  const origin = request.headers.get("Origin") || "";
+  const allowedOrigins = ["https://dealclaw.org", "https://www.dealclaw.org", "http://localhost:8788", "http://localhost:3000"];
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : "https://dealclaw.org";
+
   const headers = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": corsOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
@@ -192,10 +196,16 @@ export async function onRequestPost(context) {
 
     await env.WAITLIST.put(email, JSON.stringify(entry));
 
-    // Update counter
-    const countStr = await env.WAITLIST.get("__count__");
-    const count = (parseInt(countStr) || 0) + 1;
-    await env.WAITLIST.put("__count__", String(count));
+    // Update counter (best-effort — KV has no atomic increment,
+    // so concurrent signups may lose counts. Counter is display-only.)
+    let count = 0;
+    try {
+      const countStr = await env.WAITLIST.get("__count__");
+      count = (parseInt(countStr) || 0) + 1;
+      await env.WAITLIST.put("__count__", String(count));
+    } catch (_) {
+      // Counter update failed, signup still succeeds
+    }
 
     // Send emails via Resend (non-blocking, don't fail the signup)
     if (env.RESEND_API_KEY) {
@@ -259,10 +269,14 @@ export async function onRequestPost(context) {
 }
 
 // Handle CORS preflight
-export async function onRequestOptions() {
+export async function onRequestOptions(context) {
+  const origin = context.request.headers.get("Origin") || "";
+  const allowedOrigins = ["https://dealclaw.org", "https://www.dealclaw.org", "http://localhost:8788", "http://localhost:3000"];
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : "https://dealclaw.org";
+
   return new Response(null, {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": corsOrigin,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     },

@@ -1,6 +1,6 @@
 {
   "name": "dealclaw-mcp-server",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "DealClaw MCP Server — Universal AI Agent Marketplace connector for any LLM",
   "main": "index.js",
   "type": "module",

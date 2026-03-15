@@ -1,7 +1,7 @@
 // ListingService - Listing CRUD, search, compliance checks
 
 const { v4: uuidv4 } = require('uuid');
-const { query } = require('../db');
+const { query, transaction } = require('../db');
 const logger = require('../middleware/logger');
 const { checkListingCompliance } = require('../compliance/rules');
 
@@ -169,9 +169,7 @@ class ListingService {
   /**
    * Get a single listing by ID (increments view count).
    */
-  static async getById(listingId) {
-    await query('UPDATE listings SET view_count = view_count + 1 WHERE listing_id = $1', [listingId]);
-
+  static async getById(listingId, viewerAgentId) {
     const { rows } = await query(`
       SELECT l.*, a.name as agent_name, a.reputation_score, a.tier as agent_tier
       FROM listings l JOIN agents a ON l.agent_id = a.agent_id
@@ -185,6 +183,12 @@ class ListingService {
     }
 
     const l = rows[0];
+
+    // Only increment view count if the viewer is not the listing owner
+    if (!viewerAgentId || viewerAgentId !== l.agent_id) {
+      await query('UPDATE listings SET view_count = view_count + 1 WHERE listing_id = $1', [listingId]);
+      l.view_count = (l.view_count || 0) + 1;
+    }
     return {
       listing_id: l.listing_id, title: l.title, description: l.description,
       price: parseFloat(l.display_price), category: l.category_slug,
@@ -204,16 +208,46 @@ class ListingService {
     if (existing.rows.length === 0) { const err = new Error('Listing not found'); err.status = 404; throw err; }
     if (existing.rows[0].agent_id !== agentId) { const err = new Error('Not authorized'); err.status = 403; throw err; }
 
+    // Re-run compliance check if title or description changed
+    if (updates.title !== undefined || updates.description !== undefined) {
+      const currentListing = await query('SELECT title, description, tags FROM listings WHERE listing_id = $1', [listingId]);
+      const title = updates.title !== undefined ? updates.title : currentListing.rows[0].title;
+      const description = updates.description !== undefined ? updates.description : currentListing.rows[0].description;
+      const tags = updates.tags !== undefined ? updates.tags : parseJson(currentListing.rows[0].tags);
+      const compliance = checkListingCompliance(title, description, tags);
+      if (!compliance.allowed) {
+        const err = new Error(`Listing update blocked: ${compliance.reason}`);
+        err.status = 403;
+        err.compliance = compliance;
+        throw err;
+      }
+    }
+
     const fields = [];
     const values = [];
     let idx = 1;
-    for (const field of ['title', 'description', 'min_price', 'display_price', 'status', 'tags']) {
+    for (const field of ['title', 'description', 'min_price', 'display_price', 'category_slug', 'status', 'tags']) {
       if (updates[field] !== undefined) {
         fields.push(`${field} = $${idx++}`);
         values.push(field === 'tags' ? JSON.stringify(updates[field]) : updates[field]);
       }
     }
     if (fields.length === 0) return this.getById(listingId);
+
+    // M8: Update category listing_count if category_slug is changing
+    if (updates.category_slug !== undefined) {
+      const oldListing = await query('SELECT category_slug FROM listings WHERE listing_id = $1', [listingId]);
+      const oldCategory = oldListing.rows[0].category_slug;
+      const newCategory = updates.category_slug;
+      if (oldCategory !== newCategory) {
+        if (oldCategory) {
+          await query('UPDATE categories SET listing_count = MAX(listing_count - 1, 0) WHERE slug = $1', [oldCategory]);
+        }
+        if (newCategory) {
+          await query('UPDATE categories SET listing_count = listing_count + 1 WHERE slug = $1', [newCategory]);
+        }
+      }
+    }
 
     fields.push('updated_at = NOW()');
     values.push(listingId);

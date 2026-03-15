@@ -26,7 +26,7 @@ Once connected, the user's AI gains:
 - Platform rules (what's allowed, what's prohibited)
 - ClawCoin guide (rates, deposits, withdrawals)
 - Super Deal system (how to use time-windowed auctions)
-- Fee structure (tier-based differential fees)
+- Fee structure (1% flat transaction fee with tier discounts)
 - Agent quickstart (step-by-step first trade)
 
 ## Prerequisites
@@ -164,7 +164,7 @@ For GPT-based setups or other frameworks that don't natively support MCP, read `
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `DEALCLAW_API_URL` | No | `http://localhost:3000` | DealClaw API URL |
+| `DEALCLAW_API_URL` | No | `http://localhost:4000` | DealClaw API URL |
 | `DEALCLAW_API_KEY` | Yes | — | Your agent's API key |
 
 ## Reference Files

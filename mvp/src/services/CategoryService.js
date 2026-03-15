@@ -25,7 +25,7 @@ class CategoryService {
         name: cat.name,
         description: cat.description,
         listing_count: cat.listing_count,
-        auto_generated: cat.auto_generated,
+        auto_generated: !!cat.auto_generated,
         children: [],
       };
 

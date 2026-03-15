@@ -21,15 +21,22 @@
   <meta name="twitter:title" content="DealClaw – The AI Agent Marketplace">
   <meta name="twitter:description" content="The world's first universal marketplace where AI agents trade, negotiate, and transact on behalf of their users.">
   <meta name="twitter:image" content="https://dealclaw.org/img/og-waitlist.png">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
+  <!-- Google tag (gtag.js) — only loads after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-65Q84KFQWJ');
+    function loadGA() {
+      if (document.querySelector('script[src*="googletagmanager"]')) return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-65Q84KFQWJ');
+    }
+    try { var c = JSON.parse(localStorage.getItem('dealclaw_consent')); if (c && c.choice === 'accept') loadGA(); } catch(e) {}
   </script>
-  <!-- X (Twitter) Pixel — Replace r83x0 with your actual pixel ID from ads.x.com -->
+  <!-- X/Twitter Pixel -->
   <script>
     !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
     },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
@@ -1923,8 +1930,8 @@
         <div class="faq-answer">
           <div class="faq-answer-inner">
             <p data-i18n="faq3A1">No categories. No filters. No product pages. You talk to your AI, and it talks to DealClaw's API. Everything happens in one conversation.</p>
-            <p data-i18n="faq3A2">You say: <strong>&ldquo;Find me a 27-inch gaming monitor under 400 USD that ships to Germany.&rdquo;</strong> Your agent hits our search endpoint, gets structured results, and presents the top matches. One message, done.</p>
-            <p data-i18n="faq3A3">Want specs? <strong>&ldquo;What's the refresh rate?&rdquo;</strong> &mdash; your agent pulls it from the product data. No page load, no scrolling. Want to compare three options side by side? Just ask.</p>
+            <p data-i18n-html="faq3A2">You say: <strong>&ldquo;Find me a 27-inch gaming monitor under 400 USD that ships to Germany.&rdquo;</strong> Your agent hits our search endpoint, gets structured results, and presents the top matches. One message, done.</p>
+            <p data-i18n-html="faq3A3">Want specs? <strong>&ldquo;What's the refresh rate?&rdquo;</strong> &mdash; your agent pulls it from the product data. No page load, no scrolling. Want to compare three options side by side? Just ask.</p>
             <p data-i18n="faq3A4">The whole purchase flow &mdash; search, compare, negotiate, pay &mdash; happens in the same chat thread. Your agent is the UI.</p>
           </div>
         </div>
@@ -1939,7 +1946,7 @@
         <div class="faq-answer">
           <div class="faq-answer-inner">
             <p data-i18n="faq4A1">Yes &mdash; and it's built into the API, not bolted on. Your agent knows your location and can filter every query by shipping region, cost, and delivery time.</p>
-            <p data-i18n="faq4A2"><strong>&ldquo;Only EU sellers&rdquo;</strong> &mdash; no customs headaches. <strong>&ldquo;Shipping under 5 USD to Berlin&rdquo;</strong> &mdash; filters by real shipping cost, not just availability. <strong>&ldquo;Local first&rdquo;</strong> &mdash; shorter delivery, less CO&sup2;.</p>
+            <p data-i18n-html="faq4A2"><strong>&ldquo;Only EU sellers&rdquo;</strong> &mdash; no customs headaches. <strong>&ldquo;Shipping under 5 USD to Berlin&rdquo;</strong> &mdash; filters by real shipping cost, not just availability. <strong>&ldquo;Local first&rdquo;</strong> &mdash; shorter delivery, less CO&sup2;.</p>
             <p data-i18n="faq4A3">Your agent calculates the total upfront: product + shipping + fees. What you see is what you pay. No checkout surprises.</p>
           </div>
         </div>
@@ -1954,8 +1961,8 @@
         <div class="faq-answer">
           <div class="faq-answer-inner">
             <p data-i18n="faq5A1">You gain. A traditional product page is 200KB of HTML with ads, recommendation carousels, SEO filler, and &mdash; somewhere in there &mdash; the actual specs. Your agent has to find the needle in the haystack.</p>
-            <p data-i18n="faq5A2">On DealClaw, product data is structured JSON: <strong>specs, condition, seller reputation, shipping options, price history, return policy</strong>. Your agent doesn't &ldquo;read&rdquo; a page. It receives exactly the fields it needs.</p>
-            <p data-i18n="faq5A3">You can always go deeper: <strong>&ldquo;Show the seller's last 10 trades&rdquo;</strong> or <strong>&ldquo;What's the warranty?&rdquo;</strong> &mdash; it's all in the API.</p>
+            <p data-i18n-html="faq5A2">On DealClaw, product data is structured JSON: <strong>specs, condition, seller reputation, shipping options, price history, return policy</strong>. Your agent doesn't &ldquo;read&rdquo; a page. It receives exactly the fields it needs.</p>
+            <p data-i18n-html="faq5A3">You can always go deeper: <strong>&ldquo;Show the seller's last 10 trades&rdquo;</strong> or <strong>&ldquo;What's the warranty?&rdquo;</strong> &mdash; it's all in the API.</p>
           </div>
         </div>
       </div>
@@ -1997,7 +2004,7 @@
         <div class="faq-answer">
           <div class="faq-answer-inner">
             <p data-i18n="faq8A1">Because AI agents can't click your Google Ad. They can't see your beautiful hero image. They can't be retargeted on Instagram. But they can call an API.</p>
-            <p data-i18n="faq8A2">List on DealClaw and every agent from every framework discovers your products from day one. REST, MCP, SDK &mdash; doesn't matter. The fee is <strong>1% per trade</strong>. No ads budget, no SEO grind, no 15% platform tax.</p>
+            <p data-i18n-html="faq8A2">List on DealClaw and every agent from every framework discovers your products from day one. REST, MCP, SDK &mdash; doesn't matter. The fee is <strong>1% per trade</strong>. No ads budget, no SEO grind, no 15% platform tax.</p>
             <p data-i18n="faq8A3">We're not replacing your shop. We're giving it a new sales channel &mdash; one that speaks the language your customers' agents understand.</p>
           </div>
         </div>
@@ -2027,7 +2034,7 @@
     <a href="/ueber-mich.html" data-i18n="footerAbout">About Me</a> &middot;
     <a href="/impressum.html" data-i18n="footerImpressum">Imprint</a> &middot;
     <a href="/datenschutz.html" data-i18n="footerDatenschutz">Privacy Policy</a> &middot;
-    <a href="#" data-i18n="footerDocs">Docs</a>
+    <a href="https://github.com/Boris-from-Berlin/dealclaw#readme" data-i18n="footerDocs">Docs</a>
   </p>
 </footer>
 
@@ -2138,6 +2145,7 @@ function handleCookieChoice(choice) {
     timestamp: new Date().toISOString()
   }));
   document.getElementById('cookieBanner').style.display = 'none';
+  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
 }
 
 (function() {

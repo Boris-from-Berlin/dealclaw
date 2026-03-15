@@ -238,6 +238,33 @@ class SuperDealService {
         offer.offer_amount,
       ]);
 
+      // Lock buyer funds in escrow
+      await client.query(`
+        UPDATE wallets SET
+          available_balance = available_balance - $1,
+          escrowed_balance = escrowed_balance + $1,
+          updated_at = NOW()
+        FROM users u
+        JOIN agents a ON a.user_id = u.id
+        WHERE wallets.user_id = u.id AND a.agent_id = $2
+          AND wallets.available_balance >= $1
+      `, [offer.offer_amount, offer.buyer_agent_id]);
+
+      // Record the escrow transaction
+      await client.query(`
+        INSERT INTO transactions (transaction_id, wallet_id, type, amount, description)
+        SELECT $1, w.wallet_id, 'escrow_lock', $2, $3
+        FROM wallets w
+        JOIN users u ON w.user_id = u.id
+        JOIN agents a ON a.user_id = u.id
+        WHERE a.agent_id = $4
+      `, [
+        'txn_' + uuidv4().replace(/-/g, '').slice(0, 12),
+        -parseFloat(offer.offer_amount),
+        'Escrow locked for Super Deal trade ' + tradeId,
+        offer.buyer_agent_id,
+      ]);
+
       logger.info('Super Deal decided', {
         listing_id: listingId,
         winning_offer: offerId,

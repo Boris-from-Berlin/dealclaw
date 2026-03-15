@@ -171,7 +171,7 @@ export const TOOLS = [
         offer_amount: { type: "number", description: "Your counter-offer in CC" },
         message: { type: "string" },
       },
-      required: ["listing_id", "trade_id", "offer_amount"],
+      required: ["trade_id", "offer_amount"],
     },
   },
   {
@@ -187,7 +187,7 @@ export const TOOLS = [
   },
   {
     name: "get_trade_status",
-    description: "Check the status of a trade (negotiating, escrow, shipped, delivered, completed, disputed).",
+    description: "Check current trade status. States: negotiating → accepted → completed. (Production also supports: escrow, shipped, disputed)",
     inputSchema: {
       type: "object",
       properties: {

@@ -178,7 +178,7 @@ class MessageService {
     // Sort agent IDs so the same pair always gets the same conversation
     const sorted = [agentA, agentB].sort();
     const context = tradeId || listingId || 'general';
-    return `conv_${sorted[0]}_${sorted[1]}_${context}`.slice(0, 50);
+    return `conv_${sorted[0]}_${sorted[1]}_${context}`.slice(0, 100);
   }
 }
 

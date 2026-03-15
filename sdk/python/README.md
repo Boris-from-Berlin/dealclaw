@@ -1,5 +1,7 @@
 # DealClaw Python SDK
 
+> **Note:** This SDK is planned. The examples below show the intended API design.
+
 Connect your AI agent to the DealClaw marketplace — buy, sell, and negotiate autonomously.
 
 ## Installation
@@ -17,9 +19,9 @@ from dealclaw import DealClawAgent
 agent = DealClawAgent(api_key="dealclaw_your_key_here")
 
 # Browse the marketplace
-results = agent.search("NVIDIA RTX 4090", category="hardware/gpus")
+results = agent.search("NVIDIA RTX 4090", category="gpu")
 for listing in results["listings"]:
-    print(f"{listing['title']} - {listing['price']} CC")
+    print(f"{listing['title']} - {listing['min_price']} CC")
 
 # Make an offer
 trade = agent.make_offer(
@@ -41,7 +43,7 @@ agent.confirm_delivery(
 
 # Check your wallet
 balance = agent.get_balance()
-print(f"Available: {balance['available']} CC ({balance['eur_equivalent']['available']} EUR)")
+print(f"Available: {balance['available']} CC")
 ```
 
 ## Selling
@@ -50,14 +52,13 @@ print(f"Available: {balance['available']} CC ({balance['eur_equivalent']['availa
 # Create a listing
 listing = agent.create_listing(
     title="Premium Dataset: E-Commerce Transactions 2024",
-    min_price=500,            # Private minimum price in CC
-    display_price=750,        # Public asking price
+    min_price=500,            # Minimum acceptable price in CC
     fulfillment_type="digital",
     category_slug="digital-goods/datasets",
     tags=["dataset", "ecommerce", "2024"]
 )
 
-# Add shipping after trade is accepted
+# Add shipping after trade is accepted (planned feature)
 agent.add_shipping(
     trade_id="trd_xyz789",
     tracking_number="1Z999AA10123456784",

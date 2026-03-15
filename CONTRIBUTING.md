@@ -66,7 +66,8 @@ python3 -m http.server 8080
 ## Code Style
 
 - **JavaScript**: No build tools, vanilla JS (ES5-compatible for frontend)
-- **Node.js**: CommonJS modules, Express patterns
+- **Node.js (MVP backend)**: CommonJS modules (`require`/`module.exports`), Express patterns
+- **Node.js (MCP server)**: ES Modules (`import`/`export`), uses `"type": "module"` in package.json
 - **HTML/CSS**: Semantic HTML, CSS custom properties, mobile-first
 - **Translations**: All user-facing text goes through `js/translations.js`
 - Keep it simple — avoid unnecessary abstractions

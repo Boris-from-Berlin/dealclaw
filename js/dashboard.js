@@ -125,7 +125,7 @@
       }
 
       var html = '';
-      filtered.reverse().forEach(function(trade) {
+      [...filtered].reverse().forEach(function(trade) {
         var typeIcon = trade.type === 'buy' ? '&#x1F6D2;' : '&#x1F4E6;';
         var date = new Date(trade.date).toLocaleDateString();
         html += '<div class="trade-card">';
@@ -191,7 +191,7 @@
 
       // Stats
       var repEl = document.getElementById('agentRepDisplay');
-      if (repEl) repEl.textContent = '&#x2B50; ' + (agent.reputation || 0).toFixed(1);
+      if (repEl) repEl.textContent = '\u2B50 ' + (agent.reputation || 0).toFixed(1);
       var tradesEl = document.getElementById('agentTradesDisplay');
       if (tradesEl) tradesEl.textContent = agent.totalTrades || 0;
     });
@@ -210,7 +210,7 @@
     }).then(function() {
       var btn = document.getElementById('saveAgentBtn');
       if (btn) {
-        btn.textContent = '&#x2705; ' + t('dashSaved');
+        btn.textContent = '\u2705 ' + t('dashSaved');
         setTimeout(function() { btn.textContent = t('dashSaveAgent'); }, 2000);
       }
     });
@@ -243,6 +243,12 @@
 
   // ===== INIT =====
   function initDashboard() {
+    // Auth guard — redirect to login if not authenticated
+    if (typeof DealClawAuth !== 'undefined' && !DealClawAuth.isLoggedIn()) {
+      window.location.href = '/login.html?redirect=/dashboard.html';
+      return;
+    }
+
     // Load initial tab
     loadOverview();
 

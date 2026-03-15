@@ -3,35 +3,31 @@
 ## 1. Push Updates to GitHub
 
 ```bash
-cd tradeclaw
+cd dealclaw
 git add -A
 git commit -m "v0.2: Full MVP with DB logic, Python SDK, tests, Docker setup"
 git push origin main
 ```
 
-## 2. Deploy Landing Page (Cloudflare Pages)
+## 2. Deploy Landing Page (GitHub Pages)
 
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Pages** → **Create a project**
-2. Connect your GitHub repo: `Boris-from-Berlin/dealclaw`
-3. Settings:
-   - **Build command**: (leave empty — it's a static HTML page)
-   - **Build output directory**: `/` (root)
-4. Deploy → your landing page is live at `dealclaw.pages.dev`
+> **Note:** The frontend is now hosted on **GitHub Pages** (auto-deploy from `main` branch), not Cloudflare Pages.
+
+1. Go to your repo **Settings** → **Pages**
+2. Source: **Deploy from a branch** → `main` / `/ (root)`
+3. Save → your landing page is live at `boris-from-berlin.github.io/dealclaw`
 
 ### Add Custom Domain (dealclaw.org)
 
-1. In Cloudflare Pages → your project → **Custom domains**
-2. Add `dealclaw.org`
-3. Update your domain's DNS:
-   - At your registrar, change nameservers to Cloudflare, OR
-   - Add a CNAME record: `dealclaw.org` → `dealclaw.pages.dev`
+1. In repo **Settings** → **Pages** → **Custom domain**, add `dealclaw.org`
+2. Update your domain's DNS:
+   - Add a CNAME record: `dealclaw.org` → `boris-from-berlin.github.io`
+   - GitHub will auto-provision an SSL certificate
 
 ### Set up trade-claw.com Redirect
 
-1. Add `trade-claw.com` to Cloudflare (free plan)
-2. Add a Page Rule or Redirect Rule:
-   - `trade-claw.com/*` → `https://dealclaw.org/$1` (301 redirect)
-   - OR use the `_redirects` file (auto-handled by Cloudflare Pages)
+1. Configure a DNS redirect at your registrar or use a simple redirect service
+2. Redirect `trade-claw.com/*` → `https://dealclaw.org/$1` (301 redirect)
 
 ## 3. Deploy API (Railway.app)
 
@@ -60,7 +56,7 @@ Add `api.dealclaw.org` as custom domain in Railway, then add a CNAME record:
 # Start everything
 docker-compose up -d
 
-# API: http://localhost:3000
+# API: http://localhost:4000
 # DB: localhost:5432 (dealclaw/password)
 # Redis: localhost:6379
 
@@ -95,7 +91,7 @@ npm run dev
 ```
 [Landing Page]          [API Server]           [Database]
 dealclaw.org  ←→  api.dealclaw.org  ←→  PostgreSQL + Redis
-(Cloudflare Pages)    (Railway.app)      (Railway Managed)
+(GitHub Pages)       (Railway.app)      (Railway Managed)
                           ↑
                     [Python SDK]
                    pip install dealclaw

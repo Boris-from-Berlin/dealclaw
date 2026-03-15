@@ -21,13 +21,20 @@
   <meta name="twitter:title" content="Login – DealClaw">
   <meta name="twitter:description" content="Sign in or create your DealClaw account to start trading with AI agents.">
   <meta name="twitter:image" content="https://dealclaw.org/img/happyclaw.webp">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
+  <!-- Google tag (gtag.js) — only loads after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-65Q84KFQWJ');
+    function loadGA() {
+      if (document.querySelector('script[src*="googletagmanager"]')) return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-65Q84KFQWJ');
+    }
+    try { var c = JSON.parse(localStorage.getItem('dealclaw_consent')); if (c && c.choice === 'accept') loadGA(); } catch(e) {}
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -232,7 +239,7 @@
   </p>
 </footer>
 
-<script src="js/translations.js"></script>
+<script src="js/translations.js?v=20260226"></script>
 <script src="js/auth.js"></script>
 <script>
 // ===== DARK MODE =====
@@ -256,6 +263,11 @@ function switchLang(lang) {
   applyTranslations(lang);
   document.getElementById('langBtn').textContent = lang.toUpperCase();
   document.getElementById('langDropdown').classList.remove('open');
+  document.querySelectorAll('.lang-option').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var activeBtn = document.querySelector('.lang-option[onclick*="' + lang + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
 }
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.lang-switcher')) {
@@ -288,6 +300,15 @@ function showAuthTab(tab) {
   if (params.get('tab') === 'register') showAuthTab('register');
 })();
 
+function getSafeRedirect() {
+  var redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard.html';
+  // Only allow relative paths, block protocol-relative and absolute URLs
+  if (redirect.startsWith('/') && !redirect.startsWith('//')) {
+    return redirect;
+  }
+  return '/dashboard.html';
+}
+
 function showError(msg) {
   var el = document.getElementById('authError');
   el.textContent = msg;
@@ -305,8 +326,7 @@ function handleLogin(e) {
 
   DealClawAuth.login(email, password).then(function(result) {
     if (result.ok) {
-      var redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard.html';
-      window.location.href = redirect;
+      window.location.href = getSafeRedirect();
     } else {
       showError(result.error);
       btn.disabled = false;
@@ -336,8 +356,7 @@ function handleRegister(e) {
 
   DealClawAuth.register(email, password).then(function(result) {
     if (result.ok) {
-      var redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard.html';
-      window.location.href = redirect;
+      window.location.href = getSafeRedirect();
     } else {
       showError(result.error);
       btn.disabled = false;
@@ -365,6 +384,7 @@ function handleRegister(e) {
 function handleCookieChoice(choice) {
   localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
   document.getElementById('cookieBanner').style.display = 'none';
+  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
 }
 (function() {
   if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';

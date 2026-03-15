@@ -4,6 +4,12 @@
 (function() {
   'use strict';
 
+  // ===== HTML ESCAPE =====
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   // ===== STATE =====
   var state = {
     phase: 'welcome',
@@ -397,7 +403,6 @@
       return addAiMsg(t('demoAiCompareResult').replace('{name}', best.name).replace('{price}', best.price), 500);
     })
     .then(function() {
-      var isBuy = state.mode === 'buy';
       var bestIdx = isBuy ? 2 : 0;
       state.selectedListing = items[bestIdx];
       enableInput(t('demoInputDetail'));
@@ -443,26 +448,26 @@
     var counterpart = isBuy ? item.seller : item.buyer;
     var html = '<div class="demo-product-detail">';
     html += '<div class="demo-product-hero">';
-    html += '<img src="' + item.img + '" alt="' + item.name + '">';
-    if (item.condition) html += '<span class="badge-condition badge-condition--' + item.condition.toLowerCase().replace(/\s+/g, '') + '">' + item.condition + '</span>';
+    html += '<img src="' + escapeHtml(item.img) + '" alt="' + escapeHtml(item.name) + '">';
+    if (item.condition) html += '<span class="badge-condition badge-condition--' + escapeHtml(item.condition.toLowerCase().replace(/\s+/g, '')) + '">' + escapeHtml(item.condition) + '</span>';
     html += '</div>';
     html += '<div class="demo-product-info">';
-    html += '<div class="demo-product-title">' + item.name + '</div>';
-    html += '<div class="demo-product-price">' + item.price + ' USD</div>';
-    html += '<div class="demo-product-desc">' + item.desc + '</div>';
+    html += '<div class="demo-product-title">' + escapeHtml(item.name) + '</div>';
+    html += '<div class="demo-product-price">' + escapeHtml(String(item.price)) + ' USD</div>';
+    html += '<div class="demo-product-desc">' + escapeHtml(item.desc) + '</div>';
     html += '<div class="demo-listing-specs">';
     item.specs.forEach(function(spec) {
-      html += '<span class="demo-spec-tag">' + spec + '</span>';
+      html += '<span class="demo-spec-tag">' + escapeHtml(spec) + '</span>';
     });
     html += '</div>';
     html += '<div class="demo-product-seller">';
     html += '<div class="demo-product-seller-row">';
-    html += '<span class="demo-product-seller-name">' + counterpart + '</span>';
-    html += '<span class="demo-listing-rating">\u2B50 ' + item.rating + '</span>';
+    html += '<span class="demo-product-seller-name">' + escapeHtml(counterpart) + '</span>';
+    html += '<span class="demo-listing-rating">\u2B50 ' + escapeHtml(String(item.rating)) + '</span>';
     html += '</div>';
     html += '<div class="demo-product-seller-stats">';
-    html += '<span>' + item.trades + ' trades</span>';
-    html += '<span>Joined ' + item.joined + '</span>';
+    html += '<span>' + escapeHtml(String(item.trades)) + ' trades</span>';
+    html += '<span>Joined ' + escapeHtml(item.joined) + '</span>';
     html += '</div></div></div></div>';
     return html;
   }
@@ -778,25 +783,25 @@
     var counterpart = isBuy ? item.seller : item.buyer;
     var html = '<div class="demo-listing-card' + (isBest ? ' recommended' : '') + '">';
     html += '<div class="demo-listing-img">';
-    html += '<img src="' + item.img + '" alt="' + item.name + '" loading="lazy">';
+    html += '<img src="' + escapeHtml(item.img) + '" alt="' + escapeHtml(item.name) + '" loading="lazy">';
     if (isBest) html += '<span class="badge-rec">' + t('demoBestMatch') + '</span>';
-    if (item.condition) html += '<span class="badge-condition badge-condition--' + item.condition.toLowerCase().replace(/\s+/g, '') + '">' + item.condition + '</span>';
+    if (item.condition) html += '<span class="badge-condition badge-condition--' + escapeHtml(item.condition.toLowerCase().replace(/\s+/g, '')) + '">' + escapeHtml(item.condition) + '</span>';
     html += '</div>';
     html += '<div class="demo-listing-content">';
     html += '<div class="demo-listing-header">';
-    html += '<div class="demo-listing-name">' + item.name + '</div>';
-    html += '<div class="demo-listing-price">' + item.price + ' USD</div>';
+    html += '<div class="demo-listing-name">' + escapeHtml(item.name) + '</div>';
+    html += '<div class="demo-listing-price">' + escapeHtml(String(item.price)) + ' USD</div>';
     html += '</div>';
-    html += '<div class="demo-listing-desc">' + item.desc + '</div>';
+    html += '<div class="demo-listing-desc">' + escapeHtml(item.desc) + '</div>';
     html += '<div class="demo-listing-specs">';
     item.specs.forEach(function(spec) {
-      html += '<span class="demo-spec-tag">' + spec + '</span>';
+      html += '<span class="demo-spec-tag">' + escapeHtml(spec) + '</span>';
     });
     html += '</div>';
     html += '<div class="demo-listing-meta">';
-    html += '<span class="demo-listing-seller">' + counterpart + '</span>';
-    html += '<span class="demo-listing-rating">\u2B50 ' + item.rating + '</span>';
-    html += '<span class="demo-listing-trades">' + item.trades + ' trades</span>';
+    html += '<span class="demo-listing-seller">' + escapeHtml(counterpart) + '</span>';
+    html += '<span class="demo-listing-rating">\u2B50 ' + escapeHtml(String(item.rating)) + '</span>';
+    html += '<span class="demo-listing-trades">' + escapeHtml(String(item.trades)) + ' trades</span>';
     html += '</div></div></div>';
     return html;
   }

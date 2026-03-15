@@ -5,13 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Datenschutzerkl&auml;rung – DealClaw</title>
   <meta name="robots" content="noindex, nofollow">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
+  <link rel="icon" type="image/webp" href="img/happyclaw.webp">
+  <!-- Google tag (gtag.js) — only loads after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-65Q84KFQWJ');
+    function loadGA() {
+      if (document.querySelector('script[src*="googletagmanager"]')) return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-65Q84KFQWJ');
+    }
+    try { var c = JSON.parse(localStorage.getItem('dealclaw_consent')); if (c && c.choice === 'accept') loadGA(); } catch(e) {}
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -163,9 +171,12 @@
     <li><strong>Cookie-Einwilligung</strong> (<code>dealclaw_consent</code>): Speichert Ihre Einwilligungsentscheidung, damit das Banner nicht erneut angezeigt wird.</li>
     <li><strong>Spracheinstellung</strong> (<code>dealclaw_lang</code>): Speichert Ihre bevorzugte Anzeigesprache.</li>
     <li><strong>Dark Mode</strong> (<code>dealclaw_dark</code>): Speichert Ihre Pr&auml;ferenz f&uuml;r die dunkle Darstellung.</li>
+    <li><strong>Authentifizierung</strong> (<code>dealclaw_token</code>, <code>dealclaw_user</code>): Speichert Ihre Anmeldedaten (Token und Benutzerprofil) f&uuml;r die Sitzung.</li>
+    <li><strong>Benutzerrolle</strong> (<code>dealclaw_role</code>): Speichert Ihre gew&auml;hlte Rolle (K&auml;ufer/Verk&auml;ufer) im Dashboard.</li>
+    <li><strong>Demo-Daten</strong> (<code>dealclaw_demo_trades</code>, <code>dealclaw_demo_wallet</code>, <code>dealclaw_demo_agent</code>, <code>dealclaw_demo_completed</code>): Speichert simulierte Handelsdaten, Wallet-Stand und Agent-Konfiguration im Demo-Modus.</li>
+    <li><strong>Benachrichtigungen</strong> (<code>dealclaw_notif_prefs</code>): Speichert Ihre Benachrichtigungseinstellungen im Dashboard.</li>
     <li><strong>Popup-Status</strong> (<code>dealclaw_popup_closed</code>): Verhindert, dass das Anmelde-Popup erneut angezeigt wird, nachdem Sie es geschlossen haben.</li>
-    <li><strong>Anmeldestatus</strong> (<code>dealclaw_signed_up</code>): Merkt sich, ob Sie sich bereits f&uuml;r Benachrichtigungen angemeldet haben.</li>
-    <li><strong>Waitlist-Daten</strong> (<code>dealclaw_ready</code>): Speichert Ihre E-Mail-Adresse und den Zeitpunkt der Anmeldung lokal, bis diese an unseren Server &uuml;bermittelt werden.</li>
+    <li><strong>Anmeldestatus</strong> (<code>dealclaw_signed_up</code>): Merkt sich, ob Sie sich bereits f&uuml;r die Waitlist angemeldet haben.</li>
   </ul>
   <p>
     Alle genannten Speicherungen sind technisch notwendig f&uuml;r die grundlegende Funktionalit&auml;t der Website bzw. erfolgen auf Basis Ihrer Einwilligung (Waitlist-Anmeldung).
@@ -227,6 +238,7 @@
 function handleCookieChoice(choice) {
   localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
   document.getElementById('cookieBanner').style.display = 'none';
+  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
 }
 (function() {
   if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';

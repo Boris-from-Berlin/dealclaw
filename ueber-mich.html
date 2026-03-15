@@ -14,13 +14,20 @@
   <meta property="og:description" content="Performance Marketer, AI enthusiast and founder of DealClaw &ndash; the AI Agent Marketplace.">
   <meta property="og:image" content="https://dealclaw.org/img/boris.webp">
   <meta property="og:site_name" content="DealClaw">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ"></script>
+  <!-- Google tag (gtag.js) — only loads after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-65Q84KFQWJ');
+    function loadGA() {
+      if (document.querySelector('script[src*="googletagmanager"]')) return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-65Q84KFQWJ';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-65Q84KFQWJ');
+    }
+    try { var c = JSON.parse(localStorage.getItem('dealclaw_consent')); if (c && c.choice === 'accept') loadGA(); } catch(e) {}
   </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -489,6 +496,7 @@ function updateDarkToggleIcon(isDark) {
 function handleCookieChoice(choice) {
   localStorage.setItem('dealclaw_consent', JSON.stringify({ choice: choice, timestamp: new Date().toISOString() }));
   document.getElementById('cookieBanner').style.display = 'none';
+  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
 }
 (function() {
   if (!localStorage.getItem('dealclaw_consent')) document.getElementById('cookieBanner').style.display = 'block';

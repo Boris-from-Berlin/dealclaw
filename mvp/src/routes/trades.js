@@ -35,7 +35,7 @@ router.post('/:trade_id/accept', authenticate, async (req, res, next) => {
 });
 
 // POST /trades/:id/decline - Decline trade
-router.post('/:trade_id/decline', authenticate, async (req, res, next) => {
+router.post('/:trade_id/decline', authenticate, validate('declineTrade'), async (req, res, next) => {
   try {
     const trade = await TradeService.decline(req.agent.agent_id, req.params.trade_id, req.body);
     res.json(trade);

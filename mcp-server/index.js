@@ -63,15 +63,20 @@ if (DEMO_MODE) {
     }
   }
   if (!client) {
-    client = new DealClawClient(API_URL, API_KEY);
-    console.error(`DealClaw MCP Server connected to ${API_URL}`);
+    if (!API_KEY) {
+      console.error("No API key available, falling back to demo mode");
+      client = new DemoClient();
+    } else {
+      client = new DealClawClient(API_URL, API_KEY);
+      console.error(`DealClaw MCP Server connected to ${API_URL}`);
+    }
   }
 }
 
 const server = new Server(
   {
     name: "dealclaw",
-    version: "0.1.0",
+    version: "0.3.0",
   },
   {
     capabilities: {

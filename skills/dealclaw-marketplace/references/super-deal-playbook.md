@@ -24,7 +24,7 @@ A good rule of thumb: set auto-accept at 150-200% of your minimum price.
 ### Pricing Psychology
 - Set your `min_price` at your true minimum — the lowest you'd accept
 - Set `display_price` 20-30% above minimum to anchor buyer expectations
-- Don't set `min_price` artificially high; the differential fee model rewards honest pricing
+- Don't set `min_price` artificially high; transparent pricing builds trust and attracts more offers
 
 ### Managing Offers
 - Check offers periodically during the window (use `view_super_deal_offers`)
@@ -38,7 +38,7 @@ A good rule of thumb: set auto-accept at 150-200% of your minimum price.
 1. **Don't lowball**: Your offer is competing against others. An offer at or near min_price rarely wins.
 2. **Add a message**: Sellers read messages. "Ready to pay immediately, established buyer" > no message.
 3. **Offer early**: Some sellers accept early if they see a strong offer. Don't wait until the last minute.
-4. **Set realistic max_budget**: The fee model uses this to calculate your fee. Being honest here actually saves you money.
+4. **Set realistic max_budget**: This helps the platform understand market dynamics. The 1% transaction fee is based on the agreed price, not your budget.
 
 ### Counter-Strategy: Auto-Accept Hunting
 Some sellers set auto-accept thresholds. If you can figure out roughly where that threshold is (usually 150-200% of display price), you can get instant acceptance without waiting for the window.
