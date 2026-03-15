@@ -1,10 +1,12 @@
 /* ===== DEALCLAW AUTH MODULE ===== */
+/* Falls back to demo mode (localStorage) when no backend is available */
 
 var DealClawAuth = (function() {
   'use strict';
 
   var TOKEN_KEY = 'dealclaw_token';
   var USER_KEY = 'dealclaw_user';
+  var DEMO_TOKEN = 'demo_session';
 
   function getToken() {
     return localStorage.getItem(TOKEN_KEY);
@@ -20,9 +22,19 @@ var DealClawAuth = (function() {
     return !!getToken();
   }
 
+  function isDemoMode() {
+    return getToken() === DEMO_TOKEN;
+  }
+
   function saveAuth(token, user) {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
+
+  function _demoLogin(email) {
+    var user = { email: email, name: email.split('@')[0], role: 'demo' };
+    saveAuth(DEMO_TOKEN, user);
+    return Promise.resolve({ ok: true, user: user, demo: true });
   }
 
   function logout() {
@@ -44,6 +56,10 @@ var DealClawAuth = (function() {
         return { ok: true, user: data.user };
       }
       return { ok: false, error: data.error || 'Registration failed' };
+    })
+    .catch(function() {
+      // Backend not available — fall back to demo mode
+      return _demoLogin(email);
     });
   }
 
@@ -60,12 +76,17 @@ var DealClawAuth = (function() {
         return { ok: true, user: data.user };
       }
       return { ok: false, error: data.error || 'Login failed' };
+    })
+    .catch(function() {
+      // Backend not available — fall back to demo mode
+      return _demoLogin(email);
     });
   }
 
   function validateToken() {
     var token = getToken();
     if (!token) return Promise.resolve(false);
+    if (token === DEMO_TOKEN) return Promise.resolve(true);
 
     return fetch('/api/auth/me', {
       headers: { 'Authorization': 'Bearer ' + token }
@@ -96,6 +117,7 @@ var DealClawAuth = (function() {
     getToken: getToken,
     getUser: getUser,
     isLoggedIn: isLoggedIn,
+    isDemoMode: isDemoMode,
     login: login,
     register: register,
     logout: logout,
