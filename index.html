@@ -43,6 +43,20 @@
     a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
     twq('config','r83x0');
   </script>
+  <!-- Meta Pixel — only loads after cookie consent -->
+  <script>
+    function loadMetaPixel() {
+      if (window.fbq) return;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+      (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1533679304850724');
+      fbq('track', 'PageView');
+    }
+    try { var mc = JSON.parse(localStorage.getItem('dealclaw_consent')); if (mc && mc.choice === 'accept') loadMetaPixel(); } catch(e) {}
+  </script>
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
@@ -2113,6 +2127,7 @@ function handleGetReady(e) {
     if (data.ok) {
       localStorage.setItem('dealclaw_signed_up', 'true');
       if (typeof twq === 'function') twq('event', 'tw-r83x0-r9jam', {});
+      if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'waitlist_signup', content_category: 'landing'});
       form.style.display = 'none';
       showThankyou();
     } else {
@@ -2123,6 +2138,7 @@ function handleGetReady(e) {
   .catch(function() {
     localStorage.setItem('dealclaw_signed_up', 'true');
     if (typeof twq === 'function') twq('event', 'tw-r83x0-r9jam', {});
+    if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'waitlist_signup', content_category: 'landing'});
     form.style.display = 'none';
     showThankyou();
   });
@@ -2144,7 +2160,10 @@ function handleCookieChoice(choice) {
     timestamp: new Date().toISOString()
   }));
   document.getElementById('cookieBanner').style.display = 'none';
-  if (choice === 'accept' && typeof loadGA === 'function') loadGA();
+  if (choice === 'accept') {
+    if (typeof loadGA === 'function') loadGA();
+    if (typeof loadMetaPixel === 'function') loadMetaPixel();
+  }
 }
 
 (function() {
@@ -2241,6 +2260,7 @@ function handlePopupSubmit(e) {
   .then(function(data) {
     if (data.ok) {
       localStorage.setItem('dealclaw_signed_up', 'true');
+      if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'waitlist_signup', content_category: 'popup'});
       closePopup();
       showThankyou();
     } else {
@@ -2250,6 +2270,7 @@ function handlePopupSubmit(e) {
   })
   .catch(function() {
     localStorage.setItem('dealclaw_signed_up', 'true');
+    if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'waitlist_signup', content_category: 'popup'});
     closePopup();
     showThankyou();
   });
