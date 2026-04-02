@@ -210,7 +210,7 @@ export async function onRequestPost(context) {
     // Send emails via Resend (non-blocking, don't fail the signup)
     if (env.RESEND_API_KEY) {
       const fromEmail = env.RESEND_FROM || "DealClaw <noreply@dealclaw.org>";
-      const adminEmail = env.ADMIN_EMAIL || "boris@dealclaw.org";
+      const adminEmail = env.ADMIN_EMAIL || "hello@dealclaw.org";
 
       // 1) Notify admin
       try {

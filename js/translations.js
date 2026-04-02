@@ -229,7 +229,7 @@ var translations = {
     aboutPassion: "I\u2019m especially interested in how AI, automation, and marketing can come together to make things simpler, faster, and smarter.",
     aboutMission: "DEALCLAW is my contribution to the digital transformation.",
     aboutJoin: "And I\u2019d love for you to join me on this journey.",
-    aboutCta: "More about me at borisdittberner.de \u2192",
+    aboutCta: "More about me at dealclaw.org \u2192",
 
     popupTitle: "Don\u2019t Miss the Launch",
     popupSubtitle: "Be the first to know when DealClaw goes live. No spam, ever.",
@@ -754,7 +754,7 @@ var translations = {
     aboutPassion: "Mich interessiert besonders, wie AI, Automatisierung und Marketing zusammenkommen k\u00f6nnen, um Dinge einfacher, schneller und smarter zu machen.",
     aboutMission: "DEALCLAW ist mein Beitrag zum digitalen Aufschwung und Wandel.",
     aboutJoin: "Und ich freue mich, wenn du ein St\u00fcck dieser Reise mitgehst.",
-    aboutCta: "Mehr \u00fcber mich auf borisdittberner.de \u2192",
+    aboutCta: "Mehr \u00fcber mich auf dealclaw.org \u2192",
 
     popupTitle: "Verpasse den Launch nicht",
     popupSubtitle: "Erfahre als Erster, wann DealClaw live geht. Kein Spam, versprochen.",
@@ -1188,7 +1188,7 @@ var translations = {
     aboutPassion: "Me interesa especialmente c\u00f3mo la IA, la automatizaci\u00f3n y el marketing pueden unirse para hacer las cosas m\u00e1s simples, r\u00e1pidas e inteligentes.",
     aboutMission: "DEALCLAW es mi contribuci\u00f3n a la transformaci\u00f3n digital.",
     aboutJoin: "Y me encantar\u00eda que me acompa\u00f1aras en este viaje.",
-    aboutCta: "M\u00e1s sobre m\u00ed en borisdittberner.de \u2192",
+    aboutCta: "M\u00e1s sobre m\u00ed en dealclaw.org \u2192",
 
     popupTitle: "No te pierdas el lanzamiento",
     popupSubtitle: "S\u00e9 el primero en saber cu\u00e1ndo DealClaw est\u00e9 en l\u00ednea. Sin spam, nunca.",
@@ -1618,7 +1618,7 @@ var translations = {
     aboutPassion: "Ce qui m\u2019int\u00e9resse particuli\u00e8rement, c\u2019est comment l\u2019IA, l\u2019automatisation et le marketing peuvent se combiner pour rendre les choses plus simples, plus rapides et plus intelligentes.",
     aboutMission: "DEALCLAW est ma contribution \u00e0 la transformation num\u00e9rique.",
     aboutJoin: "Et je serais ravi que vous m\u2019accompagniez dans cette aventure.",
-    aboutCta: "En savoir plus sur borisdittberner.de \u2192",
+    aboutCta: "En savoir plus sur dealclaw.org \u2192",
 
     popupTitle: "Ne manquez pas le lancement",
     popupSubtitle: "Soyez le premier \u00e0 savoir quand DealClaw sera en ligne. Jamais de spam.",
@@ -1981,7 +1981,7 @@ var translations = {
     aboutPassion: "\u6211\u7279\u522b\u611f\u5174\u8da3\u7684\u662fAI\u3001\u81ea\u52a8\u5316\u548c\u8425\u9500\u5982\u4f55\u7ed3\u5408\uff0c\u8ba9\u4e8b\u60c5\u53d8\u5f97\u66f4\u7b80\u5355\u3001\u66f4\u5feb\u3001\u66f4\u667a\u80fd\u3002",
     aboutMission: "DEALCLAW\u662f\u6211\u5bf9\u6570\u5b57\u5316\u8f6c\u578b\u7684\u8d21\u732e\u3002",
     aboutJoin: "\u6211\u5e0c\u671b\u4f60\u80fd\u52a0\u5165\u8fd9\u6bb5\u65c5\u7a0b\u3002",
-    aboutCta: "\u4e86\u89e3\u66f4\u591a borisdittberner.de \u2192",
+    aboutCta: "\u4e86\u89e3\u66f4\u591a dealclaw.org \u2192",
 
     popupTitle: "\u4e0d\u8981\u9519\u8fc7\u4e0a\u7ebf",
     popupSubtitle: "\u7acb\u5373\u77e5\u9053DealClaw\u4f55\u65f6\u4e0a\u7ebf\u3002\u6c38\u4e0d\u53d1\u9001\u5783\u573e\u90ae\u4ef6\u3002",
@@ -2344,7 +2344,7 @@ var translations = {
     aboutPassion: "\u064a\u0647\u0645\u0646\u064a \u0628\u0634\u0643\u0644 \u062e\u0627\u0635 \u0643\u064a\u0641 \u064a\u0645\u0643\u0646 \u0644\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0648\u0627\u0644\u0623\u062a\u0645\u062a\u0629 \u0648\u0627\u0644\u062a\u0633\u0648\u064a\u0642 \u0623\u0646 \u064a\u062a\u062d\u062f\u0648\u0627 \u0644\u062c\u0639\u0644 \u0627\u0644\u0623\u0634\u064a\u0627\u0621 \u0623\u0628\u0633\u0637 \u0648\u0623\u0633\u0631\u0639 \u0648\u0623\u0630\u0643\u0649.",
     aboutMission: "DEALCLAW \u0647\u0648 \u0645\u0633\u0627\u0647\u0645\u062a\u064a \u0641\u064a \u0627\u0644\u062a\u062d\u0648\u0644 \u0627\u0644\u0631\u0642\u0645\u064a.",
     aboutJoin: "\u0648\u0623\u062a\u0637\u0644\u0639 \u0644\u0623\u0646 \u062a\u0634\u0627\u0631\u0643\u0646\u064a \u0647\u0630\u0647 \u0627\u0644\u0631\u062d\u0644\u0629.",
-    aboutCta: "\u0627\u0644\u0645\u0632\u064a\u062f \u0639\u0646\u064a \u0639\u0644\u0649 borisdittberner.de \u2192",
+    aboutCta: "\u0627\u0644\u0645\u0632\u064a\u062f \u0639\u0646\u064a \u0639\u0644\u0649 dealclaw.org \u2192",
 
     popupTitle: "\u0644\u0627 \u062a\u0641\u0648\u062a \u0627\u0644\u0625\u0637\u0644\u0627\u0642",
     popupSubtitle: "\u0643\u0646 \u0623\u0648\u0644 \u0645\u0646 \u064a\u0639\u0644\u0645 \u0645\u062a\u0649 \u064a\u0646\u0637\u0644\u0642 DealClaw. \u0628\u062f\u0648\u0646 \u0625\u0632\u0639\u0627\u062c \u0623\u0628\u062f\u064b\u0627.",

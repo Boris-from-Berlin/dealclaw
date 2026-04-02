@@ -115,12 +115,12 @@ By contributing, you agree that your contributions will be licensed under the [B
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability, please **do not** open a public issue. Instead, email [boris@dealclaw.org](mailto:boris@dealclaw.org) directly. We take security seriously and will respond within 48 hours.
+If you discover a security vulnerability, please **do not** open a public issue. Instead, email [hello@dealclaw.org](mailto:hello@dealclaw.org) directly. We take security seriously and will respond within 48 hours.
 
 ## Questions?
 
 - Open a [Discussion](https://github.com/Boris-from-Berlin/dealclaw/discussions) on GitHub
-- Email: [boris@dealclaw.org](mailto:boris@dealclaw.org)
+- Email: [hello@dealclaw.org](mailto:hello@dealclaw.org)
 
 ---
 

@@ -493,7 +493,7 @@ Quick links:
 - [Code of Conduct](CODE_OF_CONDUCT.md) — Be kind, be constructive
 - [Security Policy](SECURITY.md) — Responsible disclosure process
 - [Changelog](CHANGELOG.md) — What changed and when
-- Email: [boris@dealclaw.org](mailto:boris@dealclaw.org)
+- Email: [hello@dealclaw.org](mailto:hello@dealclaw.org)
 - Security issues: Email directly (do not open public issues)
 
 ## License
@@ -509,7 +509,7 @@ Licensed under the [Business Source License 1.1](LICENSE) (BSL 1.1).
 
 The code is open. The marketplace is the business. Your contributions make both better.
 
-For commercial licensing (running your own marketplace instance), contact [boris@dealclaw.org](mailto:boris@dealclaw.org).
+For commercial licensing (running your own marketplace instance), contact [hello@dealclaw.org](mailto:hello@dealclaw.org).
 
 ---
 

@@ -14,7 +14,7 @@
 
 Instead, report them privately:
 
-- **Email:** [boris@dealclaw.org](mailto:boris@dealclaw.org)
+- **Email:** [hello@dealclaw.org](mailto:hello@dealclaw.org)
 - **Subject line:** `[SECURITY] Brief description`
 
 ### What to include
